@@ -1,6 +1,6 @@
 main :: IO()
 main = do
-    print("Socorro Deus")
+    print("Deus")
 
 vaiDaCerto:: String -> String
 vaiDaCerto x
