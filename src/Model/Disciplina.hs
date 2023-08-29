@@ -3,5 +3,5 @@ module Model.Disciplina where
         id :: Int
         nome :: String
         professor :: String
-        período :: String
+        periodo :: String
     } deriving (Show, Read)
