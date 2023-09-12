@@ -4,4 +4,5 @@ module Model.Resumo where
         corpo :: String,
         comentario :: [Comentario],
         disciplina :: Disciplina
+        --teste
     } deriving (Show, Read)
