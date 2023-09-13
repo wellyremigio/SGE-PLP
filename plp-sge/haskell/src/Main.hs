@@ -36,5 +36,3 @@ opSelecionada op
     | otherwise = do
         putStr "Ops! Entrada Inválida...\n"
         main
-
-    
