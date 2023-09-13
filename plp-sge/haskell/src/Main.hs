@@ -23,4 +23,4 @@ import qualified Data.Time.Format as TimeFormat
 main:: IO()
 main = do
     putStr "\n =========== Olá! Seja bem vindo ao SGE! ===========\n"
-    
+    putStr "\n Escolha uma opção para começar a navegar no sistema: \n"
