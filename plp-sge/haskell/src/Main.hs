@@ -2,7 +2,7 @@ module Main where
 
 {-import DataBase.Gerenciador as BD--
 import Function.AlunoFunction as AlunoF
-import Funtion.ComentarioFunction as Comentario
+import Function.ComentarioFunction as Comentario
 import Function.DataFunction as DataF
 import Function.DisciplinaFunction as DisciplinaF
 import Function.GrupoFunction as GrupoF
@@ -22,4 +22,5 @@ import qualified Data.Time.Format as TimeFormat
 
 main:: IO()
 main = do
-    putStr "\n ===========Bem vindo"
+    putStr "\n =========== Olá! Seja bem vindo ao SGE! ===========\n"
+    putStr "\n Escolha uma opção para começar a navegar no sistema: \n"
