@@ -38,4 +38,31 @@ opSelecionada op
         putStr "Ops! Entrada Inválida...\n"
         main
 
-        
+        init:: IO()
+init = do
+    putStr "\nEscolha uma opção\n"
+    putStr "1- Criar grupo\n"
+    putStr "2- Remover grupo\n"
+    putStr "3- Meus grupos\n"
+    putStr "4- Minhas disciplinas\n"
+    putStr "5- Contribuir\n"
+    putStr "6- Consultar\n"
+    putStr "7- Favoritos\n"
+    op <- readLn :: IO Int
+    menuInit op
+
+menuInit:: Int -> IO()
+menuInit op
+    | op == 1 = do
+        putStr "Nome do grupo: "
+        nomeGrupo <- getLine
+        resultado <- _____
+        putStrLn resultado
+    | op == 2 = do
+        putStr "Nome do grupo: "
+        nomeGrupo <- getLine
+        putStr "Matricula: "
+        matricula <- readLn:: IO Int
+        resultado <- -----
+        putStrLn resultado
+    | op == 3 = do
