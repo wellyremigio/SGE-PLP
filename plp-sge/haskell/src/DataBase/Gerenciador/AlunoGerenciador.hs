@@ -31,7 +31,3 @@ getAlunosJSON path = do
     conteudo <- B.readFile filePath
     let alunos = fromMaybe [] (decode conteudo)
     return alunos
-
-
-
-
