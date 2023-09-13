@@ -32,11 +32,6 @@ getAlunos :: FilePath -> IO [Aluno]
    let alunos = fromMaybe [] (decode conteudo)
    return alunos
 
-verificarLogin :: Int -> String -> IO Bool
-verificarLogin matricula senha = do
- alunos <- getAlunos
- let alunoEncontrado = find (\aluno -> matricula == matricula aluno && senha == senha aluno) alunos
- return (isJust alunoEncontrado)
 
 
 
