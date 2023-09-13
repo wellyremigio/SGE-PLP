@@ -26,11 +26,11 @@ getAlunoByMatricula matriculaProcurada (x:xs)
  | otherwise = getAlunoByMatricula matriculaProcurada xs
 
 getAlunos :: FilePath -> IO [Aluno]
- getAlunos path = do
-   let filePath = path </> "aluno.json"
-   conteudo <- B.readFile filePath
-   let alunos = fromMaybe [] (decode conteudo)
-   return alunos
+getAlunos path = do
+    let filePath = path </> "aluno.json"
+    conteudo <- B.readFile filePath
+    let alunos = fromMaybe [] (decode conteudo)
+    return alunos
 
 
 
