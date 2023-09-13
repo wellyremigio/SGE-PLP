@@ -33,6 +33,9 @@ opSelecionada:: Int -> IO()
 opSelecionada op
     | op == 1 = menuLogin
     | op == 2 = menuCadastro
+
     | otherwise = do
         putStr "Ops! Entrada Inválida...\n"
         main
+
+        
