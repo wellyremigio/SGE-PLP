@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Model.Aluno where 
     data Aluno = Aluno {
         matricula:: Int,
