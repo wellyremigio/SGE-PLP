@@ -1,9 +1,13 @@
-module Model.Disciplina where
-    import GHC.Generics
+{-# LANGUAGE DeriveGeneric #-}
 
-    data Disciplina = Disciplina {
-        id :: Int,
-        nome :: String,
-        professor :: String,
-        periodo :: String
-    } deriving (Generic)
+module Model.Disciplina where
+
+import GHC.Generics
+
+data Disciplina = Disciplina {
+    id :: Int,
+    nome :: String,
+    professor :: String,
+    periodo :: String
+} deriving (Generic)
+

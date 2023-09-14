@@ -1,7 +1,11 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Model.Data where
-    import Model.Disciplina (Disciplina)
-    data Data = Data{
-        topico :: String,
-        disciplina :: Disciplina,
-        dataImportante :: String
-    } deriving (Generic)
+
+import GHC.Generics
+
+data Data = Data {
+    idData :: Int,
+    dataInicio :: String,
+    dataFim :: String
+} deriving (Generic)

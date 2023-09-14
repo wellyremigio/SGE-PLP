@@ -1,8 +1,10 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Model.Grupo where
 
 import GHC.Generics
 import Model.Aluno
-import Model.Disciplina 
+import Model.Disciplina
 
 data Grupo = Grupo {
     nome :: String,
@@ -11,3 +13,6 @@ data Grupo = Grupo {
     disciplinas :: [Disciplina],
     adm :: Int
 } deriving (Generic)
+
+
+

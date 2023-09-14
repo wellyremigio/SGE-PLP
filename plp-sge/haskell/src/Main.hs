@@ -1,6 +1,7 @@
 module Main where
 
-{-import DataBase.Gerenciador as BD--
+{-
+import DataBase.Gerenciador as BD
 import Function.AlunoFunction as AlunoF
 import Function.ComentarioFunction as ComentarioF
 import Function.DataFunction as DataF
@@ -17,29 +18,30 @@ import Model.Grupo
 import Model.LinksUteis
 import Model.Resumo
 -}
+
 import Menus
 import Data.Time.Clock ()
 import qualified Data.Time.Format as TimeFormat
 
-main:: IO()
+main :: IO ()
 main = do
     putStr "\n =========== Olá! Seja bem vindo ao SGE: Sistema de Gerenciamento de Estudos :D ===========\n"
     putStr "\n Escolha uma opção para começar a navegar no sistema: \n"
     putStr "1. Login\n"
     putStr "2. Cadastrar\n"
-    op <- readLn:: IO Int
+    op <- readLn :: IO Int
     opSelecionada op
 
-opSelecionada:: Int -> IO()
+opSelecionada :: Int -> IO ()
 opSelecionada op
     | op == 1 = menuLogin
     | op == 2 = menuCadastro
-
     | otherwise = do
         putStr "Ops! Entrada Inválida...\n"
         main
 
-        init:: IO()
+{-
+init :: IO ()
 init = do
     putStr "\nEscolha uma opção\n"
     putStr "1- Criar grupo\n"
@@ -52,18 +54,31 @@ init = do
     op <- readLn :: IO Int
     menuInit op
 
-menuInit:: Int -> IO()
+menuInit :: Int -> IO ()
 menuInit op
     | op == 1 = do
         putStr "Nome do grupo: "
         nomeGrupo <- getLine
-        resultado <- _____
-        putStrLn resultado
+        -- resultado <- criarGrupo nomeGrupo
+        putStrLn "Função criarGrupo não implementada ainda."
     | op == 2 = do
         putStr "Nome do grupo: "
         nomeGrupo <- getLine
         putStr "Matricula: "
-        matricula <- readLn:: IO Int
-        resultado <- -----
-        putStrLn resultado
+        matricula <- readLn :: IO Int
+        -- resultado <- removerGrupo nomeGrupo matricula
+        putStrLn "Função removerGrupo não implementada ainda."
     | op == 3 = do
+        putStrLn "Listar Meus Grupos"
+    | op == 4 = do
+        putStrLn "Listar Minhas Disciplinas"
+    | op == 5 = do
+        putStrLn "Contribuir"
+    | op == 6 = do
+        putStrLn "Consultar"
+    | op == 7 = do
+        putStrLn "Favoritos"
+    | otherwise = do
+        putStr "Ops! Entrada Inválida...\n"
+        main
+-}

@@ -1,9 +1,11 @@
-module Model.LinksUteis where
-    import Model.Disciplina (Disciplina)
-    import GHC.Generics
+{-# LANGUAGE DeriveGeneric #-}
 
-    data LinksUteis = LinksUteis{
-        topico :: String,
-        link :: String,
-        disciplina :: Disciplina
-    } deriving (Generic)
+module Model.LinksUteis where
+
+import GHC.Generics
+
+data LinksUteis = LinksUteis {
+    id :: Int,
+    titulo :: String,
+    url :: String
+} deriving (Generic)

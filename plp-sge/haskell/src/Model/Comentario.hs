@@ -1,9 +1,12 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Model.Comentario where
-    import Model.Aluno ( Aluno )
-    import GHC.Generics
-    
-    data Comentario = Comentario{
-        autor :: Aluno,
-        titulo :: String,
-        corpo :: String
-    } deriving (Generic)
+
+import GHC.Generics
+import Model.Aluno
+
+data Comentario = Comentario {
+    idComentario :: Int,
+    aluno :: Aluno,
+    texto :: String
+} deriving (Generic)
