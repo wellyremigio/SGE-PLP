@@ -1,11 +1,8 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE InstanceSigs #-}
 
-module Model.Aluno where
-    import GHC.Generics
-    
+module Model.Aluno where 
     data Aluno = Aluno {
         matricula:: Int,
         nome:: String,
         senha:: String
-    } deriving (Generic)
+    } deriving (Show, Read)

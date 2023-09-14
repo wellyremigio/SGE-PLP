@@ -1,4 +1,4 @@
-module DataBase.GrupoGerenciador (module DataBase.GrupoGerenciador) where
+module GrupoGerenciador  where
 
 import Data.Aeson
 import GHC.Generics
@@ -9,7 +9,6 @@ import Model.Grupo
 
 instance FromJSON Grupo
 instance ToJSON Grupo
-
 
 salvarGrupoJSON :: String -> String -> [Aluno] -> Int -> [Disciplina] -> Int -> IO()
 salvarGrupoJSON jsonFilePath nome listaAlunos codigo listaDisciplinas adm = do
@@ -33,5 +32,4 @@ getGrupoJSON path = do
     conteudo <- B.readFile filePath
     let grupos = fromMaybe [] (decode conteudo)
     return grupos
-
-
+    
