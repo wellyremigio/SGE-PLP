@@ -10,7 +10,6 @@ import System.FilePath ((</>))
 import Model.Aluno
 import System.Directory (removeFile)
 
-
 instance FromJSON Aluno
 instance ToJSON Aluno
 
