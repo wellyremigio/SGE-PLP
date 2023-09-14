@@ -2,9 +2,9 @@
 
 module Model.Grupo where
 
-import GHC.Generics
-import Model.Aluno
-import Model.Disciplina
+import GHC.Generics ( Generic )
+import Model.Aluno ( Aluno )
+import Model.Disciplina ( Disciplina )
 
 data Grupo = Grupo {
     nome :: String,

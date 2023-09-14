@@ -2,8 +2,8 @@
 
 module Model.Comentario where
 
-import GHC.Generics
-import Model.Aluno
+import GHC.Generics ( Generic )
+import Model.Aluno ( Aluno )
 
 data Comentario = Comentario {
     idComentario :: Int,

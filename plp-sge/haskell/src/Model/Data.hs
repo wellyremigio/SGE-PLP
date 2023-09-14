@@ -2,7 +2,7 @@
 
 module Model.Data where
 
-import GHC.Generics
+import GHC.Generics ( Generic )
 
 data Data = Data {
     idData :: Int,

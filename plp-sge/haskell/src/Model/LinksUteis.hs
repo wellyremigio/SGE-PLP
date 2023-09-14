@@ -2,7 +2,7 @@
 
 module Model.LinksUteis where
 
-import GHC.Generics
+import GHC.Generics ( Generic )
 
 data LinksUteis = LinksUteis {
     id :: Int,

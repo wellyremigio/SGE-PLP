@@ -4,7 +4,7 @@ module Model.Resumo where
 
 import Model.Comentario ( Comentario )
 import Model.Disciplina ( Disciplina )
-import GHC.Generics
+import GHC.Generics ( Generic )
 
 data Resumo = Resumo{
     titulo :: String,
