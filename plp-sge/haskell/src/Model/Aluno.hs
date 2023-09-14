@@ -6,4 +6,4 @@ module Model.Aluno where
         matricula:: Int,
         nome:: String,
         senha:: String
-    } deriving (Show, Read)
+    } deriving (Generic)
