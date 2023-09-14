@@ -288,19 +288,68 @@ selecionaMenuEditaMateriais op
         putStrln "Nome do resumo: "
         nome <- getLine
         
-        removeResumo id nome
-        if (removeResumo) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
+        editarResumo id nome
+        if (editarResumo) then do putStrLn "Editado com sucesso" else putStrLn "Não encontrado" 
     | op == 2 = do
         putStrln "ID disciplina: "
         id <- readLn :: IO Int
         putStrLn "Link: "
         link <- getLine
-        removeLink id link
-        if (removeLink) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
+        editarLink id link
+        if (editarLink) then do putStrLn "Editado com sucesso" else putStrLn "Não encontrado" 
     | op == 3 = do
         putStrln "ID disciplina: "
         id <- readLn :: IO Int
         putStrLn "Titulo: "
         titulo <- getLine
-        removeData id titulo
-        if (removeData) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
+        editaData id titulo
+        if (editaData) then do putStrLn "Editado com sucesso" else putStrLn "Não encontrado" 
+
+menuConsulta:: IO()
+menuConsulta = do
+    putStrLn "Você deseja ver o material de qual disciplia? Informe o id"
+    id <- readLn::IO Int
+    putStrLn "Qual o tipo de material?"
+    putStrLn "1. Resumo"
+    putStrLn "2. Links"
+    putStrLn "3. Datas"
+    op <- readLn :: IO Int
+    selecionaMenuConsulta op
+
+selecionaMenuConsulta:: IO()
+selecionaMenuConsulta op
+    | op == 1 = do
+        putStrLn "Nome do Resumo? "
+        nome <- getLine
+        achaResumo
+        menuEscolhaResumo nome
+    | op == 2 = do
+        putStrLn "Nome do Link? "
+        nome <- getLine
+        achaLink
+        menuEscolhaLink nome
+    | op == 1 = do
+        putStrLn "Nome da Data? "
+        nome <- getLine
+        achaData
+        menuEscolhaData nome
+
+    
+menuEscolhaResumo:: Resumo -> IO()
+menuEscolhaResumo = do
+    putStrLn "Você deseja ver material ou comentar? (VER/COMENTAR): "
+    resposta <- getLine
+    if resposta == VER then mostraResumo nome else if resposta == "COMENTAR" then comentarResumo nome else do "Resposta inválida" menuEscolhaResumo
+
+menuEscolhaLink:: Link -> IO()
+menuEscolhaLink = do
+    putStrLn "Você deseja ver material ou comentar? (VER/COMENTAR): "
+    resposta <- getLine
+    if resposta == VER then mostraLink nome else if resposta == "COMENTAR" then comentarLink nome else do "Resposta inválida" menuEscolhaLink
+
+
+menuEscolhaData:: Link -> IO()
+menuEscolhaData = do
+    putStrLn "Você deseja ver material ou comentar? (VER/COMENTAR): "
+    resposta <- getLine
+    if resposta == VER then mostraData nome else if resposta == "COMENTAR" then comentarData nome else do "Resposta inválida" menuEscolhaLink
