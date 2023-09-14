@@ -4,4 +4,4 @@ module Model.LinksUteis where
         topico :: String,
         link :: String,
         disciplina :: Disciplina
-    } deriving (Show, Read)
+    } deriving (Generic)

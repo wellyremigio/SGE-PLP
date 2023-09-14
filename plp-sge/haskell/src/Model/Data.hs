@@ -4,4 +4,4 @@ module Model.Data where
         topico :: String,
         disciplina :: Disciplina,
         dataImportante :: String
-    } deriving (Show, Read)
+    } deriving (Generic)

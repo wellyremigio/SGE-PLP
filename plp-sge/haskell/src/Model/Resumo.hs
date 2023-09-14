@@ -7,4 +7,4 @@ module Model.Resumo where
         comentario :: [Comentario],
         disciplina :: Disciplina
         --teste
-    } deriving (Show, Read)
+    } deriving (Generic)

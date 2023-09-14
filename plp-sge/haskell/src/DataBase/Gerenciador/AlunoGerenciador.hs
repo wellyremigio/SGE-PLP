@@ -1,4 +1,4 @@
-module DataBase.AlunoGerenciador (module DataBase.AlunoGerenciador) where
+module DataBase.Gerenciador.AlunoGerenciador where
 
 import Data.Aeson
 import GHC.Generics

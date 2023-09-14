@@ -4,4 +4,4 @@ module Model.Disciplina where
         nome :: String,
         professor :: String,
         periodo :: String
-    } deriving (Show, Read)
+    } deriving (Generic)

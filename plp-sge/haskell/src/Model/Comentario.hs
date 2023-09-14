@@ -4,4 +4,4 @@ module Model.Comentario where
         autor :: Aluno,
         titulo :: String,
         corpo :: String
-    } deriving (Show, Read)
+    } deriving (Generic)
