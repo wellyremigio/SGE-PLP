@@ -32,10 +32,10 @@ menuLogin = do
         menuEscolha
         putStrLn "1. Tentar novamente ou se cadastrar?\n"
 
-    menuinicial
+        menuInicial
 
 menuEscolhaLogin:: IO()
-menuEscolha = do
+menuEscolhaLogin = do
     putStr "Escolha uma opção para seguir:\n"
     putStr "1. Tentar Novamente\n2. Fazer cadastro.\n"
     op <- readLn:: IO Int
@@ -136,18 +136,171 @@ selecaoMenuMeusGrupos op
         nomeProfessor <- getLine
         putStrLn "Período? "
         periodo <- getLine
-        foiCadastrada <- cadastraDisciplina -- metodo a ser criado
+        foiCadastrada <- cadastraDisciplina id-- metodo a ser criado
         if foiCadastrada then putStr "Disciplina adicionado." else putStr "Essa disciplina já está cadastrada."
     | op == 5 = listarDisciplinas -- toString das disciplinas
     | op == 6 = do
         putStrLn "Qual o id da disciplina que você quer remover? "
         id <- readLn:: IO Int
-        foiRemovida <- removeDisciplina -- metodo p remover. todos eles retornar boolean
+        foiRemovida <- removeDisciplina id-- metodo p remover. todos eles retornar boolean
         if foiRemovida then putStr "Removida com sucesso." else "A disciplina não existe."
     | otherwise = do
         putStrLn "Escolha inválida. Tente novamente."
         selecaoMenuMeusGrupos
 
+--Ao selecionar essa opção, o usuário poderá Ver Disciplinas Cadastradas, Cadastrar Disciplina e Remover uma Disciplina.--
+
 menuMinhasDisciplinas:: IO()
 menuMinhasDisciplinas = do
-    
+    putStrLn "1. Visualizar disciplinas"
+    putStrLn "2. Cadastrar disciplina"
+    putStrLn "3. Remover disciplina"
+    op <- readLn :: IO Int
+    selecionaMenuMinhasDisciplinas op
+
+    selecionaMenuMinhasDisciplinas:: Int -> IO()
+    selecionaMenuMinhasDisciplinas op
+        | op == 1 = listasDisciplinas -- criar metodo
+        | op == 2 = do
+            putStrLn "Qual o código da disciplina que você quer adicionar? "
+            id <- readLn:: IO Int
+            putStrLn "Nome da disciplina?"
+            nomeDisciplina <- getLine
+            putStrLn "Qual professor ministra?"
+            nomeProfessor <- getLine
+            putStrLn "Período? "
+            periodo <- getLine
+            foiCadastrada <- cadastraDisciplina id -- metodo a ser criado
+            if foiCadastrada then putStr "Disciplina adicionado." else putStr "Essa disciplina já está cadastrada."
+        | op == 3 = do
+            putStrLn "Qual o id da disciplina que você quer remover? "
+            id <- readLn:: IO Int
+            foiRemovida <- removeDisciplina id -- metodo p remover. todos eles retornar boolean
+            if foiRemovida then putStr "Removida com sucesso." else "A disciplina não existe."
+        | otherwise = do
+            putStrLn "Escolha inválida. Tente novamente."
+            selecionaMenuMinhasDisciplinas 
+
+menuMateriais:: IO()
+menuMateriais = do
+    putStrLn "1. Ver materiais"
+    putStrLn "2. Adicionar materiais"
+    putStrLn "3. Remover materiais"
+    putStrLn "4. Editar materiais"
+    op <- readLn :: IO Int
+    selecionaMateriais op
+
+selecionaMateriais:: Int -> IO()
+selecionaMateriais op
+    | op == 1 = listarMateriais
+    | op == 2 = do
+        menuCadastraMateriais
+    | op == 3 = do
+        menuRemoverMateriais
+    | op == 4 = do
+        menuEditaMaterias
+    | otherwise = do 
+        putStrLn "Digite novamente" 
+        selecionaMateriais
+
+
+menuCadastraMateriais:: IO()
+menuCadastraMaterias = do
+    putStrLn "1. Resumo"
+    putStrLn "2. Links"
+    putStrLn "3. Datas"
+    op <- readLn :: IO Int
+    selecionaMenuCadastroMateriais op
+
+selecionaMenuCadastroMateriais:: Int -> IO()
+selecionaMenuCadastroMateriais op
+    | op == 1 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrln "Nome do resumo: "
+        nome <- getLine
+        putStrln "Conteudo do resumo: "
+        conteudo <- getLine
+        cadastraResumo id nome conteudo
+        putStrLn "Cadastrado com sucesso"
+    | op == 2 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrLn "Link: "
+        link <- getLine
+        cadastraLink id link
+        putStrLn "Cadastrado com sucesso"
+    | op == 3 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrLn "Titulo: "
+        titulo <- getLine
+        putStrLn "Data: "
+        dt <- getLine
+        cadastraData id titulo dt
+        putStrLn "Cadastrado com sucesso"
+
+menuRemoveMateriais:: IO()
+menuRemoveMaterias = do
+    putStrLn "1. Resumo"
+    putStrLn "2. Links"
+    putStrLn "3. Datas"
+    op <- readLn :: IO Int
+    selecionaMenuRemoveMateriais op
+
+selecionaMenuRemoveMateriais:: Int -> IO()
+selecionaMenuRemoveMateriais op
+    | op == 1 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrln "Nome do resumo: "
+        nome <- getLine
+        removeResumo id nome
+        if (removeResumo) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
+    | op == 2 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrLn "Link: "
+        link <- getLine
+        removeLink id link
+        if (removeLink) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
+    | op == 3 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrLn "Titulo: "
+        titulo <- getLine
+        removeData id titulo
+        if (removeData) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado"
+
+menuEditaMaterias:: IO()
+menuEditaMaterias = do
+    putStrLn "1. Resumo"
+    putStrLn "2. Links"
+    putStrLn "3. Datas"
+    op <- readLn :: IO Int
+    selecionaMenuEditaMateriais op
+
+selecionaMenuEditaMateriais:: Int -> IO()
+selecionaMenuEditaMateriais op
+    | op == 1 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrln "Nome do resumo: "
+        nome <- getLine
+        
+        removeResumo id nome
+        if (removeResumo) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
+    | op == 2 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrLn "Link: "
+        link <- getLine
+        removeLink id link
+        if (removeLink) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
+    | op == 3 = do
+        putStrln "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrLn "Titulo: "
+        titulo <- getLine
+        removeData id titulo
+        if (removeData) then do putStrLn "Removido com sucesso" else putStrLn "Não encontrado" 
