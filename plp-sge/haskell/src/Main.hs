@@ -20,8 +20,8 @@ import Model.Resumo
 -}
 
 import Menus
-import Data.Time.Clock ()
-import qualified Data.Time.Format as TimeFormat
+-- import Data.Time.Clock ()
+-- import qualified Data.Time.Format as TimeFormat
 
 main :: IO ()
 main = do
@@ -29,13 +29,16 @@ main = do
     putStr "\n Escolha uma opção para começar a navegar no sistema: \n"
     putStr "1. Login\n"
     putStr "2. Cadastrar\n"
+    putStr "3. Sair\n"
     op <- readLn :: IO Int
     opSelecionada op
 
 opSelecionada :: Int -> IO ()
 opSelecionada op
-    | op == 1 = menuLogin
+    -- | op == 1 = --menuLogin
+    | op == 1 = main
     | op == 2 = menuCadastro
+    | op == 3 = putStr "Saindo...\n"
     | otherwise = do
         putStr "Ops! Entrada Inválida...\n"
         main
