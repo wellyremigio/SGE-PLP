@@ -27,7 +27,7 @@ menuLogin = do
     putStr "Senha?\n"
     senhaInput <- getLine
     resposta <- verificaLogin matriculaInput senhaInput
-    if (resposta) then putStr "foiiii" else do
+    if (resposta) then menuInicial else do
         putStr "Cadastro não econtrando :/\n"
 
 
@@ -65,17 +65,18 @@ menuCadastro = do
     --     putStr "Seu cadastro não foi realizado. Tente novamente!"
     --     menuCadastro
 
--- menuInicial:: IO()
--- menuInicial = do
---     putStr "\nEscolha uma opção\n"
---     putStr "1- Criar grupo\n"
---     putStr "2- Remover grupo\n"
---     putStr "3- Meus grupos\n"
---     putStr "4- Minhas disciplinas\n"
---     putStr "5- Contribuir\n"
---     putStr "6- Consultar\n"
---     op <- readLn :: IO Int
---     menuInit op
+menuInicial:: IO()
+menuInicial = do
+    putStr "\nEscolha uma opção\n"
+    putStr "1- Criar grupo\n"
+    putStr "2- Remover grupo\n"
+    putStr "3- Meus grupos\n"
+    putStr "4- Minhas disciplinas\n"
+    putStr "5- Contribuir\n"
+    putStr "6- Consultar\n"
+    putStr "7- Sair"
+--    op <- readLn :: IO Int
+    --menuInit op
 
 -- selecaoMenuInicial:: Int -> IO()
 -- selecaoMenuInicial op
