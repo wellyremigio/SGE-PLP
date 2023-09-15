@@ -30,6 +30,7 @@ executable haskell
     Model.Resumo
     DataBase.Gerenciador.AlunoGerenciador
     Function.AlunoFunction
+    Menus
   -- other-extensions:
   build-depends:     base >=4.12.0.0,aeson,bytestring,time, filepath, directory >=1.3.3.0
   hs-source-dirs: src

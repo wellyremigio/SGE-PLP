@@ -36,52 +36,9 @@ main = do
 opSelecionada :: Int -> IO ()
 opSelecionada op
     -- | op == 1 = --menuLogin
-    | op == 1 = main
+    | op == 1 = menuLogin
     | op == 2 = menuCadastro
     | op == 3 = putStr "Saindo...\n"
     | otherwise = do
         putStr "Ops! Entrada Inválida...\n"
         main
-
-{-
-init :: IO ()
-init = do
-    putStr "\nEscolha uma opção\n"
-    putStr "1- Criar grupo\n"
-    putStr "2- Remover grupo\n"
-    putStr "3- Meus grupos\n"
-    putStr "4- Minhas disciplinas\n"
-    putStr "5- Contribuir\n"
-    putStr "6- Consultar\n"
-    putStr "7- Favoritos\n"
-    op <- readLn :: IO Int
-    menuInit op
-
-menuInit :: Int -> IO ()
-menuInit op
-    | op == 1 = do
-        putStr "Nome do grupo: "
-        nomeGrupo <- getLine
-        -- resultado <- criarGrupo nomeGrupo
-        putStrLn "Função criarGrupo não implementada ainda."
-    | op == 2 = do
-        putStr "Nome do grupo: "
-        nomeGrupo <- getLine
-        putStr "Matricula: "
-        matricula <- readLn :: IO Int
-        -- resultado <- removerGrupo nomeGrupo matricula
-        putStrLn "Função removerGrupo não implementada ainda."
-    | op == 3 = do
-        putStrLn "Listar Meus Grupos"
-    | op == 4 = do
-        putStrLn "Listar Minhas Disciplinas"
-    | op == 5 = do
-        putStrLn "Contribuir"
-    | op == 6 = do
-        putStrLn "Consultar"
-    | op == 7 = do
-        putStrLn "Favoritos"
-    | otherwise = do
-        putStr "Ops! Entrada Inválida...\n"
-        main
--}

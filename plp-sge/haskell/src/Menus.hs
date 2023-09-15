@@ -1,5 +1,5 @@
 module Menus where
-
+import Function.AlunoFunction
 {-import DataBase.Gerenciador as BD--
 import Function.AlunoFunction as AlunoF
 import Function.ComentarioFunction as ComentarioF
@@ -20,17 +20,16 @@ import Model.Resumo-}
 -- import Data.Time.Clock ()
 -- import qualified Data.Time.Format as TimeFormat
 
--- menuLogin:: IO()
--- menuLogin = do
---     putStr "Matrícula?\n"
---     matriculaInput <- readLn:: IO Int
---     putStr "Senha?\n"
---     senhaInput <- getLine
---     resposta <- verificaLogin -- função a ser criada
---     if (resposta) then menuInicial else do
---         putStr "Cadastro não econtrando :/\n"
---         menuEscolha
---         putStrLn "1. Tentar novamente ou se cadastrar?\n"
+menuLogin:: IO()
+menuLogin = do
+    putStr "Matrícula?\n"
+    matriculaInput <- getLine
+    putStr "Senha?\n"
+    senhaInput <- getLine
+    resposta <- verificaLogin matriculaInput senhaInput
+    if (resposta) then putStr "foiiii" else do
+        putStr "Cadastro não econtrando :/\n"
+
 
 --         menuInicial
 
@@ -48,8 +47,6 @@ import Model.Resumo-}
 --     | otherwise = do 
 --         putStr "Opção inválida. Escolha corretamente."
 --         verificaSolucao
-
-import Function.AlunoFunction
 
 menuCadastro:: IO()
 menuCadastro = do

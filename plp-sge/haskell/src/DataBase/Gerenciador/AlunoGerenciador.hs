@@ -75,7 +75,17 @@ saveAluno matricula nome senha = do
     let a = Aluno matricula nome senha disciplinas
 
     alunoList <- getAlunoJSON "src/DataBase/Data/Aluno.json" 
-
     let newAlunoList = alunoList ++ [a]
-
     saveAlteracoesAluno newAlunoList
+
+getAlunoByMatricula :: String -> [Aluno] -> Aluno
+getAlunoByMatricula _ [] = Aluno "" "" "" []
+getAlunoByMatricula matriculaProcurada (x:xs)
+    | matricula x == matriculaProcurada = x
+    | otherwise = getAlunoByMatricula matriculaProcurada xs
+
+getAlunoBySenha :: String -> [Aluno] -> Aluno
+getAlunoBySenha _ [] = Aluno "" "" "" []
+getAlunoBySenha senhaProcurada (x:xs)
+    | senha x == senhaProcurada = x
+    | otherwise = getAlunoBySenha senhaProcurada xs

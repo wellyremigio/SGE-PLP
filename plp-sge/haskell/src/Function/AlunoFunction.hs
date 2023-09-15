@@ -1,5 +1,5 @@
 module Function.AlunoFunction where
-
+import Model.Aluno
 import DataBase.Gerenciador.AlunoGerenciador
 
 -- cadastrarCliente :: String -> String -> String -> String -> IO String
@@ -19,3 +19,15 @@ cadastraUsuario matricula nome senha = do
     saveAluno matricula nome senha
     return "OK"
 
+verificaLogin :: String -> String -> IO Bool
+verificaLogin matricula senha = do
+    listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let aluno = getAlunoByMatricula matricula listaAlunos
+    senhaValida <- verificaSenha senha
+    return $ Model.Aluno.matricula aluno /= "" && senhaValida
+
+verificaSenha :: String -> IO Bool
+verificaSenha senha = do
+    listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let aluno = getAlunoBySenha senha listaAlunos
+    return $ Model.Aluno.senha aluno /= ""
