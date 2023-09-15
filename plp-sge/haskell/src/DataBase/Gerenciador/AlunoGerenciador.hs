@@ -1,5 +1,6 @@
 module DataBase.Gerenciador.AlunoGerenciador where
 import Model.Aluno
+import Model.Disciplina
 
 import Data.Aeson
 import qualified Data.ByteString.Lazy as B
@@ -17,6 +18,8 @@ import System.Directory
 
 instance FromJSON Aluno
 instance ToJSON Aluno
+instance FromJSON Disciplina
+instance ToJSON Disciplina
 
 -- salvarAlunoJSON :: String -> Int -> String -> String -> IO ()
 -- salvarAlunoJSON jsonFilePath matricula nome senha = do
@@ -68,7 +71,8 @@ getAlunoJSON path = do
 
 saveAluno :: String -> String -> String -> IO()
 saveAluno matricula nome senha = do
-    let a = Aluno matricula nome senha
+    let disciplinas = [] :: [Disciplina]
+    let a = Aluno matricula nome senha disciplinas
 
     alunoList <- getAlunoJSON "src/DataBase/Data/Aluno.json" 
 
