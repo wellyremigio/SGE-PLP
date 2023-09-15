@@ -29,24 +29,23 @@ menuLogin = do
     resposta <- verificaLogin matriculaInput senhaInput
     if (resposta) then menuInicial else do
         putStr "Cadastro não econtrando :/\n"
+        menuEscolhaLogin
 
+menuEscolhaLogin:: IO()
+menuEscolhaLogin = do
+    putStr "\nEscolha uma opção para seguir:\n"
+    putStr "1. Tentar Novamente\n2. Fazer cadastro.\n"
+    op <- readLn:: IO Int
+    verificaSolucao op
 
---         menuInicial
-
--- menuEscolhaLogin:: IO()
--- menuEscolhaLogin = do
---     putStr "Escolha uma opção para seguir:\n"
---     putStr "1. Tentar Novamente\n2. Fazer cadastro.\n"
---     op <- readLn:: IO Int
---     verificaSolucao
-
--- verificaSolucao:: Int -> IO()
--- verificaSolucao op
---     | op == 1 = menuLogin
---     | op == 2 = menuCadastro
---     | otherwise = do 
---         putStr "Opção inválida. Escolha corretamente."
---         verificaSolucao
+verificaSolucao:: Int -> IO()
+verificaSolucao op
+    | op == 1 = menuLogin
+    | op == 2 = menuCadastro
+    | otherwise = do 
+        putStr "\nOpção inválida. Escolha corretamente."
+        op <- readLn:: IO Int
+        verificaSolucao op
 
 menuCadastro:: IO()
 menuCadastro = do
