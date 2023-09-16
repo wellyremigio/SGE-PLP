@@ -30,7 +30,7 @@ menuLogin = do
     putStr "Senha?\n"
     senhaInput <- getLine
     resposta <- verificaLogin matriculaInput senhaInput
-    if (resposta) then menuInicial else do
+    if (resposta) then menuInicial matriculaInput else do
         putStr "Cadastro não econtrando :/\n"
         menuEscolhaLogin
 
@@ -63,15 +63,15 @@ menuCadastro = do
     cadastroRealizado <- cadastraUsuario matriculaCadastrada nomeCadastrado senhaCadastrada
 
     putStr cadastroRealizado
-    menuInicial
+    menuInicial matriculaCadastrada
 
     -- if (cadastroRealizado) then menuInicial else do
     --     putStr "Seu cadastro não foi realizado. Tente novamente!"
     --     menuCadastro
 
-menuInicial:: IO()
-menuInicial = do
-    putStr "\nEscolha uma opção\n"
+menuInicial :: String -> IO()
+menuInicial matricula = do
+    putStrLn ("\nEscolha uma opção:")
     putStr "1- Criar grupo\n"
     putStr "2- Remover grupo\n"
     putStr "3- Meus grupos\n"
@@ -80,10 +80,11 @@ menuInicial = do
     putStr "6- Consultar\n"
     putStr "7- Sair\n"
     op <- readLn :: IO Int
-    selecaoMenuInicial op
+    selecaoMenuInicial op matricula
+    
 
-selecaoMenuInicial:: Int -> IO()
-selecaoMenuInicial op
+selecaoMenuInicial:: Int -> String -> IO()
+selecaoMenuInicial op matricula
     | op == 1 = do
         putStr "Nome do grupo: \n"
         nomeGrupo <- getLine
@@ -94,10 +95,10 @@ selecaoMenuInicial op
         resposta <- verificaIdGrupo codigo
         if not resposta then do 
             cadastraGrupo nomeGrupo codigo adm
-            menuInicial 
+            menuInicial matricula
         else do 
             putStrLn "Já existe um grupo com esse ID. Cadastre um grupo novo!"
-            menuInicial
+            menuInicial matricula
         {-resultado <- cadastraGrupo nomeGrupo codigo adm-- função a ser criada
         putStrLn resultado
         menuInicial-}
@@ -118,7 +119,7 @@ selecaoMenuInicial op
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
-        menuInicial
+        menuInicial matricula
 
 menuMeusGrupos:: IO()
 menuMeusGrupos = do
