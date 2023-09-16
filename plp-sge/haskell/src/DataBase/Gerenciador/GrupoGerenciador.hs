@@ -61,4 +61,10 @@ listaDeListasDeDisciplinas = do
 disciplinasDoGrupo :: Grupo -> [Disciplina]
 disciplinasDoGrupo grupo = getDisciplinasGrupo grupo
 
-
+removeGrupoByCodigo :: Int -> [Grupo] -> [Grupo]
+removeGrupoByCodigo codigoGrupo grupos = deleteGrupo grupos
+  where
+    deleteGrupo [] = []
+    deleteGrupo (g : gs)
+      | codigo g == codigoGrupo = deleteGrupo gs
+      | otherwise = g : deleteGrupo gs
