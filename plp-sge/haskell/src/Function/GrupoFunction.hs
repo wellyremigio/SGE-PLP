@@ -32,7 +32,7 @@ removeGrupo:: Int -> IO String
 removeGrupo idGrupo = do
     verifica <- verificaIdGrupo idGrupo 
     if (verifica) then do
-        grupos <- B.getGruposJSON "src/DataBase/Data/Grupo.json"
+        grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
         let removida = removeGrupoByCodigo idGrupo grupos
         if (length removida == length grupos) then return "Não foi possivel realizar ação" else do
             saveAlteracoesGrupo removida
@@ -55,22 +55,12 @@ organizaListagem (x:xs) = show x ++ "\n" ++ organizaListagem xs
 
 verificaAdmGrupo :: String -> Int -> IO Bool
 verificaAdmGrupo matricula codigoGrupo  = do
-    grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
     return $ case find (\grupo -> codigo grupo == codigoGrupo) grupos of
         Just grupo -> adm grupo == matricula
         Nothing -> False
 
-removeGrupo:: Int -> IO String
-removeGrupo idGrupo = do
-    verifica <- verificaIdGrupo idGrupo 
-    if (verifica) then do
-        grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
-        let removida = removeGrupoByCodigo idGrupo grupos
-        if (length removida == length grupos) then return "Não foi possivel realizar ação" else do
-            saveAlteracoesGrupo removida
-            return "remoção feita com sucesso"
-    else
-        return "Não foi possivel realizar ação"
+
 
 adicionarAluno :: String -> Int -> IO String
 adicionarAluno matricula codGrupo = do
