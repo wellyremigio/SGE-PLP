@@ -1,35 +1,63 @@
-module GrupoGerenciador  where
-
+module DataBase.Gerenciador.GrupoGerenciador  where
+import Model.Grupo
+import Model.Aluno
+import Model.Disciplina
 import Data.Aeson
 import GHC.Generics
 import qualified Data.ByteString.Lazy as B
-import qualified Data.ByteString.Lazy.Char8 as BC
+import System.Directory
+--import qualified Data.ByteString.Lazy.Char8 as BC
 
-import Model.Grupo
 
 instance FromJSON Grupo
 instance ToJSON Grupo
+instance FromJSON Aluno
+instance ToJSON Aluno
+instance FromJSON Disciplina
+instance ToJSON Disciplina
 
-salvarGrupoJSON :: String -> String -> [Aluno] -> Int -> [Disciplina] -> Int -> IO()
-salvarGrupoJSON jsonFilePath nome listaAlunos codigo listaDisciplinas adm = do
-    let grupo = Grupo nome listaAlunos codigo listaDisciplinas 
-    let grupoList = (getGrupoJSON jsonFilePath) ++ [grupo]
+--salvarGrupoJSON :: String -> String -> [Aluno] -> Int -> [Disciplina] -> Int -> IO()
+--salvarGrupoJSON jsonFilePath nome listaAlunos codigo listaDisciplinas adm = do
+ --   let grupo = Grupo nome listaAlunos codigo listaDisciplinas 
+  --  let grupoList = (getGrupoJSON jsonFilePath) ++ [grupo]
 
-    B.writeFile "../Temp.json" $ encode grupoList
-    removeFile jsonFilePath
-    renameFile "../Temp.json" jsonFilePath
+    --B.writeFile "../Temp.json" $ encode grupoList
+    --removeFile jsonFilePath
+    --renameFile "../Temp.json" jsonFilePath
 
 
-getGrupoByCodigo :: Int -> [Grupo] -> Grupo
-getGrupoByCodigo _ [] = Grupo "" ""
-getGrupoByCodigo codigo (x:xs)
-    | codigoGrupo x == codigo = x
-    | otherwise = getGrupoByCodigo codigo xs
+saveGrupo :: String ->  Int  -> String -> IO()
+saveGrupo nomeGrupo  codigo  matAdm = do
+    let grupo = Grupo nomeGrupo [] codigo [] matAdm
+    grupoList <- getGrupoJSON "src/DataBase/Data/Grupo.json"
+    let newGrupoList = grupoList ++ [grupo]
+    saveAlteracoesGrupo newGrupoList
+
+saveAlteracoesGrupo :: [Grupo] -> IO ()
+saveAlteracoesGrupo grupoList = do
+  B.writeFile "../Temp.json" $ encode grupoList
+  removeFile "src/DataBase/Data/Grupo.json"
+  renameFile "../Temp.json" "src/DataBase/Data/Grupo.json"
+
+getAlunoJSON :: FilePath -> IO [Aluno]
+getAlunoJSON path = do
+  contents <- B.readFile path
+  case eitherDecode' contents of
+    Left err -> error err
+    Right alunos -> return alunos
+
 
 getGrupoJSON :: FilePath -> IO [Grupo]
 getGrupoJSON path = do
-    let filePath = path </> "grupo.json"
-    conteudo <- B.readFile filePath
-    let grupos = fromMaybe [] (decode conteudo)
-    return grupos
+  contents <- B.readFile path
+  case eitherDecode' contents of
+    Left err -> error err
+    Right grupos -> return grupos
     
+
+getGrupoByCodigo :: Int -> [Grupo] -> Grupo
+getGrupoByCodigo _ [] = Grupo "" [] (-1) [] ""
+getGrupoByCodigo codigoGrupo (x:xs)
+    | codigo x == codigoGrupo = x
+    | otherwise = getGrupoByCodigo codigoGrupo xs
+

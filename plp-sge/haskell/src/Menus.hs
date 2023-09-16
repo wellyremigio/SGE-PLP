@@ -1,5 +1,6 @@
 module Menus where
 import Function.AlunoFunction
+import Function.GrupoFunction
 {-import DataBase.Gerenciador as BD--
 import Function.AlunoFunction as AlunoF
 import Function.ComentarioFunction as ComentarioF
@@ -74,32 +75,37 @@ menuInicial = do
     putStr "5- Contribuir\n"
     putStr "6- Consultar\n"
     putStr "7- Sair"
---    op <- readLn :: IO Int
-    --menuInit op
+    op <- readLn :: IO Int
+    selecaoMenuInicial op
 
--- selecaoMenuInicial:: Int -> IO()
--- selecaoMenuInicial op
---     | op == 1 = do
---         putStr "Nome do grupo: "
---         nomeGrupo <- getLine
---         resultado <- cadastraGrupo -- função a ser criada
---         putStrLn resultado
---     | op == 2 = do
---         putStr "Nome do grupo: "
---         nomeGrupo <- getLine
---         putStr "Matricula: "
---         matricula <- readLn:: IO Int
---         resultado <- removeGrupo -- função a ser criada
---         putStr resultado
---     | op == 3 = do
---         listaGrupos -- metodo pra listar os grupos existentes. é como um toString
---         menuMeusGrupos -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
---     | op == 4 = menuMinhasDisciplinas -- mostra as opçõs de cadastrar, ver e remover disciplina
---     | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
---     | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
---     | otherwise = do
---         putStrLn "Opção inválida. Tente de novo!"
---         selecaoMenuInicial
+selecaoMenuInicial:: Int -> IO()
+selecaoMenuInicial op
+    | op == 1 = do
+        putStr "Nome do grupo: \n"
+        nomeGrupo <- getLine
+        putStr "Codigo do grupo: \n"
+        codigo <- readLn :: IO Int
+        putStr "Adm do grupo: \n"
+        adm <- getLine
+        resultado <- cadastraGrupo nomeGrupo codigo adm-- função a ser criada
+        putStrLn resultado
+
+   -- | op == 2 = do
+   --     putStr "Nome do grupo: "
+  --      nomeGrupo <- getLine
+  --      putStr "Matricula: "
+  --      matricula <- readLn:: IO Int
+   --     resultado <- removeGrupo -- função a ser criada
+       -- putStr resultado
+   -- | op == 3 = do
+   --     listaGrupos -- metodo pra listar os grupos existentes. é como um toString
+   --     menuMeusGrupos -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
+   -- | op == 4 = menuMinhasDisciplinas -- mostra as opçõs de cadastrar, ver e remover disciplina
+   -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
+   -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
+    | otherwise = do
+        putStrLn "Opção inválida. Tente de novo!"
+        selecaoMenuInicial op
 
 -- menuMeusGrupos:: IO()
 -- menuMeusGrupos = do

@@ -11,7 +11,7 @@ data Grupo = Grupo {
     alunos :: [Aluno],
     codigo :: Int,
     disciplinas :: [Disciplina],
-    adm :: Int
+    adm :: String
 } deriving (Generic)
 
 
