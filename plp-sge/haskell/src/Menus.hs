@@ -78,7 +78,8 @@ menuInicial matricula = do
     putStr "4- Minhas disciplinas\n"
     putStr "5- Contribuir\n"
     putStr "6- Consultar\n"
-    putStr "7- Sair\n"
+    putStr "7- Procurar Grupo\n"
+    putStr "8- Sair\n"
     op <- readLn :: IO Int
     selecaoMenuInicial op matricula
     
@@ -117,6 +118,8 @@ selecaoMenuInicial op matricula
    -- | op == 4 = menuMinhasDisciplinas -- mostra as opçõs de cadastrar, ver e remover disciplina
    -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
+    | op == 7 = do
+        print "ok"
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
         menuInicial matricula

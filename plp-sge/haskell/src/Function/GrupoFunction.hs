@@ -26,5 +26,4 @@ organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
 organizaListagem (x:xs) = show x ++ "\n" ++ organizaListagem xs
 
-
 --menuMeusGrupos
