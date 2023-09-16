@@ -32,6 +32,7 @@ menuLogin = do
         putStr "Cadastro não econtrando :/\n"
         menuEscolhaLogin
 
+
 menuEscolhaLogin:: IO()
 menuEscolhaLogin = do
     putStr "\nEscolha uma opção para seguir:\n"
@@ -74,7 +75,7 @@ menuInicial = do
     putStr "4- Minhas disciplinas\n"
     putStr "5- Contribuir\n"
     putStr "6- Consultar\n"
-    putStr "7- Sair"
+    putStr "7- Sair\n"
     op <- readLn :: IO Int
     selecaoMenuInicial op
 

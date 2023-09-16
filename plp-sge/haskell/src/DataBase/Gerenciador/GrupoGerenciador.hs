@@ -8,14 +8,12 @@ import qualified Data.ByteString.Lazy as B
 import System.Directory
 --import qualified Data.ByteString.Lazy.Char8 as BC
 
-
 instance FromJSON Grupo
 instance ToJSON Grupo
 instance FromJSON Aluno
 instance ToJSON Aluno
 instance FromJSON Disciplina
 instance ToJSON Disciplina
-
 
 --salvarGrupoJSON :: String -> String -> [Aluno] -> Int -> [Disciplina] -> Int -> IO()
 --salvarGrupoJSON jsonFilePath nome listaAlunos codigo listaDisciplinas adm = do

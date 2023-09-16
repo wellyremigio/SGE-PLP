@@ -14,5 +14,3 @@ data Grupo = Grupo {
     adm :: String
 } deriving (Generic)
 
-
-
