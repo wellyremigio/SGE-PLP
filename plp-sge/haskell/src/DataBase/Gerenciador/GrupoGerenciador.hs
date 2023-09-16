@@ -28,7 +28,7 @@ instance ToJSON Disciplina
 saveGrupo :: String ->  Int  -> String -> IO()
 saveGrupo nomeGrupo  codigo  matAdm = do
     let grupo = Grupo nomeGrupo [] codigo [] matAdm
-    grupoList <- getGrupoJSON "src/DataBase/Data/Grupo.json"
+    grupoList <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let newGrupoList = grupoList ++ [grupo]
     saveAlteracoesGrupo newGrupoList
 
@@ -38,25 +38,18 @@ saveAlteracoesGrupo grupoList = do
   removeFile "src/DataBase/Data/Grupo.json"
   renameFile "../Temp.json" "src/DataBase/Data/Grupo.json"
 
-getAlunoJSON :: FilePath -> IO [Aluno]
-getAlunoJSON path = do
-  contents <- B.readFile path
-  case eitherDecode' contents of
-    Left err -> error err
-    Right alunos -> return alunos
-
-
-getGrupoJSON :: FilePath -> IO [Grupo]
-getGrupoJSON path = do
+getGruposJSON :: FilePath -> IO [Grupo]
+getGruposJSON path = do
   contents <- B.readFile path
   case eitherDecode' contents of
     Left err -> error err
     Right grupos -> return grupos
     
-
-getGrupoByCodigo :: Int -> [Grupo] -> Grupo
-getGrupoByCodigo _ [] = Grupo "" [] (-1) [] ""
-getGrupoByCodigo codigoGrupo (x:xs)
+getGruposByCodigo :: Int -> [Grupo] -> Grupo
+getGruposByCodigo _ [] = Grupo "" [] (-1) [] ""
+getGruposByCodigo codigoGrupo (x:xs)
     | codigo x == codigoGrupo = x
-    | otherwise = getGrupoByCodigo codigoGrupo xs
+    | otherwise = getGruposByCodigo codigoGrupo xs
+
+
 

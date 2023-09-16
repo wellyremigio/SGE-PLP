@@ -1,3 +1,5 @@
+
+
 module Menus where
 import Function.AlunoFunction
 import Function.GrupoFunction
@@ -61,6 +63,7 @@ menuCadastro = do
     cadastroRealizado <- cadastraUsuario matriculaCadastrada nomeCadastrado senhaCadastrada
 
     putStr cadastroRealizado
+    menuInicial
 
     -- if (cadastroRealizado) then menuInicial else do
     --     putStr "Seu cadastro não foi realizado. Tente novamente!"
@@ -86,10 +89,18 @@ selecaoMenuInicial op
         nomeGrupo <- getLine
         putStr "Codigo do grupo: \n"
         codigo <- readLn :: IO Int
-        putStr "Adm do grupo: \n"
+        putStr "Matrícula do adm do grupo: \n"
         adm <- getLine
-        resultado <- cadastraGrupo nomeGrupo codigo adm-- função a ser criada
+        resposta <- verificaIdGrupo codigo
+        if not resposta then do 
+            cadastraGrupo nomeGrupo codigo adm
+            menuInicial 
+        else do 
+            putStrLn "Já existe um grupo com esse ID. Cadastre um grupo novo!"
+            menuInicial
+        {-resultado <- cadastraGrupo nomeGrupo codigo adm-- função a ser criada
         putStrLn resultado
+        menuInicial-}
 
    -- | op == 2 = do
    --     putStr "Nome do grupo: "
@@ -98,31 +109,32 @@ selecaoMenuInicial op
   --      matricula <- readLn:: IO Int
    --     resultado <- removeGrupo -- função a ser criada
        -- putStr resultado
-   -- | op == 3 = do
-   --     listaGrupos -- metodo pra listar os grupos existentes. é como um toString
-   --     menuMeusGrupos -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
+    | op == 3 = do
+     resultado <- listaGrupos -- metodo pra listar os grupos existentes. é como um toString
+     putStr resultado
+     menuMeusGrupos -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
    -- | op == 4 = menuMinhasDisciplinas -- mostra as opçõs de cadastrar, ver e remover disciplina
    -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
-        selecaoMenuInicial op
+        menuInicial
 
--- menuMeusGrupos:: IO()
--- menuMeusGrupos = do
---     putStrLn "Escolha o que você quer fazer: "
---     putStrLn "1. Adicionar Aluno"
---     putStrLn "2. Remover Aluno"
---     putStrLn "3. Visualizar Alunos"
---     putStrLn "4. Adicionar Disciplina"
---     putStrLn "5. Visualizar Disciplina"
---     putStrLn "6. RemoverDisciplina"
---     op <- readLn:: IO Int
---     selecaoMenuMeusGrupos op
+menuMeusGrupos:: IO()
+menuMeusGrupos = do
+    putStrLn "Escolha o que você quer fazer: "
+    putStrLn "1. Adicionar Aluno"
+    putStrLn "2. Remover Aluno"
+    putStrLn "3. Visualizar Alunos"
+    putStrLn "4. Adicionar Disciplina"
+    putStrLn "5. Visualizar Disciplina"
+    putStrLn "6. RemoverDisciplina"
+    --op <- readLn:: IO Int
+    --selecaoMenuMeusGrupos op
 
--- selecaoMenuMeusGrupos:: Int -> IO()
--- selecaoMenuMeusGrupos op
---     | op == 1 = do
+--selecaoMenuMeusGrupos:: Int -> IO()
+--selecaoMenuMeusGrupos op
+--    | op == 1 = do
 --         putStrLn "Matricula do aluno?"
 --         matriculaAluno <- readLn:: IO Int
 --         putStrLn "Qual a sua matrícula? "
