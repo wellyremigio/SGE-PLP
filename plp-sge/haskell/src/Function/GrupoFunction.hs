@@ -28,6 +28,19 @@ verificarAdmDeGrupo codigoGrupo admDesejado = do
         else
             return False
 
+removeGrupo:: Int -> IO String
+removeGrupo idGrupo = do
+    verifica <- verificaIdGrupo idGrupo 
+    if (verifica) then do
+        grupos <- B.getGruposJSON "src/DataBase/Data/Grupo.json"
+        let removida = removeGrupoByCodigo idGrupo grupos
+        if (length removida == length grupos) then return "Não foi possivel realizar ação" else do
+            saveAlteracoesGrupo removida
+            return "remoção feita com sucesso"
+    else
+        return "Não foi possivel realizar ação"
+
+--listar grupo
 listaGrupos:: IO String
 listaGrupos = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"

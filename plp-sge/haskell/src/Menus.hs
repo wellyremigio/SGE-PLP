@@ -35,6 +35,7 @@ menuLogin = do
         menuEscolhaLogin
 
 
+
 menuEscolhaLogin:: IO()
 menuEscolhaLogin = do
     putStr "\nEscolha uma opção para seguir:\n"

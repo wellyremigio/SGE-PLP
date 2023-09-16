@@ -52,6 +52,15 @@ getGruposByCodigo codigoGrupo (x:xs)
     | codigo x == codigoGrupo = x
     | otherwise = getGruposByCodigo codigoGrupo xs
 
+listaDeListasDeDisciplinas :: IO [[Disciplina]]
+listaDeListasDeDisciplinas = do
+    grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    return (map disciplinasDoGrupo grupos)
+    
+     
+-- Função para obter a lista de disciplinas de um grupo
+disciplinasDoGrupo :: Grupo -> [Disciplina]
+disciplinasDoGrupo grupo = getDisciplinasGrupo grupo
 
 listaDeListasDeDisciplinas :: IO [[Disciplina]]
 listaDeListasDeDisciplinas = do
