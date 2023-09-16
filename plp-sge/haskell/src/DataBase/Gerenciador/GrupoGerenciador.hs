@@ -16,6 +16,7 @@ instance ToJSON Aluno
 instance FromJSON Disciplina
 instance ToJSON Disciplina
 
+
 --salvarGrupoJSON :: String -> String -> [Aluno] -> Int -> [Disciplina] -> Int -> IO()
 --salvarGrupoJSON jsonFilePath nome listaAlunos codigo listaDisciplinas adm = do
  --   let grupo = Grupo nome listaAlunos codigo listaDisciplinas 
