@@ -89,3 +89,11 @@ getAlunoBySenha _ [] = Aluno "" "" "" []
 getAlunoBySenha senhaProcurada (x:xs)
     | senha x == senhaProcurada = x
     | otherwise = getAlunoBySenha senhaProcurada xs
+
+getDisciplinasAluno :: String -> IO [Disciplina]
+getDisciplinasAluno idAluno = do
+    existingAluno <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let aluno = getAlunoByMatricula idAluno existingAluno
+    
+    return (getDisciplinas aluno)
+    
