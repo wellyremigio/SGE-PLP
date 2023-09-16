@@ -118,7 +118,8 @@ selecaoMenuInicial op matricula
    -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
     | op == 7 = do
-        print "ok"
+        result <- listagemDeGruposEmComum matricula
+        putStr result
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
         menuInicial matricula

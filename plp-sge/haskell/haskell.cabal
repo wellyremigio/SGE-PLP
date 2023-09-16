@@ -31,6 +31,7 @@ executable haskell
     Model.Materiais
     DataBase.Gerenciador.AlunoGerenciador
     Function.AlunoFunction
+    Function.GrupoFunction
     Menus
   -- other-extensions:
   build-depends:     base >=4.12.0.0,aeson,bytestring,time, filepath, directory >=1.3.3.0,text >= 1.2 && < 3

@@ -72,6 +72,22 @@ adicionarAluno matricula codGrupo = do
     grupoAtualizado <- G.adicionarAlunoLista aluno grupo
     G.saveAlteracoesAluno grupoAtualizado
     return "Aluno adicionado com sucesso"
-    
 
+listaDeGruposEmComum :: [Disciplina] -> [Grupo] -> [Grupo]
+listaDeGruposEmComum disciplinasAluno grupos =
+    filter (\grupo -> any (\disciplinaGrupo -> any (\disciplinaAluno -> disciplinaGrupo == disciplinaAluno) disciplinasAluno) (getDisciplinasGrupo grupo)) grupos
+
+gruposDisciplinasEmComum :: String -> IO [Grupo]
+gruposDisciplinasEmComum matriculaAluno = do
+    alunoDisciplinas <- A.getDisciplinasAluno matriculaAluno
+    grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    return (listaDeGruposEmComum alunoDisciplinas grupos)    
+    
+listagemDeGruposEmComum :: String -> IO String
+listagemDeGruposEmComum idAluno = do
+    grupos <- gruposDisciplinasEmComum idAluno
+    if null grupos
+        then return "Não existem grupos que tenham disciplinas em comum com as que você está cursando."
+        else return ("Esses são os grupos em comum com as disciplinas que está cursando:\n" ++ organizaListagem grupos)
+    
 

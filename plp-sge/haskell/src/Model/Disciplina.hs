@@ -12,3 +12,6 @@ data Disciplina = Disciplina {
     periodo :: String,
     materiais :: [Material]
 } deriving (Generic)
+
+instance Eq Disciplina where
+    (Disciplina id1 _ _ _ _) == (Disciplina id2 _ _ _ _) = id1 == id2
