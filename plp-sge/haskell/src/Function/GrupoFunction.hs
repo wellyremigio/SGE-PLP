@@ -27,6 +27,7 @@ verificarAdmDeGrupo codigoGrupo admDesejado = do
             return $ adm grupo == admDesejado
         else
             return False
+            
 
 removeGrupo:: Int -> IO String
 removeGrupo idGrupo = do

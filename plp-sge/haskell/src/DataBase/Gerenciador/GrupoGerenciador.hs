@@ -86,4 +86,3 @@ saveAlteracoesAluno grupo = do
   B.writeFile "../Temp.json" $ encode grupo
   removeFile "src/DataBase/Data/Grupo.json"
   renameFile "../Temp.json" "src/DataBase/Data/Grupo.json"
-
