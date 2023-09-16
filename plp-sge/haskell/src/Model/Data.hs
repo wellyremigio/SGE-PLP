@@ -3,6 +3,7 @@
 module Model.Data where
 
 import GHC.Generics ( Generic )
+import Data.Aeson
 
 data Data = Data {
     idData :: Int,

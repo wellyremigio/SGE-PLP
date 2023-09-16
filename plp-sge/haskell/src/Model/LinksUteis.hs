@@ -3,6 +3,7 @@
 module Model.LinksUteis where
 
 import GHC.Generics ( Generic )
+import Data.Aeson
 
 data LinksUteis = LinksUteis {
     id :: Int,

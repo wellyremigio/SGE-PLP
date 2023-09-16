@@ -3,10 +3,9 @@
 module Model.Comentario where
 
 import GHC.Generics ( Generic )
-import Model.Aluno ( Aluno )
 
 data Comentario = Comentario {
     idComentario :: Int,
-    aluno :: Aluno,
+    idAluno :: String,
     texto :: String
 } deriving (Generic)
