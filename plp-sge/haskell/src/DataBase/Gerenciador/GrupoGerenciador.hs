@@ -52,4 +52,10 @@ getGruposByCodigo codigoGrupo (x:xs)
     | otherwise = getGruposByCodigo codigoGrupo xs
 
 
-
+removeGrupoByCodigo :: Int -> [Grupo] -> [Grupo]
+removeGrupoByCodigo codigoGrupo grupos = deleteGrupo grupos
+  where
+    deleteGrupo [] = []
+    deleteGrupo (g : gs)
+      | codigo g == codigoGrupo = deleteGrupo gs
+      | otherwise = g : deleteGrupo gs

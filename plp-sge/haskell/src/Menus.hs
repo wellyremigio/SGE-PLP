@@ -103,17 +103,21 @@ selecaoMenuInicial op matricula
         putStrLn resultado
         menuInicial-}
 
-   -- | op == 2 = do
-   --     putStr "Nome do grupo: "
-  --      nomeGrupo <- getLine
-  --      putStr "Matricula: "
-  --      matricula <- readLn:: IO Int
-   --     resultado <- removeGrupo -- função a ser criada
-       -- putStr resultado
+    | op == 2 = do
+        putStr "Id do grupo: "
+        idGrupo <- readLn :: IO Int
+        ehAdm <- verificarAdmDeGrupo idGrupo matricula
+        if(ehAdm) then do
+            resultado <- removeGrupo idGrupo
+            print resultado
+        else
+            putStrLn "Você não é Adm do grupo"
+        menuInicial matricula
+    
     | op == 3 = do
-     resultado <- listaGrupos -- metodo pra listar os grupos existentes. é como um toString
-     putStr resultado
-     menuMeusGrupos -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
+        resultado <- listaGrupos -- metodo pra listar os grupos existentes. é como um toString
+        putStr resultado
+        menuMeusGrupos -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
    -- | op == 4 = menuMinhasDisciplinas -- mostra as opçõs de cadastrar, ver e remover disciplina
    -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
