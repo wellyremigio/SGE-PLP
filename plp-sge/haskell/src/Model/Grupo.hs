@@ -20,3 +20,6 @@ instance Show Grupo where
                  "Número de Alunos: " ++ show (length (alunos grupo)) ++ "\n" ++
                  "Número de Disciplinas: " ++ show (length (disciplinas grupo)) ++ "\n" ++
                  "Administrador: " ++ adm grupo
+
+getDisciplinasGrupo :: Grupo -> [Disciplina]
+getDisciplinasGrupo grupo = disciplinas grupo

@@ -7,6 +7,7 @@ import GHC.Generics
 import qualified Data.ByteString.Lazy as B
 import System.Directory
 --import qualified Data.ByteString.Lazy.Char8 as BC
+import Data.List
 
 instance FromJSON Grupo
 instance ToJSON Grupo
@@ -52,4 +53,40 @@ getGruposByCodigo codigoGrupo (x:xs)
     | otherwise = getGruposByCodigo codigoGrupo xs
 
 
+listaDeListasDeDisciplinas :: IO [[Disciplina]]
+listaDeListasDeDisciplinas = do
+    grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    return (map disciplinasDoGrupo grupos)
+    
+    
+     
+-- Função para obter a lista de disciplinas de um grupo
+disciplinasDoGrupo :: Grupo -> [Disciplina]
+--disciplinasDoGrupo = disciplinasGrupo
+disciplinasDoGrupo grupo = getDisciplinasGrupo grupo
+
+removeGrupoByCodigo :: Int -> [Grupo] -> [Grupo]
+removeGrupoByCodigo codigoGrupo grupos = deleteGrupo grupos
+  where
+    deleteGrupo [] = []
+    deleteGrupo (g : gs)
+      | codigo g == codigoGrupo = deleteGrupo gs
+      | otherwise = g : deleteGrupo gs
+
+
+getAlunos :: Grupo -> [Aluno]
+getAlunos = alunos
+
+adicionarAlunoLista :: Aluno -> Grupo -> IO Grupo
+adicionarAlunoLista aluno grupo = do
+  let newAlunosList = aluno : getAlunos grupo
+  let grupoAtualizado = grupo { alunos = newAlunosList }
+  saveAlteracoesAluno grupoAtualizado
+  return grupoAtualizado
+
+saveAlteracoesAluno :: Grupo -> IO ()
+saveAlteracoesAluno grupo = do
+  B.writeFile "../Temp.json" $ encode grupo
+  removeFile "src/DataBase/Data/Grupo.json"
+  renameFile "../Temp.json" "src/DataBase/Data/Grupo.json"
 
