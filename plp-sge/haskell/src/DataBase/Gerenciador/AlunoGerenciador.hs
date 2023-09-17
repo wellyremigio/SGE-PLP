@@ -55,8 +55,8 @@ instance ToJSON Disciplina
 
 --   saveAlteracoesFilme newFilmeList
 
-saveAlteracoesAluno :: [Aluno] -> IO ()
-saveAlteracoesAluno alunoList = do
+saveAlunoAlteracoes :: [Aluno] -> IO ()
+saveAlunoAlteracoes alunoList = do
   B.writeFile "../Temp.json" $ encode alunoList
   removeFile "src/DataBase/Data/Aluno.json"
   renameFile "../Temp.json" "src/DataBase/Data/Aluno.json"
@@ -76,7 +76,7 @@ saveAluno matricula nome senha = do
 
     alunoList <- getAlunoJSON "src/DataBase/Data/Aluno.json" 
     let newAlunoList = alunoList ++ [a]
-    saveAlteracoesAluno newAlunoList
+    saveAlunoAlteracoes newAlunoList
 
 getAlunoByMatricula :: String -> [Aluno] -> Aluno
 getAlunoByMatricula _ [] = Aluno "" "" "" []
@@ -96,4 +96,15 @@ getDisciplinasAluno idAluno = do
     let aluno = getAlunoByMatricula idAluno existingAluno
     
     return (getDisciplinas aluno)
+
+removeAlunoByMatricula :: String -> IO [Aluno]
+removeAlunoByMatricula matriculaAluno = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json" -- Substitua pelo caminho correto
+    let alunosAtualizados = deleteAluno matriculaAluno alunos
+    return alunosAtualizados
+    where
+        deleteAluno _ [] = []
+        deleteAluno matriculaAluno (a : as)
+            | matricula a == matriculaAluno = deleteAluno matriculaAluno as
+            | otherwise = a : deleteAluno matriculaAluno as
     

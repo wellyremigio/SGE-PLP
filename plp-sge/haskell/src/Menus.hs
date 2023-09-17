@@ -194,33 +194,50 @@ menuMinhasDisciplinas matricula = do
     putStrLn "2. Cadastrar disciplina"
     putStrLn "3. Remover disciplina"
     putStrLn "4. Voltar"
+    putStrLn "5. Sair"
     op <- readLn :: IO Int
     selecionaMenuMinhasDisciplinas op matricula
+
 
 selecionaMenuMinhasDisciplinas:: Int -> String -> IO()
 selecionaMenuMinhasDisciplinas op matricula
     | op == 1 = do 
         result <- DisciplinaF.listagemDisplinaALuno matricula
-        putStr result
-   -- | op == 2 = do
-      --  putStrLn "Qual o código da disciplina que você quer adicionar? "
-       -- id <- readLn:: IO Int
---             putStrLn "Nome da disciplina?"
---             nomeDisciplina <- getLine
---             putStrLn "Qual professor ministra?"
---             nomeProfessor <- getLine
---             putStrLn "Período? "
---             periodo <- getLine
---             foiCadastrada <- cadastraDisciplina id -- metodo a ser criado
---             if foiCadastrada then putStr "Disciplina adicionado." else putStr "Essa disciplina já está cadastrada."
---         | op == 3 = do
---             putStrLn "Qual o id da disciplina que você quer remover? "
---             id <- readLn:: IO Int
---             foiRemovida <- removeDisciplina id -- metodo p remover. todos eles retornar boolean
---             if foiRemovida then putStr "Removida com sucesso." else "A disciplina não existe."
+        putStrLn result
+        menuMinhasDisciplinas matricula
+
+    | op == 2 = do
+        putStrLn "-Qual o código da disciplina que você quer adicionar ?"
+        id <- readLn:: IO Int
+        putStrLn "-Nome da disciplina ?"
+        nomeDisciplina <- getLine
+        putStrLn "-Qual professor ministra ?"
+        nomeProfessor <- getLine
+        putStrLn "-Período ?"
+        periodo <- getLine
+        result <- adicionarDisciplina matricula id nomeDisciplina nomeProfessor periodo
+        if(result) then
+            putStrLn "Discplina Adicionada!"
+        else
+            putStrLn "Erro...A Disciplina ja foi cadastrada"
+        menuMinhasDisciplinas matricula
+
+    | op == 3 = do
+         putStrLn "Qual o id da disciplina que você quer remover? "
+         id <- readLn:: IO Int
+         result <- removerDisciplinaAluno matricula id
+         if(result) then
+            putStrLn "Discplina Removida"
+         else
+            putStrLn "Erro...A Disciplina não existe!"
+         menuMinhasDisciplinas matricula
+
     | op == 4 = do
         putStrLn "Voltando..."
         menuInicial matricula
+    | op == 5 = do
+        putStrLn "Saindo..."
+
     | otherwise = do
         putStrLn "Escolha inválida. Tente novamente."
         menuMinhasDisciplinas matricula
