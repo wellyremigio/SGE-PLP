@@ -46,6 +46,15 @@ getGruposJSON path = do
     Left err -> error err
     Right grupos -> return grupos
     
+getGruposByCodigoIO :: Int -> [Grupo] -> IO Grupo
+getGruposByCodigoIO _ [] = do
+  let alunoList = [] :: [Aluno]
+  let disciplinaList = [] :: [Disciplina]
+  return $ Grupo "" alunoList (-1) disciplinaList ""
+getGruposByCodigoIO codigoGrupo (x:xs)
+    | codigo x == codigoGrupo = return x
+    | otherwise = getGruposByCodigoIO codigoGrupo xs
+
 getGruposByCodigo :: Int -> [Grupo] -> Grupo
 getGruposByCodigo _ [] = Grupo "" [] (-1) [] ""
 getGruposByCodigo codigoGrupo (x:xs)
@@ -74,15 +83,47 @@ removeGrupoByCodigo codigoGrupo grupos = deleteGrupo grupos
 getAlunos :: Grupo -> [Aluno]
 getAlunos = alunos
 
-adicionarAlunoLista :: Aluno -> Grupo -> IO Grupo
-adicionarAlunoLista aluno grupo = do
-  let newAlunosList = aluno : getAlunos grupo
-  let grupoAtualizado = grupo { alunos = newAlunosList }
-  saveAlteracoesAluno grupoAtualizado
-  return grupoAtualizado
 
-saveAlteracoesAluno :: Grupo -> IO ()
-saveAlteracoesAluno grupo = do
-  B.writeFile "../Temp.json" $ encode grupo
+adicionarAlunoLista :: Aluno -> Int -> IO ()
+adicionarAlunoLista aluno codGrupo = do
+  existingGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+  g <- getGruposByCodigoIO codGrupo existingGrupos
+  let newListAluno = Model.Grupo.alunos g ++ [aluno]
+  let newGrupo = Grupo  (Model.Grupo.nome g) newListAluno (Model.Grupo.codigo g) (Model.Grupo.disciplinas g) (Model.Grupo.adm g)
+  let newAlunoList = removeGrupoByCodigo codGrupo existingGrupos ++ [newGrupo]
+  saveAlteracoesAluno newAlunoList
+
+
+
+
+  --let newAlunosList = aluno : getAlunos grupo
+  --let grupoAtualizado = grupo { alunos = newAlunosList }
+  --saveAlteracoesAluno grupoAtualizado 267
+  --return grupoAtualizado
+
+
+
+saveAlteracoesAluno :: [Grupo] -> IO ()
+saveAlteracoesAluno grupoList = do
+  B.writeFile "../Temp.json" $ encode grupoList
   removeFile "src/DataBase/Data/Grupo.json"
   renameFile "../Temp.json" "src/DataBase/Data/Grupo.json"
+
+--saveAlteracoesAluno :: Grupo -> IO ()
+--saveAlteracoesAluno grupo = do
+  -- Ler o conteúdo atual do arquivo JSON
+--  existingContent <- B.readFile "src/DataBase/Data/Grupo.json"
+
+  -- Decodificar o conteúdo JSON existente em um valor Haskell
+--  case decode existingContent of
+--    Just existingGrupo -> do
+      -- Mesclar os dados existentes com os novos dados do grupo
+--      let mergedGrupo = existingGrupo { alunos = getAlunos grupo }
+
+      -- Codificar o valor Haskell de volta para JSON
+  --    let newContent = encode mergedGrupo
+
+      -- Escrever os dados de volta no arquivo JSON
+    --  B.writeFile "src/DataBase/Data/Grupo.json" newContent
+
+    --Nothing -> putStrLn "Erro: Não foi possível decodificar o arquivo JSON existente."

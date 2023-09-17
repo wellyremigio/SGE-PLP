@@ -3,11 +3,12 @@
 module Menus where
 import Function.AlunoFunction
 import Function.GrupoFunction
+import Function.DisciplinaFunction as DisciplinaF
 {-import DataBase.Gerenciador as BD--
 import Function.AlunoFunction as AlunoF
 import Function.ComentarioFunction as ComentarioF
 import Function.DataFunction as DataF
-import Function.DisciplinaFunction as DisciplinaF
+
 import Function.GrupoFunction as GrupoF
 import Function.LinksUteisFunction as LinksF
 import Function.ResumoFunction as ResumoF
@@ -75,7 +76,8 @@ menuInicial matricula = do
     putStr "5- Contribuir\n"
     putStr "6- Consultar\n"
     putStr "7- Procurar Grupo\n"
-    putStr "8- Sair\n"
+    putStr "8- Cadastrar Material na Disciplina\n"
+    putStr "9- Sair\n"
     op <- readLn :: IO Int
     selecaoMenuInicial op matricula
 
@@ -114,12 +116,15 @@ selecaoMenuInicial op matricula
         resultado <- listaGrupos -- metodo pra listar os grupos existentes. é como um toString
         putStr resultado
         menuMeusGrupos matricula -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
-   -- | op == 4 = menuMinhasDisciplinas -- mostra as opçõs de cadastrar, ver e remover disciplina
+    | op == 4 = menuMinhasDisciplinas matricula
    -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
     | op == 7 = do
         result <- listagemDeGruposEmComum matricula
         putStr result
+    | op == 8 = do
+        menuCadastraMateriais matricula
+
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
         menuInicial matricula
@@ -179,20 +184,23 @@ selecaoMenuMeusGrupos op matricula
 
 -- --Ao selecionar essa opção, o usuário poderá Ver Disciplinas Cadastradas, Cadastrar Disciplina e Remover uma Disciplina.--
 
--- menuMinhasDisciplinas:: IO()
--- menuMinhasDisciplinas = do
---     putStrLn "1. Visualizar disciplinas"
---     putStrLn "2. Cadastrar disciplina"
---     putStrLn "3. Remover disciplina"
---     op <- readLn :: IO Int
---     selecionaMenuMinhasDisciplinas op
+menuMinhasDisciplinas::String -> IO()
+menuMinhasDisciplinas matricula = do
+    putStrLn "1. Visualizar disciplinas"
+    putStrLn "2. Cadastrar disciplina"
+    putStrLn "3. Remover disciplina"
+    putStrLn "4. Voltar"
+    op <- readLn :: IO Int
+    selecionaMenuMinhasDisciplinas op matricula
 
---     selecionaMenuMinhasDisciplinas:: Int -> IO()
---     selecionaMenuMinhasDisciplinas op
---         | op == 1 = listasDisciplinas -- criar metodo
---         | op == 2 = do
---             putStrLn "Qual o código da disciplina que você quer adicionar? "
---             id <- readLn:: IO Int
+selecionaMenuMinhasDisciplinas:: Int -> String -> IO()
+selecionaMenuMinhasDisciplinas op matricula
+    | op == 1 = do 
+        result <- DisciplinaF.listagemDisplinaALuno matricula
+        putStr result
+   -- | op == 2 = do
+      --  putStrLn "Qual o código da disciplina que você quer adicionar? "
+       -- id <- readLn:: IO Int
 --             putStrLn "Nome da disciplina?"
 --             nomeDisciplina <- getLine
 --             putStrLn "Qual professor ministra?"
@@ -206,10 +214,12 @@ selecaoMenuMeusGrupos op matricula
 --             id <- readLn:: IO Int
 --             foiRemovida <- removeDisciplina id -- metodo p remover. todos eles retornar boolean
 --             if foiRemovida then putStr "Removida com sucesso." else "A disciplina não existe."
---         | otherwise = do
---             putStrLn "Escolha inválida. Tente novamente."
---             selecionaMenuMinhasDisciplinas 
-
+    | op == 4 = do
+        putStrLn "Voltando..."
+        menuInicial matricula
+    | otherwise = do
+        putStrLn "Escolha inválida. Tente novamente."
+        menuMinhasDisciplinas matricula
 -- menuMateriais:: IO()
 -- menuMateriais = do
 --     putStrLn "1. Ver materiais"
@@ -233,41 +243,42 @@ selecaoMenuMeusGrupos op matricula
 --         selecionaMateriais
 
 
--- menuCadastraMateriais:: IO()
--- menuCadastraMaterias = do
---     putStrLn "1. Resumo"
---     putStrLn "2. Links"
---     putStrLn "3. Datas"
---     op <- readLn :: IO Int
---     selecionaMenuCadastroMateriais op
+menuCadastraMateriais:: String -> IO()
+menuCadastraMateriais matricula = do
+    putStrLn "\nSelecione o tipo de material que você gostaria de cadastrar:"
+    putStrLn "1. Resumo"
+    putStrLn "2. Links"
+    putStrLn "3. Datas"
+    op <- readLn :: IO Int
+    selecionaMenuCadastroMateriais op matricula
 
--- selecionaMenuCadastroMateriais:: Int -> IO()
--- selecionaMenuCadastroMateriais op
---     | op == 1 = do
---         putStrln "ID disciplina: "
---         id <- readLn :: IO Int
---         putStrln "Nome do resumo: "
---         nome <- getLine
---         putStrln "Conteudo do resumo: "
---         conteudo <- getLine
---         cadastraResumo id nome conteudo
---         putStrLn "Cadastrado com sucesso"
---     | op == 2 = do
---         putStrln "ID disciplina: "
---         id <- readLn :: IO Int
---         putStrLn "Link: "
---         link <- getLine
---         cadastraLink id link
---         putStrLn "Cadastrado com sucesso"
---     | op == 3 = do
---         putStrln "ID disciplina: "
---         id <- readLn :: IO Int
---         putStrLn "Titulo: "
---         titulo <- getLine
---         putStrLn "Data: "
---         dt <- getLine
---         cadastraData id titulo dt
---         putStrLn "Cadastrado com sucesso"
+selecionaMenuCadastroMateriais:: Int -> String -> IO()
+selecionaMenuCadastroMateriais op matricula
+    | op == 1 = do
+        putStrLn "ID disciplina: "
+        id <- readLn :: IO Int
+        putStrLn "Nome do resumo: "
+        nome <- getLine
+        putStrLn "Conteudo do resumo: "
+        conteudo <- getLine
+        DisciplinaF.cadastraResumo matricula id nome conteudo
+        putStrLn "Cadastrado com sucesso"
+    -- | op == 2 = do
+    --     putStrLn "ID disciplina: "
+    --     id <- readLn :: IO Int
+    --     putStrLn "Link: "
+    --     link <- getLine
+    --     cadastraLink id link
+    --     putStrLn "Cadastrado com sucesso"
+    -- | op == 3 = do
+    --     putStrln "ID disciplina: "
+    --     id <- readLn :: IO Int
+    --     putStrLn "Titulo: "
+    --     titulo <- getLine
+    --     putStrLn "Data: "
+    --     dt <- getLine
+    --     cadastraData id titulo dt
+    --     putStrLn "Cadastrado com sucesso"
 
 -- menuRemoveMateriais:: IO()
 -- menuRemoveMaterias = do

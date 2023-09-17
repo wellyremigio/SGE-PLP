@@ -5,6 +5,7 @@ import Model.Disciplina
 import DataBase.Gerenciador.GrupoGerenciador as G
 import DataBase.Gerenciador.AlunoGerenciador as A
 import Data.List
+import Data.List (elem)
 
 cadastraGrupo :: String -> Int -> String -> IO String
 cadastraGrupo nomeGrupo  codigo  matAdm = do
@@ -61,6 +62,8 @@ verificaAdmGrupo matricula codigoGrupo  = do
         Just grupo -> adm grupo == matricula
         Nothing -> False
 
+grupoContainsAluno :: Grupo -> Aluno -> Bool
+grupoContainsAluno grupo alunoProcurado = elem alunoProcurado (getAlunos grupo)
 
 
 adicionarAluno :: String -> Int -> IO String
@@ -69,9 +72,26 @@ adicionarAluno matricula codGrupo = do
     alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
     let grupo = G.getGruposByCodigo codGrupo grupoList
     let aluno = A.getAlunoByMatricula matricula alunoList
-    grupoAtualizado <- G.adicionarAlunoLista aluno grupo
-    G.saveAlteracoesAluno grupoAtualizado
-    return "Aluno adicionado com sucesso"
+    if grupoContainsAluno grupo aluno
+        then return "Aluno já está cadastrado no grupo"
+        else do
+            grupoAtualizado <- adicionarAlunoLista aluno codGrupo
+            return "Aluno adicionado com sucesso"
+
+--adicionarAluno :: String -> Int -> IO String
+--adicionarAluno matricula codGrupo = do
+ --   grupoList <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+ --   alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+ --   let grupo = G.getGruposByCodigo codGrupo grupoList
+ --   let aluno = A.getAlunoByMatricula matricula alunoList
+ --   if aluno `elem` getAlunos grupo
+   --     then return "Aluno já está cadastrado no grupo"
+  --      else do
+  --          grupoAtualizado <- adicionarAlunoLista aluno codGrupo
+  --          G.saveAlteracoesAluno grupoAtualizado
+  --          return "Aluno adicionado com sucesso"
+
+
 
 listaDeGruposEmComum :: [Disciplina] -> [Grupo] -> [Grupo]
 listaDeGruposEmComum disciplinasAluno grupos =
@@ -90,4 +110,3 @@ listagemDeGruposEmComum idAluno = do
         then return "Não existem grupos que tenham disciplinas em comum com as que você está cursando."
         else return ("Esses são os grupos em comum com as disciplinas que está cursando:\n" ++ organizaListagem grupos)
     
-
