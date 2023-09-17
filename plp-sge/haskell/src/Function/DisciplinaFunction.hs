@@ -59,12 +59,7 @@ removerDisciplinaAluno matriculaAluno idDisciplina = do
     else
         return False -- Indica que a disciplina não foi encontrada ou não foi removida
         
-        
-
-        
-
 -- Função para remover uma disciplina por ID
 removeDisciplinaPorID :: Int -> [Disciplina] -> [Disciplina]
 removeDisciplinaPorID _ [] = [] -- Caso base: a lista está vazia, não há nada a fazer
 removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" []) disciplinas
-

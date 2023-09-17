@@ -146,3 +146,26 @@ cadastraDisciplina codGrupo idDisciplina nome professor periodo = do
         return True
      else 
         return False
+
+-- Função para remover uma disciplina por ID
+removeDisciplinaPorID :: Int -> [Disciplina] -> [Disciplina]
+removeDisciplinaPorID _ [] = [] -- Caso base: a lista está vazia, não há nada a fazer
+removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" []) disciplinas
+
+removerDisciplinaGrupo ::  Int -> Int -> IO String
+removerDisciplinaGrupo idGrupo idDisciplina   = do
+    grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    let grupo = G.getGruposByCodigo idGrupo grupos
+    let grupoContainsDisciplina = disciplinaExiste idDisciplina (Model.Grupo.disciplinas grupo)
+    if grupoContainsDisciplina then do
+        let disciplinasAtualizadas = removeDisciplinaPorID idDisciplina (Model.Grupo.disciplinas grupo)
+        let novoGrupo = grupo { Model.Grupo.disciplinas = disciplinasAtualizadas }
+        let gruposAtualizados = G.removeGrupoByCodigo idGrupo grupos
+        let newListGrupo = novoGrupo: gruposAtualizados
+        G.saveAlteracoesAluno newListGrupo
+        return "foi removida com sucesso"
+    else
+        return " não foi encontrada ou não foi removida"
+
+disciplinaExiste :: Int -> [Disciplina] -> Bool
+disciplinaExiste idDisciplina disciplinas = any (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas

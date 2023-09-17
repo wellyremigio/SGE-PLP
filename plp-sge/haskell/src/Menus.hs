@@ -160,7 +160,7 @@ selecaoMenuMeusGrupos op matricula
         idGrupo <- readLn :: IO Int
         putStrLn "Matrícula do aluno a ser removido: "
         matriculaAlunoRemovido <- getLine
-        result <- verificaAdmGrupo matriculaAlunoRemovido idGrupo
+        result <- verificaAdmGrupo matricula idGrupo
         if result then do
             saida <- removerAlunoGrupo idGrupo matriculaAlunoRemovido
             print saida
@@ -174,6 +174,7 @@ selecaoMenuMeusGrupos op matricula
         putStr result
         menuMeusGrupos matricula
     | op == 4 = do
+        putStrLn "\n==Adicionando disciplina a grupo=="
         putStrLn "Código do grupo: "
         codGrupo <- readLn :: IO Int
         putStrLn "Qual o código da disciplina que você quer adicionar? "
@@ -190,14 +191,18 @@ selecaoMenuMeusGrupos op matricula
         else
             putStrLn "Erro...A Disciplina ja foi cadastrada"
 --     | op == 5 = listarDisciplinas -- toString das disciplinas
---     | op == 6 = do
---         putStrLn "Qual o id da disciplina que você quer remover? "
---         id <- readLn:: IO Int
---         foiRemovida <- removeDisciplina id-- metodo p remover. todos eles retornar boolean
---         if foiRemovida then putStr "Removida com sucesso." else "A disciplina não existe."
-   | otherwise = do
-       putStrLn "Escolha inválida. Tente novamente."
-       selecaoMenuMeusGrupos op matricula
+    | op == 6 = do
+        putStrLn "\n==Remover disciplina de grupo=="
+        putStrLn "Id da disciplina a ser removida: "
+        idDisciplina <- readLn:: IO Int
+        putStrLn "Codigo do grupo: "
+        idGrupo <- readLn:: IO Int
+        saida <- removerDisciplinaGrupo idGrupo idDisciplina 
+        print saida
+        menuMeusGrupos matricula
+    | otherwise = do
+        putStrLn "Escolha inválida. Tente novamente."
+        selecaoMenuMeusGrupos op matricula
 
 -- --Ao selecionar essa opção, o usuário poderá Ver Disciplinas Cadastradas, Cadastrar Disciplina e Remover uma Disciplina.--
 
