@@ -26,9 +26,9 @@ import Model.Resumo-}
 
 menuLogin:: IO()
 menuLogin = do
-    putStr "Matrícula?\n"
+    putStr "Matrícula: \n"
     matriculaInput <- getLine
-    putStr "Senha?\n"
+    putStr "Senha: \n"
     senhaInput <- getLine
     resposta <- verificaLogin matriculaInput senhaInput
     if (resposta) then menuInicial matriculaInput else do
@@ -55,11 +55,11 @@ verificaSolucao op
 
 menuCadastro:: IO()
 menuCadastro = do
-    putStr "Qual sua matrícula?\n"
+    putStr "\nMatrícula: \n"
     matriculaCadastrada <- getLine
-    putStr "Qual seu nome?\n"
+    putStr "Nome: \n"
     nomeCadastrado <- getLine
-    putStr "Qual será sua senha?\n"
+    putStr "Senha: \n"
     senhaCadastrada <- getLine
     cadastroRealizado <- cadastraUsuario matriculaCadastrada nomeCadastrado senhaCadastrada
     putStr cadastroRealizado
@@ -84,32 +84,30 @@ menuInicial matricula = do
 selecaoMenuInicial:: Int -> String -> IO()
 selecaoMenuInicial op matricula
     | op == 1 = do
-        putStr "Nome do grupo: \n"
+        putStrLn "\nCadastrando Aluno\n"
+        putStrLn "Nome do grupo: "
         nomeGrupo <- getLine
-        putStr "Codigo do grupo: \n"
+        putStrLn "Codigo do grupo: "
         codigo <- readLn :: IO Int
-        putStr "Matrícula do adm do grupo: \n"
-        adm <- getLine
         resposta <- verificaIdGrupo codigo
         if not resposta then do 
-            cadastraGrupo nomeGrupo codigo adm
+            cadastraGrupo nomeGrupo codigo matricula
+            putStr "Grupo cadastrado com sucesso!\n "
             menuInicial matricula
         else do 
-            putStrLn "Já existe um grupo com esse ID. Cadastre um grupo novo!"
+            putStrLn "Já existe um grupo com esse ID. Cadastre um grupo novo!\n"
             menuInicial matricula
-        {-resultado <- cadastraGrupo nomeGrupo codigo adm-- função a ser criada
-        putStrLn resultado
-        menuInicial-}
 
     | op == 2 = do
-        putStr "Id do grupo: "
+        putStrLn "\nRemovendo aluno"
+        putStrLn "\nId do grupo: "
         idGrupo <- readLn :: IO Int
         ehAdm <- verificarAdmDeGrupo idGrupo matricula
         if(ehAdm) then do
             resultado <- removeGrupo idGrupo
             print resultado
         else
-            putStrLn "Você não é Adm do grupo"
+            putStrLn "Você nao é Adm do grupo"
         menuInicial matricula
     
     | op == 3 = do

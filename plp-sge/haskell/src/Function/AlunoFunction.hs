@@ -17,7 +17,7 @@ import DataBase.Gerenciador.AlunoGerenciador
 cadastraUsuario :: String -> String -> String -> IO String
 cadastraUsuario matricula nome senha = do
     saveAluno matricula nome senha
-    return "OK"
+    return "Cadastro realizado com sucesso!\n"
 
 verificaLogin :: String -> String -> IO Bool
 verificaLogin matricula senha = do

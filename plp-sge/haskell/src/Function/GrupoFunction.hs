@@ -38,9 +38,9 @@ removeGrupo idGrupo = do
         let removida = removeGrupoByCodigo idGrupo grupos
         if (length removida == length grupos) then return "Não foi possivel realizar ação" else do
             saveAlteracoesGrupo removida
-            return "remoção feita com sucesso"
+            return "remocao feita com sucesso"
     else
-        return "Não foi possivel realizar ação"
+        return "Nao foi possivel realizar acao"
 
 --listar grupo
 listaGrupos:: IO String
