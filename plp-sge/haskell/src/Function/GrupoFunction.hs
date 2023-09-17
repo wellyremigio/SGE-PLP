@@ -118,3 +118,27 @@ listagemAlunoGrupo codGrupo = do
         return "Não há alunos cadastrados nesse grupo!"
     else 
         return (organizaListagem alunosGrupo)
+
+removerAlunoGrupo ::  Int -> String -> IO String
+removerAlunoGrupo idGrupo matricula  = do
+    grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let grupo = G.getGruposByCodigo idGrupo grupos
+    let aluno = A.getAlunoByMatricula matricula alunoList
+    if grupoContainsAluno grupo aluno then do
+        let alunosAtualizadas = removeAlunoPorID matricula (alunos grupo)
+
+        let novoGrupo = grupo { Model.Grupo.alunos = alunosAtualizadas }
+        let gruposAtualizados = G.removeGrupoByCodigo idGrupo grupos
+        let newListGrupo = novoGrupo: gruposAtualizados
+        G.saveAlteracoesAluno newListGrupo
+        return "foi removida com sucesso"
+    else
+        return " não foi encontrada ou não foi removida"
+        
+
+removeAlunoPorID :: String -> [Aluno] -> [Aluno]
+removeAlunoPorID _ [] = [] -- Caso base: a lista de alunos está vazia, não há nada a fazer
+removeAlunoPorID idToRemove alunos =
+    deleteBy (\aluno1 aluno2 -> Model.Aluno.matricula aluno1 == Model.Aluno.matricula aluno2)
+             (Aluno idToRemove "" "" []) alunos

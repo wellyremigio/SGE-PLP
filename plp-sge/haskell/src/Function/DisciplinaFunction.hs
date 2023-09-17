@@ -50,6 +50,7 @@ removerDisciplinaAluno matriculaAluno idDisciplina = do
     let japossuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
     if japossuiDisciplina then do
         let disciplinasAtualizadas = removeDisciplinaPorID idDisciplina (disciplinas alunoExistente)
+        
         let novoAluno = alunoExistente { Model.Aluno.disciplinas = disciplinasAtualizadas }
         alunosAtualizados <- A.removeAlunoByMatricula matriculaAluno
         let newListAluno = novoAluno : alunosAtualizados

@@ -153,13 +153,13 @@ selecaoMenuMeusGrupos op matricula
             resultado <- adicionarAluno matricula codigo
             putStrLn resultado
             else putStr "O aluno já está cadastrado."
---     | op == 2 = do
---         putStrLn "Qual a matrícula do aluno que você deseja remover do grupo? "
---         matriculaAlunoRemovido <- readLn:: IO Int
---         putStrLn "Qual a sua matrícula? "
---         matriculaAdmin <- readLn:: IO Int
---         ehAdm matriculaAdmin -- metodo que vai conferir se a pessoa q quer remover eh o adm
---         if ehAdm then removeAluno matriculaAlunoRemovido else putStr "Você não pode remover o aluno porque não é administrador do grupo."
+    | op == 2 = do
+        putStrLn "Qual o código do grupo: "
+        idGrupo <- readLn :: IO Int
+        putStrLn "Qual a matrícula do aluno que você deseja remover do grupo? "
+        matriculaAlunoRemovido <- getLine
+        saida <- removerAlunoGrupo idGrupo matriculaAlunoRemovido
+        print saida
     | op == 3 = do
         putStrLn "Digite o código do grupo para listar os alunos"
         codGrupo <- readLn :: IO Int
