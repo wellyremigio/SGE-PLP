@@ -196,7 +196,8 @@ menuMinhasDisciplinas matricula = do
 selecionaMenuMinhasDisciplinas:: Int -> String -> IO()
 selecionaMenuMinhasDisciplinas op matricula
     | op == 1 = do 
-        putStr "ok"
+        result <- DisciplinaF.listagemDisplinaALuno matricula
+        putStr result
    -- | op == 2 = do
       --  putStrLn "Qual o código da disciplina que você quer adicionar? "
        -- id <- readLn:: IO Int
