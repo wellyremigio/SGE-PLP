@@ -1,1 +1,56 @@
-[{"disciplinas":[],"matricula":"2","nome":"2","senha":"2"},{"disciplinas":[],"matricula":"1234","nome":"larysa","senha":"123"},{"disciplinas":[],"matricula":"1234","nome":"Welly","senha":"123"},{"disciplinas":[],"matricula":"789","nome":"welly","senha":"555"},{"disciplinas":[],"matricula":"36","nome":"sirigueijo","senha":"63"},{"disciplinas":[],"matricula":"2","nome":"2","senha":"2"},{"disciplinas":[],"matricula":"654","nome":"Fubiva","senha":"444"},{"disciplinas":[],"matricula":"1","nome":"l","senha":"12"},{"disciplinas":[],"matricula":"123","nome":"mendes","senha":"1"}]
+[
+    {
+        "disciplinas": [],
+        "matricula": "2",
+        "nome": "2",
+        "senha": "2"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "1234",
+        "nome": "larysa",
+        "senha": "123"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "1234",
+        "nome": "Welly",
+        "senha": "123"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "789",
+        "nome": "welly",
+        "senha": "555"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "36",
+        "nome": "sirigueijo",
+        "senha": "63"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "2",
+        "nome": "2",
+        "senha": "2"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "654",
+        "nome": "Fubiva",
+        "senha": "444"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "1",
+        "nome": "l",
+        "senha": "12"
+    },
+    {
+        "disciplinas": [],
+        "matricula": "123",
+        "nome": "mendes",
+        "senha": "1"
+    }
+]

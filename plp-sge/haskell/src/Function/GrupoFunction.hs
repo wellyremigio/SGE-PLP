@@ -38,7 +38,7 @@ removeGrupo idGrupo = do
         let removida = removeGrupoByCodigo idGrupo grupos
         if (length removida == length grupos) then return "Não foi possivel realizar ação" else do
             saveAlteracoesGrupo removida
-            return "remocao feita com sucesso"
+            return "Remocao feita com sucesso"
     else
         return "Nao foi possivel realizar acao"
 
@@ -46,7 +46,7 @@ removeGrupo idGrupo = do
 listaGrupos:: IO String
 listaGrupos = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
-    return $ "Esses são seus grupos:\n" ++ organizaListagem grupos
+    return $ organizaListagem grupos
     
 organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
