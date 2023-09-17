@@ -23,3 +23,4 @@ instance Show Grupo where
 
 getDisciplinasGrupo :: Grupo -> [Disciplina]
 getDisciplinasGrupo grupo = disciplinas grupo
+

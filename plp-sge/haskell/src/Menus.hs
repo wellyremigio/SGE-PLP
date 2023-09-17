@@ -160,7 +160,11 @@ selecaoMenuMeusGrupos op matricula
 --         matriculaAdmin <- readLn:: IO Int
 --         ehAdm matriculaAdmin -- metodo que vai conferir se a pessoa q quer remover eh o adm
 --         if ehAdm then removeAluno matriculaAlunoRemovido else putStr "Você não pode remover o aluno porque não é administrador do grupo."
---     | op == 3 = listarAlunos -- toString dos alunos
+    | op == 3 = do
+        putStrLn "Digite o código do grupo para listar os alunos"
+        codGrupo <- readLn :: IO Int
+        result <- listagemAlunoGrupo codGrupo-- toString dos alunos
+        putStr result
 --     | op == 4 = do
 --         putStrLn "Qual o código da disciplina que você quer adicionar? "
 --         id <- readLn:: IO Int

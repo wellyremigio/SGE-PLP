@@ -10,7 +10,7 @@ module Model.Aluno where
         nome:: String,
         senha:: String,
         disciplinas :: [Disciplina]
-    } deriving (Generic, Eq)
+    } deriving (Generic, Eq, Show)
 
     getDisciplinas :: Aluno -> [Disciplina]
     getDisciplinas aluno = disciplinas aluno

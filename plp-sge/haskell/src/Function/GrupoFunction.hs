@@ -110,3 +110,11 @@ listagemDeGruposEmComum idAluno = do
         then return "Não existem grupos que tenham disciplinas em comum com as que você está cursando."
         else return ("Esses são os grupos em comum com as disciplinas que está cursando:\n" ++ organizaListagem grupos)
     
+
+listagemAlunoGrupo :: Int -> IO String
+listagemAlunoGrupo codGrupo = do 
+    alunosGrupo <- G.getAlunoGrupo codGrupo
+    if null alunosGrupo then 
+        return "Não há alunos cadastrados nesse grupo!"
+    else 
+        return (organizaListagem alunosGrupo)

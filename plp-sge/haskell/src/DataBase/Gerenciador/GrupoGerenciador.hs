@@ -61,6 +61,15 @@ getGruposByCodigo codigoGrupo (x:xs)
     | codigo x == codigoGrupo = x
     | otherwise = getGruposByCodigo codigoGrupo xs
 
+
+getAlunoGrupo :: Int -> IO [Aluno]
+getAlunoGrupo codGrupo = do
+  listaGrupo <- getGruposJSON "src/DataBase/Data/Grupo.json"
+  let grupo = getGruposByCodigo codGrupo listaGrupo
+  return (getAlunos grupo)
+
+
+
 listaDeListasDeDisciplinas :: IO [[Disciplina]]
 listaDeListasDeDisciplinas = do
     grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -94,36 +103,9 @@ adicionarAlunoLista aluno codGrupo = do
   saveAlteracoesAluno newAlunoList
 
 
-
-
-  --let newAlunosList = aluno : getAlunos grupo
-  --let grupoAtualizado = grupo { alunos = newAlunosList }
-  --saveAlteracoesAluno grupoAtualizado 267
-  --return grupoAtualizado
-
-
-
 saveAlteracoesAluno :: [Grupo] -> IO ()
 saveAlteracoesAluno grupoList = do
   B.writeFile "../Temp.json" $ encode grupoList
   removeFile "src/DataBase/Data/Grupo.json"
   renameFile "../Temp.json" "src/DataBase/Data/Grupo.json"
 
---saveAlteracoesAluno :: Grupo -> IO ()
---saveAlteracoesAluno grupo = do
-  -- Ler o conteúdo atual do arquivo JSON
---  existingContent <- B.readFile "src/DataBase/Data/Grupo.json"
-
-  -- Decodificar o conteúdo JSON existente em um valor Haskell
---  case decode existingContent of
---    Just existingGrupo -> do
-      -- Mesclar os dados existentes com os novos dados do grupo
---      let mergedGrupo = existingGrupo { alunos = getAlunos grupo }
-
-      -- Codificar o valor Haskell de volta para JSON
-  --    let newContent = encode mergedGrupo
-
-      -- Escrever os dados de volta no arquivo JSON
-    --  B.writeFile "src/DataBase/Data/Grupo.json" newContent
-
-    --Nothing -> putStrLn "Erro: Não foi possível decodificar o arquivo JSON existente."

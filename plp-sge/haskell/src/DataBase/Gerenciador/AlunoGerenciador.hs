@@ -2,7 +2,7 @@ module DataBase.Gerenciador.AlunoGerenciador where
 import Model.Aluno
 import Model.Disciplina
 
-import Data.Aeson
+import Data.Aeson ( eitherDecode', encode, FromJSON, ToJSON )
 import qualified Data.ByteString.Lazy as B
 import System.Directory
 
