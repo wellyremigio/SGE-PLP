@@ -48,4 +48,4 @@ removerDisciplina jsonFilePath disciplinaID = do
     B.writeFile "../Temp.json" $ encode novasDisciplinas
     removeFile jsonFilePath
     renameFile "../Temp.json" jsonFilePath
-    
+

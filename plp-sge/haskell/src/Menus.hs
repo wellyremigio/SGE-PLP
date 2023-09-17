@@ -114,7 +114,7 @@ selecaoMenuInicial op matricula
         resultado <- listaGrupos -- metodo pra listar os grupos existentes. é como um toString
         putStr resultado
         menuMeusGrupos matricula -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
-   -- | op == 4 = menuMinhasDisciplinas -- mostra as opçõs de cadastrar, ver e remover disciplina
+    | op == 4 = menuMinhasDisciplinas matricula
    -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
     | op == 7 = do
@@ -179,20 +179,22 @@ selecaoMenuMeusGrupos op matricula
 
 -- --Ao selecionar essa opção, o usuário poderá Ver Disciplinas Cadastradas, Cadastrar Disciplina e Remover uma Disciplina.--
 
--- menuMinhasDisciplinas:: IO()
--- menuMinhasDisciplinas = do
---     putStrLn "1. Visualizar disciplinas"
---     putStrLn "2. Cadastrar disciplina"
---     putStrLn "3. Remover disciplina"
---     op <- readLn :: IO Int
---     selecionaMenuMinhasDisciplinas op
+menuMinhasDisciplinas::String -> IO()
+menuMinhasDisciplinas matricula = do
+    putStrLn "1. Visualizar disciplinas"
+    putStrLn "2. Cadastrar disciplina"
+    putStrLn "3. Remover disciplina"
+    putStrLn "4. Voltar"
+    op <- readLn :: IO Int
+    selecionaMenuMinhasDisciplinas op matricula
 
---     selecionaMenuMinhasDisciplinas:: Int -> IO()
---     selecionaMenuMinhasDisciplinas op
---         | op == 1 = listasDisciplinas -- criar metodo
---         | op == 2 = do
---             putStrLn "Qual o código da disciplina que você quer adicionar? "
---             id <- readLn:: IO Int
+selecionaMenuMinhasDisciplinas:: Int -> String -> IO()
+selecionaMenuMinhasDisciplinas op matricula
+    | op == 1 = do 
+        putStr "ok"
+   -- | op == 2 = do
+      --  putStrLn "Qual o código da disciplina que você quer adicionar? "
+       -- id <- readLn:: IO Int
 --             putStrLn "Nome da disciplina?"
 --             nomeDisciplina <- getLine
 --             putStrLn "Qual professor ministra?"
@@ -206,10 +208,12 @@ selecaoMenuMeusGrupos op matricula
 --             id <- readLn:: IO Int
 --             foiRemovida <- removeDisciplina id -- metodo p remover. todos eles retornar boolean
 --             if foiRemovida then putStr "Removida com sucesso." else "A disciplina não existe."
---         | otherwise = do
---             putStrLn "Escolha inválida. Tente novamente."
---             selecionaMenuMinhasDisciplinas 
-
+    | op == 4 = do
+        putStrLn "Voltando..."
+        menuInicial matricula
+    | otherwise = do
+        putStrLn "Escolha inválida. Tente novamente."
+        menuMinhasDisciplinas matricula
 -- menuMateriais:: IO()
 -- menuMateriais = do
 --     putStrLn "1. Ver materiais"
