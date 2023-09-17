@@ -156,7 +156,7 @@ removerDisciplinaGrupo ::  Int -> Int -> IO String
 removerDisciplinaGrupo idGrupo idDisciplina   = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupo = G.getGruposByCodigo idGrupo grupos
-    let grupoContainsDisciplina = disciplinaExiste idDisciplina (Model.Grupo.disciplinas grupo)
+    let grupoContainsDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupo)
     if grupoContainsDisciplina then do
         let disciplinasAtualizadas = removeDisciplinaPorID idDisciplina (Model.Grupo.disciplinas grupo)
         let novoGrupo = grupo { Model.Grupo.disciplinas = disciplinasAtualizadas }
@@ -166,6 +166,3 @@ removerDisciplinaGrupo idGrupo idDisciplina   = do
         return "foi removida com sucesso"
     else
         return " não foi encontrada ou não foi removida"
-
-disciplinaExiste :: Int -> [Disciplina] -> Bool
-disciplinaExiste idDisciplina disciplinas = any (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas
