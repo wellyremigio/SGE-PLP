@@ -53,8 +53,6 @@ organizaListagem [] = ""
 organizaListagem (x:xs) = show x ++ "\n" ++ organizaListagem xs
 
 
---menuMeusGrupos
-
 verificaAdmGrupo :: String -> Int -> IO Bool
 verificaAdmGrupo matricula codigoGrupo  = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -77,21 +75,6 @@ adicionarAluno matricula codGrupo = do
         else do
             grupoAtualizado <- adicionarAlunoLista aluno codGrupo
             return "Aluno adicionado com sucesso"
-
---adicionarAluno :: String -> Int -> IO String
---adicionarAluno matricula codGrupo = do
- --   grupoList <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
- --   alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
- --   let grupo = G.getGruposByCodigo codGrupo grupoList
- --   let aluno = A.getAlunoByMatricula matricula alunoList
- --   if aluno `elem` getAlunos grupo
-   --     then return "Aluno já está cadastrado no grupo"
-  --      else do
-  --          grupoAtualizado <- adicionarAlunoLista aluno codGrupo
-  --          G.saveAlteracoesAluno grupoAtualizado
-  --          return "Aluno adicionado com sucesso"
-
-
 
 listaDeGruposEmComum :: [Disciplina] -> [Grupo] -> [Grupo]
 listaDeGruposEmComum disciplinasAluno grupos =
@@ -142,3 +125,24 @@ removeAlunoPorID _ [] = [] -- Caso base: a lista de alunos está vazia, não há
 removeAlunoPorID idToRemove alunos =
     deleteBy (\aluno1 aluno2 -> Model.Aluno.matricula aluno1 == Model.Aluno.matricula aluno2)
              (Aluno idToRemove "" "" []) alunos
+
+
+verificaDisciplina :: Int -> [Disciplina] -> Bool
+verificaDisciplina idDisciplina disciplinas = any (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas
+
+cadastraDisciplina :: Int -> Int-> String -> String -> String -> IO Bool
+cadastraDisciplina codGrupo idDisciplina nome professor periodo = do
+     listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json" 
+     let grupoExistente = G.getGruposByCodigo codGrupo listaGrupos
+     let disciplinaNova = Disciplina idDisciplina nome professor periodo []
+     let disciplinaExiste = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
+     
+     if not disciplinaExiste then do
+        let disciplinasExistente = Model.Grupo.disciplinas grupoExistente
+        let novoGrupo = grupoExistente { Model.Grupo.disciplinas = disciplinasExistente ++ [disciplinaNova] }
+        gruposAtualizados <- G.removeGrupoByCodigoIO codGrupo
+        let newListGrupo = gruposAtualizados ++ [novoGrupo]
+        G.saveAlteracoesGrupo newListGrupo
+        return True
+     else 
+        return False

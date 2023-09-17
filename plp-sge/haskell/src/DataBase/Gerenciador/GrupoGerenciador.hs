@@ -88,6 +88,17 @@ removeGrupoByCodigo codigoGrupo grupos = deleteGrupo grupos
       | codigo g == codigoGrupo = deleteGrupo gs
       | otherwise = g : deleteGrupo gs
 
+removeGrupoByCodigoIO :: Int -> IO [Grupo]
+removeGrupoByCodigoIO codGrupo = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json" -- Substitua pelo caminho correto
+    let gruposAtualizados = deleteGrupo codGrupo listaGrupos
+    return gruposAtualizados
+    where
+        deleteGrupo _ [] = []
+        deleteGrupo codGrupo (a : as)
+            | codigo a == codGrupo = deleteGrupo codGrupo as
+            | otherwise = a : deleteGrupo codGrupo as
+    
 
 getAlunos :: Grupo -> [Aluno]
 getAlunos = alunos
