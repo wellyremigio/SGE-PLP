@@ -1,3 +1,5 @@
+
+-- Módulo responsável pelas funções cabíveis aos Grupos.
 module Function.GrupoFunction where
 import Model.Aluno
 import Model.Grupo
@@ -7,17 +9,21 @@ import DataBase.Gerenciador.AlunoGerenciador as A
 import Data.List
 import Data.List (elem)
 
+-- Recebe nome, código e matrícula do adm do grupo e o adiciona ao banco de dados.
 cadastraGrupo :: String -> Int -> String -> IO String
 cadastraGrupo nomeGrupo  codigo  matAdm = do
     saveGrupo nomeGrupo  codigo  matAdm
-    return "Grupo cadastrado com sucesso!"
+    adicionarAluno matAdm codigo
+    return "Grupo cadastrado com sucesso!\n"
 
+-- Verifica se o não há um grupo cadastrado com o mesmo id.
 verificaIdGrupo :: Int -> IO Bool
 verificaIdGrupo codigo = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupos = getGruposByCodigo codigo listaGrupos
     return $ Model.Grupo.codigo grupos /= (-1)
 
+-- Verifica quem é o adm do grupo.
 verificarAdmDeGrupo :: Int -> String -> IO Bool
 verificarAdmDeGrupo codigoGrupo admDesejado = do
     codigoValido <- verificaIdGrupo codigoGrupo
@@ -29,7 +35,7 @@ verificarAdmDeGrupo codigoGrupo admDesejado = do
         else
             return False
             
-
+-- Remove um grupo do banco de dados.
 removeGrupo:: Int -> IO String
 removeGrupo idGrupo = do
     verifica <- verificaIdGrupo idGrupo 
@@ -42,17 +48,18 @@ removeGrupo idGrupo = do
     else
         return "Nao foi possivel realizar acao"
 
---listar grupo
-listaGrupos:: IO String
-listaGrupos = do
-    grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
-    return $ organizaListagem grupos
-    
+-- Faz a listagem dos grupos que o aluno faz parte
+listaGrupos :: String -> IO String
+listaGrupos matriculaProcurada = do
+    gruposDoAluno <- getGruposDoAluno matriculaProcurada
+    return $ organizaListagem gruposDoAluno
+
+-- Função genérica que organiza, com base no Show de cada Model, os modelos.
 organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
 organizaListagem (x:xs) = show x ++ "\n" ++ organizaListagem xs
 
-
+-- Função repetida. Não apaguei pq nao sei qual é a certa.
 verificaAdmGrupo :: String -> Int -> IO Bool
 verificaAdmGrupo matricula codigoGrupo  = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -60,10 +67,12 @@ verificaAdmGrupo matricula codigoGrupo  = do
         Just grupo -> adm grupo == matricula
         Nothing -> False
 
+
+-- Verifica se o grupo tem o aluno.
 grupoContainsAluno :: Grupo -> Aluno -> Bool
 grupoContainsAluno grupo alunoProcurado = elem alunoProcurado (getAlunos grupo)
 
-
+-- Adiciona um aluno ao grupo
 adicionarAluno :: String -> Int -> IO String
 adicionarAluno matricula codGrupo = do
     grupoList <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -92,7 +101,6 @@ listagemDeGruposEmComum idAluno = do
     if null grupos
         then return "Não existem grupos que tenham disciplinas em comum com as que você está cursando."
         else return ("Esses são os grupos em comum com as disciplinas que está cursando:\n" ++ organizaListagem grupos)
-    
 
 listagemAlunoGrupo :: Int -> IO String
 listagemAlunoGrupo codGrupo = do 
@@ -100,7 +108,8 @@ listagemAlunoGrupo codGrupo = do
     if null alunosGrupo then 
         return "Não há alunos cadastrados nesse grupo!"
     else 
-        return (organizaListagem alunosGrupo)
+        return $ organizaListagem alunosGrupo
+
 
 removerAlunoGrupo ::  Int -> String -> IO String
 removerAlunoGrupo idGrupo matricula  = do

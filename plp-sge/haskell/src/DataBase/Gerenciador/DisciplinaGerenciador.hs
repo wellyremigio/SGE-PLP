@@ -1,4 +1,4 @@
-module DataBase.Gerenciador.DisciplinaGerenciador  where
+module DataBase.Gerenciador.DisciplinaGerenciador where
 
 -- import Data.Aeson
 -- import GHC.Generics

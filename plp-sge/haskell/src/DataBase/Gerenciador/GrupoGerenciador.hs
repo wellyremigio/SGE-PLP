@@ -1,4 +1,4 @@
-module DataBase.Gerenciador.GrupoGerenciador  where
+module DataBase.Gerenciador.GrupoGerenciador where
 import Model.Grupo
 import Model.Aluno
 import Model.Disciplina
@@ -6,15 +6,16 @@ import Data.Aeson
 import GHC.Generics
 import qualified Data.ByteString.Lazy as B
 import System.Directory
+import DataBase.Gerenciador.AlunoGerenciador (getAlunoByMatricula, getAlunoJSON)
 --import qualified Data.ByteString.Lazy.Char8 as BC
 import Data.List
 
 instance FromJSON Grupo
 instance ToJSON Grupo
-instance FromJSON Aluno
+{-instance FromJSON Aluno
 instance ToJSON Aluno
 instance FromJSON Disciplina
-instance ToJSON Disciplina
+instance ToJSON Disciplina-}
 
 --salvarGrupoJSON :: String -> String -> [Aluno] -> Int -> [Disciplina] -> Int -> IO()
 --salvarGrupoJSON jsonFilePath nome listaAlunos codigo listaDisciplinas adm = do
@@ -61,7 +62,26 @@ getGruposByCodigo codigoGrupo (x:xs)
     | codigo x == codigoGrupo = x
     | otherwise = getGruposByCodigo codigoGrupo xs
 
+-- Função que pega os grupos que um aluno específico faz parte.
+{-getGruposDoAluno :: String -> IO [Grupo]
+getGruposDoAluno matriculaProcurada = do
+    grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let aluno = getAlunoByMatricula matriculaProcurada alunos
+    let gruposDoAluno = filter (\grupo -> matricula aluno `elem` alunos) grupos
+    return gruposDoAluno-}
 
+getGruposDoAluno :: String -> IO [Grupo]
+getGruposDoAluno matriculaProcurada = do
+    grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    return $ filter (alunoPertenceAoGrupo matriculaProcurada) grupos
+
+alunoPertenceAoGrupo :: String -> Grupo -> Bool
+alunoPertenceAoGrupo matriculaProcurada grupo =
+    any (\aluno -> matricula aluno == matriculaProcurada) (alunos grupo)
+
+-- Função que pega os alunos pertencentes a um grupo específico.
 getAlunoGrupo :: Int -> IO [Aluno]
 getAlunoGrupo codGrupo = do
   listaGrupo <- getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -114,6 +134,3 @@ disciplinasDoGrupo codigoGrupo = do
     grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupo = getGruposByCodigo codigoGrupo grupos
     return (getDisciplinasGrupo grupo)
-
-
-

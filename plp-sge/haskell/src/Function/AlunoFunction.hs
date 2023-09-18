@@ -42,7 +42,7 @@ listagemDisciplinaALuno :: String -> IO String
 listagemDisciplinaALuno matriculaAluno = do 
     disciplinasAluno <- getDisciplinasAluno matriculaAluno
     if null disciplinasAluno then 
-        return "Nenhuma disciplina cadastrada!"
+        return "Nenhuma disciplina cadastrada!\n"
     else 
         return (organizaListagem disciplinasAluno)
 
