@@ -166,3 +166,39 @@ removerDisciplinaGrupo idGrupo idDisciplina   = do
         return "foi removida com sucesso"
     else
         return " não foi encontrada ou não foi removida"
+
+listagemDisciplinaGrupo :: Int -> String -> IO String
+listagemDisciplinaGrupo codigoGrupo matricula = do
+    grupoList <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    
+    let grupo = getGruposByCodigo codigoGrupo grupoList
+    let aluno = getAlunoByMatricula matricula alunoList
+    
+    let alunoPertenceAoGrupo = grupoContainsAluno grupo aluno
+
+    case (Model.Grupo.nome grupo, alunoPertenceAoGrupo) of
+        ("", _) -> return "Grupo Inválido!"
+        (_, False) -> return "Você não está nesse Grupo!"
+        (_, _) -> do
+            let disciplinasGrupo = getDisciplinasGrupo grupo
+            if null disciplinasGrupo
+                then return "Nenhuma disciplina cadastrada!"
+                else return (organizaListagem disciplinasGrupo)
+
+
+listaDisciplinaGrupo :: Int -> String -> IO String
+listaDisciplinaGrupo codigoGrupo matricula = do
+    grupoList <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    
+    let grupo = getGruposByCodigo codigoGrupo grupoList
+    let aluno = getAlunoByMatricula matricula alunoList
+    
+    case (Model.Grupo.codigo grupo) of
+        (-1) -> return "Grupo Inválido!"
+        (_) -> do
+            let disciplinasGrupo = getDisciplinasGrupo grupo
+            if null disciplinasGrupo
+                then return "Nenhuma disciplina cadastrada!"
+                else return (organizaListagem disciplinasGrupo)

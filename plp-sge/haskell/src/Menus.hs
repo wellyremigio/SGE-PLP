@@ -137,6 +137,7 @@ menuMeusGrupos matricula = do
     putStrLn "4. Adicionar Disciplina "
     putStrLn "5. Visualizar Disciplina "
     putStrLn "6. RemoverDisciplina "
+    putStrLn "8. Sair"
     op <- readLn:: IO Int
     selecaoMenuMeusGrupos op matricula
 
@@ -190,7 +191,12 @@ selecaoMenuMeusGrupos op matricula
             putStrLn "Discplina Adicionada!"
         else
             putStrLn "Erro...A Disciplina ja foi cadastrada"
---     | op == 5 = listarDisciplinas -- toString das disciplinas
+    | op == 5 = do 
+        putStrLn "Digite o código do grupo para listar as disciplinas do grupo"
+        codGrupo <- readLn :: IO Int
+        result <- listagemDisciplinaGrupo codGrupo matricula
+        putStrLn result
+        menuMeusGrupos matricula
     | op == 6 = do
         putStrLn "\n==Remover disciplina de grupo=="
         putStrLn "Id da disciplina a ser removida: "
@@ -200,6 +206,8 @@ selecaoMenuMeusGrupos op matricula
         saida <- removerDisciplinaGrupo idGrupo idDisciplina 
         print saida
         menuMeusGrupos matricula
+    | op == 8 = do
+        putStrLn "Saindo..."
     | otherwise = do
         putStrLn "Escolha inválida. Tente novamente."
         selecaoMenuMeusGrupos op matricula
@@ -220,7 +228,7 @@ menuMinhasDisciplinas matricula = do
 selecionaMenuMinhasDisciplinas:: Int -> String -> IO()
 selecionaMenuMinhasDisciplinas op matricula
     | op == 1 = do 
-        result <- DisciplinaF.listagemDisplinaALuno matricula
+        result <- listagemDisciplinaALuno matricula
         putStrLn result
         menuMinhasDisciplinas matricula
 
