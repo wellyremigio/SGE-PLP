@@ -40,7 +40,7 @@ menuLogin = do
 menuEscolhaLogin:: IO()
 menuEscolhaLogin = do
     putStr "\nEscolha uma opção para seguir:\n"
-    putStr "1. Tentar Novamente\n2. Fazer cadastro.\n"
+    putStr "1. Tentar Fazer login\n2. Fazer cadastro.\n3. Sair\n"
     op <- readLn:: IO Int
     verificaSolucao op
 
@@ -48,12 +48,13 @@ verificaSolucao:: Int -> IO()
 verificaSolucao op
     | op == 1 = menuLogin
     | op == 2 = menuCadastro
+    | op == 3 =  putStr "Saindo..."
     | otherwise = do 
         putStr "\nOpção inválida. Escolha corretamente."
         op <- readLn:: IO Int
         verificaSolucao op
 
-menuCadastro:: IO()
+menuCadastro :: IO ()
 menuCadastro = do
     putStr "\nMatrícula: \n"
     matriculaCadastrada <- getLine
@@ -61,10 +62,18 @@ menuCadastro = do
     nomeCadastrado <- getLine
     putStr "Senha: \n"
     senhaCadastrada <- getLine
-    cadastroRealizado <- cadastraUsuario matriculaCadastrada nomeCadastrado senhaCadastrada
-    putStr cadastroRealizado
-    menuInicial matriculaCadastrada
-  
+
+    verificacao <- verificaLogin matriculaCadastrada senhaCadastrada
+    if verificacao
+        then do
+            putStr "Aluno já cadastrado!"
+            menuEscolhaLogin
+        else do
+            cadastroRealizado <- cadastraUsuario matriculaCadastrada nomeCadastrado senhaCadastrada
+            putStr "Cadastro Realizado!!"
+            menuInicial matriculaCadastrada
+
+
 
 menuInicial :: String -> IO()
 menuInicial matricula = do
