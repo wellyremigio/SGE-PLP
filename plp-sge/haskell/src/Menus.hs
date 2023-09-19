@@ -257,8 +257,8 @@ selecionaMenuMinhasDisciplinas op matricula
         menuMinhasDisciplinas matricula
 
 
-menuMateriais :: String -> IO ()
-menuMateriais matricula = do
+menuMateriaisAluno :: String -> IO ()
+menuMateriaisAluno matricula = do
     putStrLn "1. Ver materiais"
     putStrLn "2. Adicionar materiais"
     putStrLn "3. Remover materiais"
@@ -266,12 +266,22 @@ menuMateriais matricula = do
     op <- readLn :: IO Int
     putStrLn "ok"
 
- --selecionaMateriaisAluno:: Sring Int -> IO()
- --selecionaMateriaisAluno op
- --    | op == 1 = listarMateriais
-  --   | op == 2 = do
-   --      menuCadastraMateriais
-    -- | op == 3 = do
+menuMateriaisGrupo :: String -> IO ()
+menuMateriaisGrupo matricula = do
+    putStrLn "1. Ver materiais"
+    putStrLn "2. Adicionar materiais"
+    putStrLn "3. Remover materiais"
+    putStrLn "4. Editar materiais"
+    op <- readLn :: IO Int
+    putStrLn "ok"
+
+
+ selecionaMateriaisAluno:: Sring Int -> IO()
+ selecionaMateriaisAluno op
+     | op == 1 = listarMateriais
+     | op == 2 = do
+         menuCadastraMateriais
+     | op == 3 = do
        --  menuRemoverMateriais
     -- | op == 4 = do
        --  menuEditaMaterias
