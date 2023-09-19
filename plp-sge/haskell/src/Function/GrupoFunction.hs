@@ -12,6 +12,8 @@ import DataBase.Gerenciador.GrupoGerenciador as G
 import DataBase.Gerenciador.AlunoGerenciador as A
 import Data.List
 import Data.List (elem)
+import Data.Char (isAlpha, isAlphaNum, toLower)
+import System.Random
 
 -- Recebe nome, código e matrícula do adm do grupo e o adiciona ao banco de dados.
 cadastraGrupo :: String -> Int -> String -> IO String
@@ -215,6 +217,15 @@ listaDisciplinaGrupo codigoGrupo matricula = do
             if null disciplinasGrupo
                 then return "Nenhuma disciplina cadastrada!"
                 else return (organizaListagem disciplinasGrupo)
+
+generateID :: Char -> String
+generateID c =
+  let g = mkStdGen 42 -- use a fixed seed for reproducibility
+      alphaNums = filter isAlphaNum (randomRs ('a', 'z') g)
+      upperNums = filter isAlphaNum (randomRs ('A', 'Z') g)
+      nums = filter isAlphaNum (randomRs ('0', '9') g)
+      idStr = take 9 (alphaNums ++ upperNums ++ nums)
+   in idStr ++ "-" ++ [toLower c]
 
 
 
