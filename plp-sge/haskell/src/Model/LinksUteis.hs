@@ -6,7 +6,7 @@ import GHC.Generics ( Generic )
 import Data.Aeson
 
 data LinksUteis = LinksUteis {
-    id :: Int,
+    idLink :: String,
     titulo :: String,
     url :: String
 } deriving (Generic)

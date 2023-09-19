@@ -28,7 +28,6 @@ executable haskell
     Model.Grupo
     Model.LinksUteis
     Model.Resumo
-    Model.Materiais
     DataBase.Gerenciador.AlunoGerenciador
     DataBase.Gerenciador.DisciplinaGerenciador
     Function.AlunoFunction

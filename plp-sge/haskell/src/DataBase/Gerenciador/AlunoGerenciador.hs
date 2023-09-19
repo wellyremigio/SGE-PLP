@@ -119,4 +119,4 @@ removeAlunoByMatricula matriculaAluno = do
         deleteAluno matriculaAluno (a : as)
             | matricula a == matriculaAluno = deleteAluno matriculaAluno as
             | otherwise = a : deleteAluno matriculaAluno as
-    
+

@@ -1,8 +1,15 @@
 module Function.AlunoFunction where
 import Model.Aluno
 import Model.Disciplina
+import Model.Resumo
+import Model.Data
+import Model.LinksUteis
 import Data.List (deleteBy)
 import DataBase.Gerenciador.AlunoGerenciador
+import Data.Maybe
+import Data.List (find)
+import Data.Char (isAlpha, isAlphaNum, toLower)
+import System.Random
 
 -- cadastrarCliente :: String -> String -> String -> String -> IO String
 --     cadastrarCliente nome idCliente idFun senha
@@ -48,7 +55,11 @@ listagemDisciplinaALuno matriculaAluno = do
 
 disciplinaExiste :: Int -> [Disciplina] -> Bool
 disciplinaExiste idDisciplina disciplinas = any (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas
-        
+
+encontrarDisciplinaPorID :: Int -> [Disciplina] -> Maybe Disciplina
+encontrarDisciplinaPorID idDisciplina disciplinas =
+    find (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas
+
 adicionarDisciplina :: String -> Int -> String -> String -> String -> IO Bool
 adicionarDisciplina matriculaAluno idDisciplina nome professor periodo = do
      alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json" 
@@ -73,7 +84,6 @@ removerDisciplinaAluno matriculaAluno idDisciplina = do
     let japossuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
     if japossuiDisciplina then do
         let disciplinasAtualizadas = removeDisciplinaPorID idDisciplina (disciplinas alunoExistente)
-        
         let novoAluno = alunoExistente { Model.Aluno.disciplinas = disciplinasAtualizadas }
         alunosAtualizados <- removeAlunoByMatricula matriculaAluno
         let newListAluno = novoAluno : alunosAtualizados
@@ -86,3 +96,108 @@ removerDisciplinaAluno matriculaAluno idDisciplina = do
 removeDisciplinaPorID :: Int -> [Disciplina] -> [Disciplina]
 removeDisciplinaPorID _ [] = []
 removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" [] [] []) disciplinas
+
+
+cadastraResumoDisciplinaAluno :: Int -> String -> String -> String -> IO String
+cadastraResumoDisciplinaAluno idDisciplina matricula titulo corpo = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let alunoExistente = getAlunoByMatricula matricula alunos
+    let possuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
+
+    if possuiDisciplina then do
+        let idResumo = generateID 'r'
+        let resumo = Resumo idResumo titulo corpo []
+        let disciplinasAtuais = disciplinas alunoExistente
+        let disciplinaAtualizada = adicionarResumoNaDisciplina idDisciplina disciplinasAtuais resumo
+        let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
+        let alunosAtualizados = atualizarAluno matricula alunos alunoAtualizado
+        saveAlunoAlteracoes alunosAtualizados
+        return ("Resumo Adicionado! ID do Resumo: " ++ show idResumo)
+    else
+        return "Disciplina Não existe"
+
+-- Função para adicionar um resumo a uma disciplina existente
+adicionarResumoNaDisciplina :: Int -> [Disciplina] -> Resumo -> [Disciplina]
+adicionarResumoNaDisciplina _ [] _ = []
+adicionarResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) resumo
+    | Model.Disciplina.id disciplina == idDisciplina =
+        disciplina { resumos = resumo : resumos disciplina } : outrasDisciplinas
+    | otherwise =
+        disciplina : adicionarResumoNaDisciplina idDisciplina outrasDisciplinas resumo
+
+-- Função para atualizar a lista de alunos com um aluno modificado
+atualizarAluno :: String -> [Aluno] -> Aluno -> [Aluno]
+atualizarAluno _ [] _ = []
+atualizarAluno matricula (aluno:outrosAlunos) alunoAtualizado
+    | Model.Aluno.matricula aluno == matricula =
+        alunoAtualizado : outrosAlunos
+    | otherwise =
+        aluno : atualizarAluno matricula outrosAlunos alunoAtualizado
+
+
+
+cadastraLinkUtilDisciplinaAluno :: Int -> String -> String -> String -> IO String
+cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo url = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let alunoExistente = getAlunoByMatricula matricula alunos
+    let possuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
+
+    if possuiDisciplina then do
+        let idLinkUtil = generateID 'l'
+        let linkUtil = LinksUteis idLinkUtil titulo url
+        let disciplinasAtuais = disciplinas alunoExistente
+        let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
+        let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
+        let alunosAtualizados = atualizarAluno matricula alunos alunoAtualizado
+        saveAlunoAlteracoes alunosAtualizados
+        return ("Link Util Adicionado! ID Link Util: " ++ show idLinkUtil)
+    else
+        return "Disciplina Não existe"
+
+-- Função para adicionar um LinkUtil a uma disciplina existente
+adicionarLinkUtilNaDisciplina :: Int -> [Disciplina] -> LinksUteis -> [Disciplina]
+adicionarLinkUtilNaDisciplina _ [] _ = []
+adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUtil
+    | Model.Disciplina.id disciplina == idDisciplina =
+        disciplina { links = linkUtil : links disciplina } : outrasDisciplinas
+    | otherwise =
+        disciplina : adicionarLinkUtilNaDisciplina idDisciplina outrasDisciplinas linkUtil
+
+
+
+adicionarDataNaDisciplina :: Int -> [Disciplina] -> Data -> [Disciplina]
+adicionarDataNaDisciplina _ [] _ = []
+adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
+    | Model.Disciplina.id disciplina == idDisciplina =
+        let disciplinaAtualizada = disciplina { datas = dataObj : datas disciplina }
+        in disciplinaAtualizada : outrasDisciplinas
+    | otherwise =
+        disciplina : adicionarDataNaDisciplina idDisciplina outrasDisciplinas dataObj
+
+cadastraDataDisciplinaAluno :: Int -> String -> String -> String -> String -> IO String
+cadastraDataDisciplinaAluno idDisciplina matricula titulo datainicio dataFim = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let alunoExistente = getAlunoByMatricula matricula alunos
+    let possuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
+
+    if possuiDisciplina then do
+        let idData = generateID 'D'
+        let dataObj = Data titulo idData datainicio dataFim
+        let disciplinasAtuais = disciplinas alunoExistente
+        let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
+        let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
+        let alunosAtualizados = atualizarAluno matricula alunos alunoAtualizado
+        saveAlunoAlteracoes alunosAtualizados
+        return ("Data Adicionada! ID Data: " ++ show idData)
+    else
+        return "Disciplina Não existe"
+
+
+generateID :: Char -> String
+generateID c =
+  let g = mkStdGen 42 -- use a fixed seed for reproducibility
+      alphaNums = filter isAlphaNum (randomRs ('a', 'z') g)
+      upperNums = filter isAlphaNum (randomRs ('A', 'Z') g)
+      nums = filter isAlphaNum (randomRs ('0', '9') g)
+      idStr = take 9 (alphaNums ++ upperNums ++ nums)
+   in idStr ++ "-" ++ [toLower c]

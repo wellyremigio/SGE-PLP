@@ -8,6 +8,7 @@ import Data.Aeson
 
 
 data Resumo = Resumo{
+    idResumo:: String,
     titulo :: String,
     corpo :: String,
     comentario :: [Comentario]
