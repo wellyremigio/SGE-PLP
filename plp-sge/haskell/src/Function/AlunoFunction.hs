@@ -86,3 +86,13 @@ removerDisciplinaAluno matriculaAluno idDisciplina = do
 removeDisciplinaPorID :: Int -> [Disciplina] -> [Disciplina]
 removeDisciplinaPorID _ [] = []
 removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" []) disciplinas
+
+
+generateID :: Char -> String
+generateID c =
+  let g = mkStdGen 42 -- use a fixed seed for reproducibility
+      alphaNums = filter isAlphaNum (randomRs ('a', 'z') g)
+      upperNums = filter isAlphaNum (randomRs ('A', 'Z') g)
+      nums = filter isAlphaNum (randomRs ('0', '9') g)
+      idStr = take 9 (alphaNums ++ upperNums ++ nums)
+   in idStr ++ "-" ++ [toLower c]

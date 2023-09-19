@@ -211,3 +211,26 @@ listaDisciplinaGrupo codigoGrupo matricula = do
             if null disciplinasGrupo
                 then return "Nenhuma disciplina cadastrada!"
                 else return (organizaListagem disciplinasGrupo)
+
+
+adicionarResumoEmDisciplina :: Int -> Int -> String -> String -> String
+adicionarResumoEmDisciplina codigoGrupo idDisciplina titulo corpo = do
+    grupoList <- getGruposJSON "src/DataBase/Data/Grupo.json"  
+    let grupo = getGruposByCodigo codigoGrupo grupoList
+
+    -- Resto do código para adicionar o resumo à disciplina.
+    let novoResumo = Resumo titulo corpo []
+        disciplinasAtualizadas = map (\disciplina ->
+            if codigo disciplina == codigoGrupo && id disciplina == idDisciplina
+                then disciplina { resumos = novoResumo : resumos disciplina }
+                else disciplina
+        ) (disciplinas grupo)
+
+    in if disciplinasAtualizadas /= disciplinas grupo
+        then "Resumo cadastrado com sucesso."
+        else "Erro: Disciplina não encontrada."
+
+
+
+
+    
