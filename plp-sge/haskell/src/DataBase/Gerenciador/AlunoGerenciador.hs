@@ -4,6 +4,7 @@ import Model.Disciplina
 import Model.Data
 import Model.Resumo
 import Model.LinksUteis
+import Model.Comentario
 
 import Data.Aeson ( eitherDecode', encode, FromJSON, ToJSON )
 import qualified Data.ByteString.Lazy as B
@@ -29,6 +30,8 @@ instance FromJSON Resumo
 instance ToJSON Resumo
 instance FromJSON LinksUteis
 instance ToJSON LinksUteis
+instance FromJSON Comentario
+instance ToJSON Comentario
 
 -- salvarAlunoJSON :: String -> Int -> String -> String -> IO ()
 -- salvarAlunoJSON jsonFilePath matricula nome senha = do

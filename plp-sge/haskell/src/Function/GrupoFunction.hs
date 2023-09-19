@@ -4,6 +4,10 @@ module Function.GrupoFunction where
 import Model.Aluno
 import Model.Grupo
 import Model.Disciplina
+import Model.Data
+import Model.Resumo
+import Model.LinksUteis
+import Model.Comentario
 import DataBase.Gerenciador.GrupoGerenciador as G
 import DataBase.Gerenciador.AlunoGerenciador as A
 import Data.List
@@ -143,7 +147,7 @@ cadastraDisciplina :: Int -> Int-> String -> String -> String -> IO Bool
 cadastraDisciplina codGrupo idDisciplina nome professor periodo = do
      listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json" 
      let grupoExistente = G.getGruposByCodigo codGrupo listaGrupos
-     let disciplinaNova = Disciplina idDisciplina nome professor periodo []
+     let disciplinaNova = Disciplina idDisciplina nome professor periodo [] [] []
      let disciplinaExiste = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
      
      if not disciplinaExiste then do
@@ -159,7 +163,7 @@ cadastraDisciplina codGrupo idDisciplina nome professor periodo = do
 -- Função para remover uma disciplina por ID
 removeDisciplinaPorID :: Int -> [Disciplina] -> [Disciplina]
 removeDisciplinaPorID _ [] = [] -- Caso base: a lista está vazia, não há nada a fazer
-removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" []) disciplinas
+removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" [] [] []) disciplinas
 
 removerDisciplinaGrupo ::  Int -> Int -> IO String
 removerDisciplinaGrupo idGrupo idDisciplina   = do
@@ -211,24 +215,6 @@ listaDisciplinaGrupo codigoGrupo matricula = do
             if null disciplinasGrupo
                 then return "Nenhuma disciplina cadastrada!"
                 else return (organizaListagem disciplinasGrupo)
-
-
-adicionarResumoEmDisciplina :: Int -> Int -> String -> String -> String
-adicionarResumoEmDisciplina codigoGrupo idDisciplina titulo corpo = do
-    grupoList <- getGruposJSON "src/DataBase/Data/Grupo.json"  
-    let grupo = getGruposByCodigo codigoGrupo grupoList
-
-    -- Resto do código para adicionar o resumo à disciplina.
-    let novoResumo = Resumo titulo corpo []
-        disciplinasAtualizadas = map (\disciplina ->
-            if codigo disciplina == codigoGrupo && id disciplina == idDisciplina
-                then disciplina { resumos = novoResumo : resumos disciplina }
-                else disciplina
-        ) (disciplinas grupo)
-
-    in if disciplinasAtualizadas /= disciplinas grupo
-        then "Resumo cadastrado com sucesso."
-        else "Erro: Disciplina não encontrada."
 
 
 
