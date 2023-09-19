@@ -321,8 +321,37 @@ menuCadastraMateriaisGrupo matricula = do
     op <- readLn :: IO Int
     selecionaMenuCadastroMateriais op matricula
 
-selecionaMenuCadastroMateriais:: Int -> String -> IO()
-selecionaMenuCadastroMateriais op matricula
+selecionaMenuCadastroMateriaisAluno:: Int -> String -> IO()
+selecionaMenuCadastroMateriaisAluno op matricula
+    | op == 1 = do
+        putStrLn "ID disciplina: \n"
+        id <- readLn :: IO Int
+        putStrLn "Nome do resumo: \n"
+        nome <- getLine
+        putStrLn "Conteudo do resumo: \n"
+        conteudo <- getLine
+        DisciplinaF.cadastraResumo matricula id nome conteudo
+        putStrLn "Cadastrado com sucesso!\n"
+    -- | op == 2 = do
+    --     putStrLn "ID disciplina: "
+    --     id <- readLn :: IO Int
+    --     putStrLn "Link: "
+    --     link <- getLine
+    --     cadastraLink id link
+    --     putStrLn "Cadastrado com sucesso"
+    -- | op == 3 = do
+    --     putStrln "ID disciplina: "
+    --     id <- readLn :: IO Int
+    --     putStrLn "Titulo: "
+    --     titulo <- getLine
+    --     putStrLn "Data: "
+    --     dt <- getLine
+    --     cadastraData id titulo dt
+    --     putStrLn "Cadastrado com sucesso"
+
+
+selecionaMenuCadastroMateriaisGrupo:: Int -> String -> IO()
+selecionaMenuCadastroMateriaisGrupo op matricula
     | op == 1 = do
         putStrLn "ID disciplina: \n"
         id <- readLn :: IO Int
