@@ -2,7 +2,7 @@ module DataBase.Gerenciador.DisciplinaGerenciador where
 import Model.Grupo
 import Model.Aluno
 import Model.Disciplina
-import Model.LinksUteis
+import Model.LinkUtil
 import Data.Aeson
 import GHC.Generics
 import qualified Data.ByteString.Lazy as B
@@ -64,7 +64,7 @@ getDisciplinaByCodigoCadastroMaterial codigo disciplinas =
         Nothing -> NaoEncontrado
 
 
-getLinksUteisDasDisciplinas :: [Disciplina] -> [LinksUteis]
+getLinksUteisDasDisciplinas :: [Disciplina] -> [LinkUtil]
 getLinksUteisDasDisciplinas disciplinas =
     concatMap links disciplinas
 

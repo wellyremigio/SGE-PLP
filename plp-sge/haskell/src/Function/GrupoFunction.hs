@@ -6,7 +6,7 @@ import Model.Grupo
 import Model.Disciplina
 import Model.Data
 import Model.Resumo
-import Model.LinksUteis
+import Model.LinkUtil
 import Model.Comentario
 import DataBase.Gerenciador.GrupoGerenciador as G
 import DataBase.Gerenciador.AlunoGerenciador as A

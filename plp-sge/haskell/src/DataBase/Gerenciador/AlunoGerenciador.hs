@@ -3,7 +3,7 @@ import Model.Aluno
 import Model.Disciplina
 import Model.Data
 import Model.Resumo
-import Model.LinksUteis
+import Model.LinkUtil
 import Model.Comentario
 
 import Data.Aeson ( eitherDecode', encode, FromJSON, ToJSON )
@@ -28,8 +28,8 @@ instance FromJSON Data
 instance ToJSON Data
 instance FromJSON Resumo
 instance ToJSON Resumo
-instance FromJSON LinksUteis
-instance ToJSON LinksUteis
+instance FromJSON LinkUtil
+instance ToJSON LinkUtil
 instance FromJSON Comentario
 instance ToJSON Comentario
 

@@ -3,7 +3,7 @@ import Model.Aluno
 import Model.Disciplina
 import Model.Resumo
 import Model.Data
-import Model.LinksUteis
+import Model.LinkUtil
 import Data.List (deleteBy)
 import DataBase.Gerenciador.AlunoGerenciador
 import Data.Maybe
@@ -144,7 +144,7 @@ cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo url = do
 
     if possuiDisciplina then do
         let idLinkUtil = generateID 'l'
-        let linkUtil = LinksUteis idLinkUtil titulo url
+        let linkUtil = LinkUtil idLinkUtil titulo url
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
         let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
@@ -155,7 +155,7 @@ cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo url = do
         return "Disciplina Não existe"
 
 -- Função para adicionar um LinkUtil a uma disciplina existente
-adicionarLinkUtilNaDisciplina :: Int -> [Disciplina] -> LinksUteis -> [Disciplina]
+adicionarLinkUtilNaDisciplina :: Int -> [Disciplina] -> LinkUtil -> [Disciplina]
 adicionarLinkUtilNaDisciplina _ [] _ = []
 adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUtil
     | Model.Disciplina.id disciplina == idDisciplina =
@@ -202,6 +202,25 @@ generateID c =
       idStr = take 9 (alphaNums ++ upperNums ++ nums)
    in idStr ++ "-" ++ [toLower c]
 
+
+getResumo :: Disciplina -> String -> Maybe Resumo
+getResumo disciplina idResumoDesejado = 
+    case find (\resumo -> idResumoDesejado == idResumo resumo) (resumos disciplina) of
+        Just res -> Just res
+        Nothing -> Nothing
+
+getLinkUtil :: Disciplina -> String -> Maybe LinkUtil
+getLinkUtil disciplina idLinkDesejado = 
+    case find (\link -> idLinkDesejado == idLink link) (links disciplina) of
+        Just link -> Just link
+        Nothing -> Nothing
+
+getData :: Disciplina -> String -> Maybe Data
+getData disciplina idDataDesejada = 
+    case find (\dataObj -> idDataDesejada == iddata dataObj) (datas disciplina) of
+        Just dataEncontrada -> Just dataEncontrada
+        Nothing -> Nothing
+
 showResumo :: String -> Int -> String -> IO String
 showResumo matriculaAluno idDisciplina idResumo = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -214,11 +233,29 @@ showResumo matriculaAluno idDisciplina idResumo = do
                 Nothing -> return "Resumo não cadastrado"
         Nothing -> return "Disciplina Não Cadastrada"
 
-getResumo :: Disciplina -> String -> Maybe Resumo
-getResumo disciplina idResumoDesejado = 
-    case find (\resumo -> idResumoDesejado == idResumo resumo) (resumos disciplina) of
-        Just res -> Just res
-        Nothing -> Nothing
+showLinkUtil :: String -> Int -> String -> IO String
+showLinkUtil matriculaAluno idDisciplina idLinkUtil = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let aluno = getAlunoByMatricula matriculaAluno alunos
+    let disciplina = encontrarDisciplinaPorID idDisciplina (disciplinas aluno)
+    case disciplina of
+        Just disciplinaEncontrada -> do
+            case getLinkUtil disciplinaEncontrada idLinkUtil of
+                Just linkUtilEncontrado -> return (show linkUtilEncontrado)
+                Nothing -> return "Link util não cadastrado"
+        Nothing -> return "Disciplina Não Cadastrada"
+
+showData :: String -> Int -> String -> IO String
+showData matriculaAluno idDisciplina idData = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let aluno = getAlunoByMatricula matriculaAluno alunos
+    let disciplina = encontrarDisciplinaPorID idDisciplina (disciplinas aluno)
+    case disciplina of
+        Just disciplinaEncontrada -> do
+            case getData disciplinaEncontrada idData of
+                Just dataEncontrado -> return (show dataEncontrado)
+                Nothing -> return "Data não cadastrada"
+        Nothing -> return "Disciplina Não Cadastrada"
 
 
 

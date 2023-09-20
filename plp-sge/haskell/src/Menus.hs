@@ -340,7 +340,7 @@ selecionaMenuMinhasDisciplinas op matricula
         periodo <- getLine
         result <- adicionarDisciplina matricula id nomeDisciplina nomeProfessor periodo
         if(result) then
-            putStrLn "Discplina Adicionada!"
+            putStrLn "Disciplina Adicionada!"
         else
             putStrLn "Erro... A Disciplina ja foi cadastrada"
         menuMinhasDisciplinas matricula
@@ -388,8 +388,8 @@ selecionaMateriaisAluno matricula op
         menuMinhasDisciplinas matricula
     | op == 6 =  putStrLn "Saindo..."
     | otherwise = do 
-        putStrLn "Digite novamente" 
-        selecionaMateriaisAluno matricula op
+        putStrLn "Escolha inválida. Tente novamente." 
+        menuMateriaisAluno matricula
 
 
 menuCadastraMateriaisAluno:: String -> IO()
@@ -412,6 +412,7 @@ selecionaMenuCadastroMateriaisAluno op matricula
         conteudo <- getLine
         result <- cadastraResumoDisciplinaAluno idDisciplina matricula nome conteudo
         putStrLn result
+        menuMateriaisAluno matricula
     | op == 2 = do
         putStrLn "ID disciplina: "
         idDisciplina <- readLn :: IO Int
@@ -421,6 +422,7 @@ selecionaMenuCadastroMateriaisAluno op matricula
         link <- getLine
         result <- cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo link
         putStrLn result
+        menuMateriaisAluno matricula
      | op == 3 = do
         putStrLn "ID disciplina: "
         idDisciplina <- readLn :: IO Int
@@ -429,11 +431,13 @@ selecionaMenuCadastroMateriaisAluno op matricula
         putStrLn "Data Inicio: "
         dti <- getLine
         putStrLn "Data Fim: "
+        menuMateriaisAluno matricula
         dtf <- getLine
         result <- cadastraDataDisciplinaAluno idDisciplina matricula  titulo dti dtf
         putStrLn result
+        menuMateriaisAluno matricula
     | otherwise = do 
-        putStrLn "Digite novamente" 
+        putStrLn "Escolha inválida. Tente novamente." 
         selecionaMenuCadastroMateriaisAluno op matricula 
         
 -- menuEditaMaterias:: IO()
@@ -471,12 +475,14 @@ selecionaMenuCadastroMateriaisAluno op matricula
 
 menuConsultaAluno::String -> IO()
 menuConsultaAluno matricula = do
-     putStrLn "Você deseja ver o material de qual disciplia? Informe o id"
+     putStrLn "Você deseja ver o material de qual disciplina? Informe o id"
      idDisciplina <- readLn::IO Int
      putStrLn "Qual o tipo de material?"
      putStrLn "1. Resumo"
      putStrLn "2. Links"
      putStrLn "3. Datas"
+     putStrLn "4. Voltar"
+     putStrLn "5. Sair"
      op <- readLn :: IO Int
      selecionaMenuConsultaAluno matricula idDisciplina op
      
@@ -484,20 +490,31 @@ menuConsultaAluno matricula = do
 selecionaMenuConsultaAluno::String -> Int -> Int -> IO()
 selecionaMenuConsultaAluno matricula idDisciplina op
     | op == 1 = do
-        putStrLn "ID do Resumo? "
+        putStrLn "ID do Resumo:"
         idResumo <- getLine
         result <- showResumo matricula idDisciplina idResumo
         putStrLn result
---     | op == 2 = do
---         putStrLn "Nome do Link? "
---         nome <- getLine
---         achaLink
---         menuEscolhaLink nome
---     | op == 1 = do
---         putStrLn "Nome da Data? "
---         nome <- getLine
---         achaData
---         menuEscolhaData nome
+        menuMateriaisAluno matricula
+    | op == 2 = do
+        putStrLn "ID LinkUtil:"
+        idLinkUtil <- getLine
+        result <- showLinkUtil matricula idDisciplina idLinkUtil
+        putStrLn result
+        menuMateriaisAluno matricula
+     | op == 3 = do
+         putStrLn "ID Data:"
+         idData <- getLine
+         result <- showData matricula idDisciplina idData
+         putStrLn result
+         menuMateriaisAluno matricula
+    | op == 4 = do
+        putStrLn "Voltando..."
+        menuMinhasDisciplinas matricula
+    | op == 5 = putStrLn "Saindo..."
+
+    | otherwise = do 
+        putStrLn "Opção Inválida, Redirecionado para a seleção do material a ser cadastrado!"
+        menuCadastraMateriaisAluno matricula
 
 
     

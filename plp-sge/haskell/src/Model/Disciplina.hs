@@ -4,7 +4,7 @@ module Model.Disciplina where
 
 import GHC.Generics ( Generic )
 import Model.Data
-import Model.LinksUteis
+import Model.LinkUtil
 import Model.Resumo
 
 
@@ -15,7 +15,7 @@ data Disciplina = Disciplina {
     periodo :: String,
     resumos :: [Resumo],
     datas :: [Data],
-    links :: [LinksUteis]
+    links :: [LinkUtil]
 } deriving (Generic)
 
 instance Eq Disciplina where
