@@ -93,7 +93,7 @@ cadastraResumoDisciplinaAluno idDisciplina matricula titulo corpo = do
     let possuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
 
     if possuiDisciplina then do
-        let idResumo = generateID 'r'
+        idResumo <- generateID 'r'
         let resumo = Resumo idResumo titulo corpo []
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarResumoNaDisciplina idDisciplina disciplinasAtuais resumo
@@ -131,7 +131,7 @@ cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo url = do
     let possuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
 
     if possuiDisciplina then do
-        let idLinkUtil = generateID 'l'
+        idLinkUtil <- generateID 'l'
         let linkUtil = LinkUtil idLinkUtil titulo url
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
@@ -169,7 +169,7 @@ cadastraDataDisciplinaAluno idDisciplina matricula titulo datainicio dataFim = d
     let possuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
 
     if possuiDisciplina then do
-        let idData = generateID 'D'
+        idData <- generateID 'D'
         let dataObj = Data titulo idData datainicio dataFim
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
@@ -179,16 +179,6 @@ cadastraDataDisciplinaAluno idDisciplina matricula titulo datainicio dataFim = d
         return ("Data Adicionada! ID Data: " ++ show idData)
     else
         return "Disciplina Não existe"
-
-
-generateID :: Char -> String
-generateID c =
-  let g = mkStdGen 42 -- use a fixed seed for reproducibility
-      alphaNums = filter isAlphaNum (randomRs ('a', 'z') g)
-      upperNums = filter isAlphaNum (randomRs ('A', 'Z') g)
-      nums = filter isAlphaNum (randomRs ('0', '9') g)
-      idStr = take 9 (alphaNums ++ upperNums ++ nums)
-   in idStr ++ "-" ++ [toLower c]
 
 
 getResumo :: Disciplina -> String -> Maybe Resumo
@@ -244,3 +234,76 @@ showData matriculaAluno idDisciplina idData = do
                 Just dataEncontrado -> return (show dataEncontrado)
                 Nothing -> return "Data não cadastrada"
         Nothing -> return "Disciplina Não Cadastrada"
+
+
+removeMateriaisDisciplinaAluno :: String -> Int -> String -> String  -> IO String
+removeMateriaisDisciplinaAluno op idDisciplina matricula chave  = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let alunoExistente = getAlunoByMatricula matricula alunos
+    let possuiDisciplina = disciplinaExiste idDisciplina (disciplinas alunoExistente)
+    
+    if possuiDisciplina then do
+        let disciplinasAtuais = disciplinas alunoExistente
+        if(op == "resumo") then do
+
+            let disciplinaAtualizada = removerResumoNaDisciplina idDisciplina  disciplinasAtuais chave
+            let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
+            let alunosAtualizados = atualizarAluno matricula alunos alunoAtualizado
+            saveAlunoAlteracoes alunosAtualizados
+            return ("Resumo removido com sucesso!")
+        else
+            if (op == "link") then do
+                let disciplinaAtualizada = removerLinkNaDisciplina idDisciplina  disciplinasAtuais chave
+                let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
+                let alunosAtualizados = atualizarAluno matricula alunos alunoAtualizado
+                saveAlunoAlteracoes alunosAtualizados
+                return ("Link removido com sucesso!")
+            else do
+                let disciplinaAtualizada = removerDataNaDisciplina idDisciplina  disciplinasAtuais chave
+                let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
+                let alunosAtualizados = atualizarAluno matricula alunos alunoAtualizado
+                saveAlunoAlteracoes alunosAtualizados
+                return ("Data removida com sucesso!")
+    else
+        return "Disciplina Não existe"
+
+removerResumoNaDisciplina :: Int -> [Disciplina] -> String -> [Disciplina]
+removerResumoNaDisciplina _ [] _ = []  -- Lista vazia, não há disciplinas para remover
+removerResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chaveResumo
+    | Model.Disciplina.id disciplina == idDisciplina =
+        let resumosAtuais = resumos disciplina
+            resumosAtualizados = filter (\r -> idResumo r /= chaveResumo) resumosAtuais
+        in disciplina { resumos = resumosAtualizados } : outrasDisciplinas
+    | otherwise =
+        disciplina : removerResumoNaDisciplina idDisciplina outrasDisciplinas chaveResumo
+
+removerLinkNaDisciplina :: Int -> [Disciplina] -> String -> [Disciplina]
+removerLinkNaDisciplina _ [] _ = []  -- Lista vazia, não há disciplinas para remover
+removerLinkNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chaveLink
+    | Model.Disciplina.id disciplina == idDisciplina =
+        let linksAtuais = links disciplina
+            linksAtualizados = filter (\link -> idLink link /= chaveLink) linksAtuais
+        in disciplina { links = linksAtualizados } : outrasDisciplinas
+    | otherwise =
+        disciplina : removerLinkNaDisciplina idDisciplina outrasDisciplinas chaveLink
+
+-- Função para remover uma data dentro de uma disciplina existente
+removerDataNaDisciplina :: Int -> [Disciplina] -> String -> [Disciplina]
+removerDataNaDisciplina _ [] _ = []  -- Lista vazia, não há disciplinas para remover
+removerDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chaveData
+    | Model.Disciplina.id disciplina == idDisciplina =
+        let datasAtuais = datas disciplina
+            datasAtualizadas = filter (\dataObj -> iddata dataObj /= chaveData) datasAtuais
+        in disciplina { datas = datasAtualizadas } : outrasDisciplinas
+    | otherwise =
+        disciplina : removerDataNaDisciplina idDisciplina outrasDisciplinas chaveData
+
+generateID :: Char -> IO String
+generateID c = do
+    seed <- randomIO  -- Gera uma semente aleatória
+    let g = mkStdGen seed
+        alphaNums = filter isAlphaNum (randomRs ('a', 'z') g)
+        upperNums = filter isAlphaNum (randomRs ('A', 'Z') g)
+        nums = filter isAlphaNum (randomRs ('0', '9') g)
+        idStr = take 9 (alphaNums ++ upperNums ++ nums)
+    return (idStr ++ "-" ++ [toLower c])

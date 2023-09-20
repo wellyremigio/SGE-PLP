@@ -14,6 +14,7 @@ import Data.List
 import Data.List (elem)
 import System.Random
 import Data.Char (isAlpha, isAlphaNum, toLower)
+import Function.AlunoFunction (generateID)
 
 -- Recebe nome, código e matrícula do adm do grupo e o adiciona ao banco de dados.
 cadastraGrupo :: String -> Int -> String -> IO String
@@ -235,7 +236,7 @@ cadastraLink  idGrupo idDisciplina titulo url = do
     let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
 
     if possuiDisciplina then do
-        let idLinkUtil = generateID 'l'
+        idLinkUtil <- generateID 'l'
         let linkUtil = LinkUtil idLinkUtil titulo url
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
@@ -262,7 +263,7 @@ cadastraResumo  idGrupo idDisciplina titulo corpo = do
     let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
 
     if possuiDisciplina then do
-        let idResumo = generateID 'r'
+        idResumo <- generateID 'r'
         let resumo = Resumo idResumo titulo corpo []
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarResumoNaDisciplina idDisciplina disciplinasAtuais resumo
@@ -290,7 +291,7 @@ cadastraData  idGrupo idDisciplina tag datainicio dataFim = do
     let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
 
     if possuiDisciplina then do
-        let idData = generateID 'D'
+        idData <-  generateID 'D'
         let dataObj = Data tag idData datainicio dataFim
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
@@ -309,14 +310,5 @@ adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
         in disciplinaAtualizada : outrasDisciplinas
     | otherwise =
         disciplina : adicionarDataNaDisciplina idDisciplina outrasDisciplinas dataObj
-
-generateID :: Char -> String
-generateID c =
-  let g = mkStdGen 42 -- use a fixed seed for reproducibility
-      alphaNums = filter isAlphaNum (randomRs ('a', 'z') g)
-      upperNums = filter isAlphaNum (randomRs ('A', 'Z') g)
-      nums = filter isAlphaNum (randomRs ('0', '9') g)
-      idStr = take 9 (alphaNums ++ upperNums ++ nums)
-   in idStr ++ "-" ++ [toLower c]
 
 
