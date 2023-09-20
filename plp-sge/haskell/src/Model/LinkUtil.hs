@@ -4,11 +4,13 @@ module Model.LinkUtil where
 
 import GHC.Generics ( Generic )
 import Data.Aeson
+import Model.Comentario
 
 data LinkUtil= LinkUtil {
     idLink :: String,
     titulo :: String,
-    url :: String
+    url :: String,
+    comentarios :: [Comentario]
 } deriving (Generic)
 
 instance Show LinkUtil where

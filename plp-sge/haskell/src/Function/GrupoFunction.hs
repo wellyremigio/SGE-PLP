@@ -237,7 +237,7 @@ cadastraLink  idGrupo idDisciplina titulo url = do
 
     if possuiDisciplina then do
         idLinkUtil <- generateID 'l'
-        let linkUtil = LinkUtil idLinkUtil titulo url
+        let linkUtil = LinkUtil idLinkUtil titulo url []
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
         let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
@@ -292,7 +292,7 @@ cadastraData  idGrupo idDisciplina tag datainicio dataFim = do
 
     if possuiDisciplina then do
         idData <-  generateID 'D'
-        let dataObj = Data tag idData datainicio dataFim
+        let dataObj = Data tag idData datainicio dataFim []
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
         let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }

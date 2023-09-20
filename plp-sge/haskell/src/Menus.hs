@@ -63,10 +63,9 @@ menuInicial matricula = do
     putStrLn "2- Remover grupo"
     putStrLn "3- Meus grupos"
     putStrLn "4- Minhas disciplinas"
-    putStrLn "5- Contribuir"
-    putStrLn "6- Consultar"
-    putStrLn "7- Procurar Grupo"
-    putStrLn "8- Sair"
+    putStrLn "5- Consultar"
+    putStrLn "6- Procurar Grupo"
+    putStrLn "7- Sair"
     op <- readLn :: IO Int
     selecaoMenuInicial op matricula
 
@@ -104,12 +103,11 @@ selecaoMenuInicial op matricula
         putStr resultado
         menuMeusGrupos matricula -- fzr dps. vai mostrar as opções possivies de manipulação dos grpos.
     | op == 4 = menuMinhasDisciplinas matricula
-   -- | op == 5 = menuMateriais -- opção de adicionar ou remover materiais
-   -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
-    | op == 7 = do
+   -- | op == 5 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
+    | op == 6 = do
         result <- listagemDeGruposEmComum matricula
         putStr result
-    | op == 8 = putStrLn "Saindo...\n"
+    | op == 7 = putStrLn "Saindo...\n"
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
         menuInicial matricula
@@ -214,20 +212,53 @@ menuMateriaisGrupo matricula = do
     putStrLn "2. Adicionar materiais"
     putStrLn "3. Remover materiais"
     putStrLn "4. Editar materiais"
-    putStrLn "5. Voltar"
+    putStrLn "5. Comentar no material"
+    putStrLn "6. ver Comentarios do material"
+    putStrLn "7. Voltar"
     op <- readLn :: IO Int
     selecionaMateriaisGrupo matricula op
 
 selecionaMateriaisGrupo:: String -> Int -> IO()
 selecionaMateriaisGrupo matricula op
-   | op == 1 = menuSelecionaMaterial matricula
-   | op == 2 = menuCadastraMateriaisGrupo matricula
+    | op == 1 = menuSelecionaMaterial matricula
+    | op == 2 = menuCadastraMateriaisGrupo matricula
 {-   | op == 3 = menuRemoverMateriaisGrupo
-   | op == 4 = menuEditarMateriaisGrupo-}
-   | op == 5 = menuMeusGrupos matricula
-   | otherwise = do
+    | op == 4 = menuEditarMateriaisGrupo-}
+    | op == 5 = menuComentarMaterial matricula
+    | op == 6 = putStrLn "ok"
+    | op == 7 = menuMeusGrupos matricula
+    | otherwise = do
        putStrLn "Opção inválida! Tente novamente."
        menuMateriaisGrupo matricula
+
+menuComentarMaterial :: String -> IO()
+menuComentarMaterial matricula = do
+    putStrLn "\nVocê deseja comentar qual Material?"
+    putStrLn "1. Resumo"
+    putStrLn "2. Link Úteis"
+    putStrLn "3. Datas Importantes"
+    putStrLn "4. Voltar"
+    op <- readLn:: IO Int
+    selecionaMaterialComentario matricula op
+
+selecionaMaterialComentario :: String -> Int -> IO ()
+selecionaMaterialComentario matricula op
+    | op == 1 = do
+        putStrLn "\nID grupo? "
+        idGrupo <- getLine
+        putStrLn "ID disciplina: "
+        idDisciplina <- readLn :: IO Int
+        putStrLn "ID Resumo: "
+        idResumo <- getLine
+        putStrLn "Conteúdo do resumo: "
+        conteudo <- getLine
+        putStrLn "ok"
+    | otherwise = do
+        putStrLn "Opção inválida! Tente novamente."
+
+    
+    
+
 
 menuSelecionaMaterial:: String -> IO()
 menuSelecionaMaterial matricula = do

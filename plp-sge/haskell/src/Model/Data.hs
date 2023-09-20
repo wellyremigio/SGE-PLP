@@ -4,12 +4,14 @@ module Model.Data where
 
 import GHC.Generics ( Generic )
 import Data.Aeson
+import Model.Comentario
 
 data Data = Data {
     titulo:: String,
     iddata :: String,
     dataInicio :: String,
-    dataFim :: String
+    dataFim :: String,
+    comentarios :: [Comentario]
 } deriving (Generic)
 
 instance Show Data where
