@@ -272,43 +272,49 @@ menuCadastraMateriaisGrupo matricula = do
 
 selecionaMenuCadastroMateriaisGrupo:: Int -> String -> IO()
 selecionaMenuCadastroMateriaisGrupo op matricula
-    {-| op == 1 = do
-        putStrLn "ID disciplina: \n"
-        id <- readLn :: IO Int
-        putStrLn "Nome do resumo: \n"
-        nome <- getLine
-        putStrLn "Conteudo do resumo: \n"
-        conteudo <- getLine
-        DisciplinaF.cadastraResumo matricula id nome conteudo
-        putStrLn "Cadastrado com sucesso!\n"-}
-    | op == 2 = do
-        putStrLn "Id do grupo a ser adicionado o material?"
+    | op == 1 = do
+        putStrLn "Id do grupo a ser adicionado o material? \n"
         idGrupo <- readLn :: IO Int
-        putStrLn "ID disciplina a ser adicionado o link?"
+        putStrLn "ID disciplina: "
         idDisciplina <- readLn :: IO Int
-        putStrLn "ID do link?"
-        idLink <- readLn :: IO Int
+        putStrLn "Nome do resumo: "
+        tituloResumo <- getLine
+        putStrLn "Conteudo do resumo: "
+        conteudo <- getLine
+        resposta <- cadastraResumo idGrupo idDisciplina tituloResumo conteudo
+        putStrLn resposta
+        menuCadastraMateriaisGrupo matricula
+    | op == 2 = do
+        putStrLn "Id do grupo a ser adicionado o material? "
+        idGrupo <- readLn :: IO Int
+        putStrLn "ID disciplina a ser adicionado o link? "
+        idDisciplina <- readLn :: IO Int
         putStrLn "Titulo do Link: "
         titulo <- getLine
-        putStrLn "URL do link?"
+        putStrLn "URL do link? "
         url <- getLine
-        --resposta <- cadastraLink idGrupo idDisciplina idLink titulo url
-        putStrLn "ok"
-        menuSelecionaMaterial matricula
-    -- | op == 3 = do
-    --     putStrln "ID disciplina: "
-    --     id <- readLn :: IO Int
-    --     putStrLn "Titulo: "
-    --     titulo <- getLine
-    --     putStrLn "Data: "
-    --     dt <- getLine
-    --     cadastraData id titulo dt
-    --     putStrLn "Cadastrado com sucesso"
-    | op == 4 = menuSelecionaMaterial matricula
-    | otherwise = do
-        putStrLn "Opção inválida! Tente novamente."
+        resposta <- cadastraLink idGrupo idDisciplina titulo url
+        putStrLn resposta
         menuCadastraMateriaisGrupo matricula
-
+     | op == 3 = do
+        putStrLn "Id do grupo a ser adicionado o material? "
+        idGrupo <- readLn :: IO Int
+        putStrLn "ID disciplina: "
+        idDisciplina <- readLn :: IO Int
+        putStrLn "Data início (dd/mm/aa): "
+        dataInicio <- getLine
+        putStrLn "Data fim (dd/mm/aa): "
+        dataFim <- getLine
+        putStrLn "Tag: "
+        tag <- getLine
+        resposta <- cadastraData idGrupo idDisciplina tag dataInicio dataFim 
+        putStrLn resposta
+        menuCadastraMateriaisGrupo matricula
+    | op == 4 = menuMateriaisGrupo matricula
+    | otherwise = do
+        putStrLn "Opção inválida! Tente novamente. \n"
+        menuCadastraMateriaisGrupo matricula
+        
 -- Menu referente às disciplinas;
 menuMinhasDisciplinas::String -> IO()
 menuMinhasDisciplinas matricula = do

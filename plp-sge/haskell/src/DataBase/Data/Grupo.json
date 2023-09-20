@@ -1,1 +1,80 @@
-[{"adm":"","alunos":[],"codigo":-1,"disciplinas":[{"datas":[],"id":1,"links":[],"nome":"1","periodo":"1","professor":"1","resumos":[]}],"nome":""}]
+[
+    {
+        "adm": "",
+        "alunos": [],
+        "codigo": -1,
+        "disciplinas": [
+            {
+                "datas": [],
+                "id": 1,
+                "links": [],
+                "nome": "1",
+                "periodo": "1",
+                "professor": "1",
+                "resumos": []
+            }
+        ],
+        "nome": ""
+    },
+    {
+        "adm": "",
+        "alunos": [],
+        "codigo": -1,
+        "disciplinas": [
+            {
+                "datas": [],
+                "id": 3,
+                "links": [],
+                "nome": "3",
+                "periodo": "3",
+                "professor": "3",
+                "resumos": []
+            }
+        ],
+        "nome": ""
+    },
+    {
+        "adm": "789",
+        "alunos": [
+            {
+                "disciplinas": [],
+                "matricula": "789",
+                "nome": "Welly",
+                "senha": "555"
+            }
+        ],
+        "codigo": 9,
+        "disciplinas": [
+            {
+                "datas": [
+                    {
+                        "dataFim": "28/09/23",
+                        "dataInicio": "20/09/23",
+                        "iddata": "tbpjliugh-d",
+                        "titulo": "prova"
+                    }
+                ],
+                "id": 8,
+                "links": [
+                    {
+                        "idLink": "tbpjliugh-l",
+                        "titulo": "Video tableaux",
+                        "url": "exemplo.com"
+                    }
+                ],
+                "nome": "Lógica",
+                "periodo": "3",
+                "professor": "Massoni",
+                "resumos": [
+                    {
+                        "comentario": [],
+                        "corpo": "é muito massa",
+                        "idResumo": "tbpjliugh-r",
+                        "titulo": "Tableaux"
+                    }
+                ]
+            }
+        ],
+        "nome": "Lógica"
+    }
+]

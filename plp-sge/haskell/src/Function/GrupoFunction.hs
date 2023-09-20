@@ -12,6 +12,8 @@ import DataBase.Gerenciador.GrupoGerenciador as G
 import DataBase.Gerenciador.AlunoGerenciador as A
 import Data.List
 import Data.List (elem)
+import System.Random
+import Data.Char (isAlpha, isAlphaNum, toLower)
 
 -- Recebe nome, código e matrícula do adm do grupo e o adiciona ao banco de dados.
 cadastraGrupo :: String -> Int -> String -> IO String
@@ -217,7 +219,104 @@ listaDisciplinaGrupo codigoGrupo matricula = do
                 else return (organizaListagem disciplinasGrupo)
 
 
+atualizarGrupo :: Int -> [Grupo] -> Grupo -> [Grupo]
+atualizarGrupo _ [] _ = []
+atualizarGrupo idGrupo (grupo:outrosGrupos) grupoAtualizado
+    | Model.Grupo.codigo grupo == idGrupo =
+        grupoAtualizado : outrosGrupos
+    | otherwise =
+        grupo : atualizarGrupo idGrupo outrosGrupos grupoAtualizado
 
 
+cadastraLink :: Int -> Int -> String ->  String -> IO String
+cadastraLink  idGrupo idDisciplina titulo url = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let grupoExistente = getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
 
-    
+    if possuiDisciplina then do
+        let idLinkUtil = generateID 'l'
+        let linkUtil = LinkUtil idLinkUtil titulo url
+        let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
+        let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
+        let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
+        let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+        saveAlteracoesGrupo gruposAtualizados
+        return ("Link Util Adicionado! ID Link Util: " ++ show idLinkUtil)
+    else
+        return "Disciplina Não existe"
+
+adicionarLinkUtilNaDisciplina :: Int -> [Disciplina] -> LinkUtil -> [Disciplina]
+adicionarLinkUtilNaDisciplina _ [] _ = []
+adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUtil
+    | Model.Disciplina.id disciplina == idDisciplina =
+        disciplina { links = linkUtil : links disciplina } : outrasDisciplinas
+    | otherwise =
+        disciplina : adicionarLinkUtilNaDisciplina idDisciplina outrasDisciplinas linkUtil
+
+
+cadastraResumo :: Int -> Int -> String -> String -> IO String
+cadastraResumo  idGrupo idDisciplina titulo corpo = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let grupoExistente = getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
+
+    if possuiDisciplina then do
+        let idResumo = generateID 'r'
+        let resumo = Resumo idResumo titulo corpo []
+        let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
+        let disciplinaAtualizada = adicionarResumoNaDisciplina idDisciplina disciplinasAtuais resumo
+        let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
+        let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+        saveAlteracoesGrupo gruposAtualizados
+        return ("Resumo Adicionado! ID do Resumo: " ++ show idResumo)
+    else
+        return "Disciplina Não existe"
+
+-- Função para adicionar um resumo a uma disciplina existente
+adicionarResumoNaDisciplina :: Int -> [Disciplina] -> Resumo -> [Disciplina]
+adicionarResumoNaDisciplina _ [] _ = []
+adicionarResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) resumo
+    | Model.Disciplina.id disciplina == idDisciplina =
+        disciplina { resumos = resumo : resumos disciplina } : outrasDisciplinas
+    | otherwise =
+        disciplina : adicionarResumoNaDisciplina idDisciplina outrasDisciplinas resumo
+
+
+cadastraData :: Int -> Int -> String -> String -> String -> IO String
+cadastraData  idGrupo idDisciplina tag datainicio dataFim = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let grupoExistente = getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
+
+    if possuiDisciplina then do
+        let idData = generateID 'D'
+        let dataObj = Data tag idData datainicio dataFim
+        let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
+        let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
+        let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
+        let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+        saveAlteracoesGrupo gruposAtualizados
+        return ("Resumo Adicionado! ID da Data: " ++ show idData)
+    else
+        return "Disciplina Não existe"
+
+adicionarDataNaDisciplina :: Int -> [Disciplina] -> Data -> [Disciplina]
+adicionarDataNaDisciplina _ [] _ = []
+adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
+    | Model.Disciplina.id disciplina == idDisciplina =
+        let disciplinaAtualizada = disciplina { datas = dataObj : datas disciplina }
+        in disciplinaAtualizada : outrasDisciplinas
+    | otherwise =
+        disciplina : adicionarDataNaDisciplina idDisciplina outrasDisciplinas dataObj
+
+generateID :: Char -> String
+generateID c =
+  let g = mkStdGen 42 -- use a fixed seed for reproducibility
+      alphaNums = filter isAlphaNum (randomRs ('a', 'z') g)
+      upperNums = filter isAlphaNum (randomRs ('A', 'Z') g)
+      nums = filter isAlphaNum (randomRs ('0', '9') g)
+      idStr = take 9 (alphaNums ++ upperNums ++ nums)
+   in idStr ++ "-" ++ [toLower c]
+
+

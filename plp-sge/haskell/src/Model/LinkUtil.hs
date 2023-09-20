@@ -15,4 +15,3 @@ instance Show LinkUtil where
     show link = "ID do Link: " ++ idLink link ++ "\n" ++
                 "Título: " ++ titulo link ++ "\n" ++
                 "URL: " ++ url link
-
