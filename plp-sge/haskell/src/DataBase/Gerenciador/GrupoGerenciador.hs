@@ -47,11 +47,11 @@ getGruposJSON path = do
     Left err -> error err
     Right grupos -> return grupos
 
-getGruposByCodigoCadastraMaterial :: Int -> [Grupo] -> Resultado Grupo
-getGruposByCodigoCadastraMaterial codigo grupos =
-    case find (\grupo -> Model.Grupo.codigo grupo == codigo) grupos of
-        Just grupoEncontrado -> Encontrado grupoEncontrado
-        Nothing -> NaoEncontrado
+--getGruposByCodigoCadastraMaterial :: Int -> [Grupo] -> Grupo
+--getGruposByCodigoCadastraMaterial codigo grupos =
+   -- case find (\grupo -> Model.Grupo.codigo grupo == codigo) grupos of
+     --   Just grupoEncontrado -> Encontrado grupoEncontrado
+    --    Nothing -> NaoEncontrado
     
 getGruposByCodigoIO :: Int -> [Grupo] -> IO Grupo
 getGruposByCodigoIO _ [] = do

@@ -13,3 +13,9 @@ data Resumo = Resumo{
     corpo :: String,
     comentario :: [Comentario]
 } deriving (Generic)
+
+instance Show Resumo where
+    show resumo = "ID do Resumo: " ++ idResumo resumo ++ "\n" ++
+                  "Título: " ++ titulo resumo ++ "\n" ++
+                  "Corpo: " ++ corpo resumo
+

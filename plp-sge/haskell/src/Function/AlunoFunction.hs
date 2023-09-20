@@ -201,3 +201,28 @@ generateID c =
       nums = filter isAlphaNum (randomRs ('0', '9') g)
       idStr = take 9 (alphaNums ++ upperNums ++ nums)
    in idStr ++ "-" ++ [toLower c]
+
+showResumo :: String -> Int -> String -> IO String
+showResumo matriculaAluno idDisciplina idResumo = do
+    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let aluno = getAlunoByMatricula matriculaAluno alunos
+    let disciplina = encontrarDisciplinaPorID idDisciplina (disciplinas aluno)
+    case disciplina of
+        Just disciplinaEncontrada -> do
+            case getResumo disciplinaEncontrada idResumo of
+                Just resumoEncontrado -> return (show resumoEncontrado)
+                Nothing -> return "Resumo não cadastrado"
+        Nothing -> return "Disciplina Não Cadastrada"
+
+getResumo :: Disciplina -> String -> Maybe Resumo
+getResumo disciplina idResumoDesejado = 
+    case find (\resumo -> idResumoDesejado == idResumo resumo) (resumos disciplina) of
+        Just res -> Just res
+        Nothing -> Nothing
+
+
+
+
+
+
+    

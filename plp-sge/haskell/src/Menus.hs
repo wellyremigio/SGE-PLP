@@ -3,8 +3,6 @@
 module Menus where
 import Function.AlunoFunction
 import Function.GrupoFunction
-import Function.DisciplinaFunction as DisciplinaF
-
 
 -- Função que lê os dados de login do usuário.
 menuLogin:: IO()
@@ -294,8 +292,8 @@ selecionaMenuCadastroMateriaisGrupo op matricula
         titulo <- getLine
         putStrLn "URL do link?"
         url <- getLine
-        resposta <- cadastraLink idGrupo idDisciplina idLink titulo url
-        putStrLn resposta
+        --resposta <- cadastraLink idGrupo idDisciplina idLink titulo url
+        putStrLn "ok"
         menuSelecionaMaterial matricula
     -- | op == 3 = do
     --     putStrln "ID disciplina: "
@@ -374,15 +372,21 @@ menuMateriaisAluno matricula = do
     putStrLn "2. Adicionar materiais"
     putStrLn "3. Remover materiais"
     putStrLn "4. Editar materiais"
+    putStrLn "5. Voltar"
+    putStrLn "6. Sair"
     op <- readLn :: IO Int
     selecionaMateriaisAluno matricula op
 
 selecionaMateriaisAluno :: String -> Int -> IO ()
 selecionaMateriaisAluno matricula op
-    -- | op == 1 = listarMateriais
+    | op == 1 = menuConsultaAluno matricula
     | op == 2 = menuCadastraMateriaisAluno matricula
     -- | op == 3 = menuRemoverMateriais
     -- | op == 4 = menuEditaMaterias
+    | op == 5 = do
+        putStrLn "Voltando..."
+        menuMinhasDisciplinas matricula
+    | op == 6 =  putStrLn "Saindo..."
     | otherwise = do 
         putStrLn "Digite novamente" 
         selecionaMateriaisAluno matricula op
@@ -428,6 +432,9 @@ selecionaMenuCadastroMateriaisAluno op matricula
         dtf <- getLine
         result <- cadastraDataDisciplinaAluno idDisciplina matricula  titulo dti dtf
         putStrLn result
+    | otherwise = do 
+        putStrLn "Digite novamente" 
+        selecionaMenuCadastroMateriaisAluno op matricula 
         
 -- menuEditaMaterias:: IO()
 -- menuEditaMaterias = do
@@ -462,24 +469,25 @@ selecionaMenuCadastroMateriaisAluno op matricula
 --         editaData id titulo
 --         if (editaData) then do putStrLn "Editado com sucesso" else putStrLn "Não encontrado" 
 
--- menuConsulta:: IO()
--- menuConsulta = do
---     putStrLn "Você deseja ver o material de qual disciplia? Informe o id"
---     id <- readLn::IO Int
---     putStrLn "Qual o tipo de material?"
---     putStrLn "1. Resumo"
---     putStrLn "2. Links"
---     putStrLn "3. Datas"
---     op <- readLn :: IO Int
---     selecionaMenuConsulta op
+menuConsultaAluno::String -> IO()
+menuConsultaAluno matricula = do
+     putStrLn "Você deseja ver o material de qual disciplia? Informe o id"
+     idDisciplina <- readLn::IO Int
+     putStrLn "Qual o tipo de material?"
+     putStrLn "1. Resumo"
+     putStrLn "2. Links"
+     putStrLn "3. Datas"
+     op <- readLn :: IO Int
+     selecionaMenuConsultaAluno matricula idDisciplina op
+     
 
--- selecionaMenuConsulta:: IO()
--- selecionaMenuConsulta op
---     | op == 1 = do
---         putStrLn "Nome do Resumo? "
---         nome <- getLine
---         achaResumo
---         menuEscolhaResumo nome
+selecionaMenuConsultaAluno::String -> Int -> Int -> IO()
+selecionaMenuConsultaAluno matricula idDisciplina op
+    | op == 1 = do
+        putStrLn "ID do Resumo? "
+        idResumo <- getLine
+        result <- showResumo matricula idDisciplina idResumo
+        putStrLn result
 --     | op == 2 = do
 --         putStrLn "Nome do Link? "
 --         nome <- getLine
@@ -490,6 +498,7 @@ selecionaMenuCadastroMateriaisAluno op matricula
 --         nome <- getLine
 --         achaData
 --         menuEscolhaData nome
+
 
     
 -- menuEscolhaResumo:: Resumo -> IO()
