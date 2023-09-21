@@ -246,7 +246,16 @@ selecionaMateriaisGrupo matricula op
     | op == 3 = menuRemoverMateriaisGrupo matricula
  --  | op == 4 = menuEditarMateriaisGrupo
     | op == 5 = menuComentarMaterial matricula
-    | op == 6 = putStrLn "ok"
+    | op == 6 = do
+        putStrLn "\nID grupo? "
+        idGrupo <- readLn :: IO Int
+        putStrLn "ID disciplina: "
+        idDisciplina <- readLn :: IO Int
+        putStrLn "ID Resumo: "
+        idResumo <- getLine
+        result <- verComentariosResumo idGrupo idDisciplina idResumo matricula
+        putStrLn result
+        menuMateriaisGrupo matricula
     | op == 7 = menuMeusGrupos matricula
     | otherwise = do
        putStrLn "Opção inválida! Tente novamente."
@@ -683,7 +692,6 @@ selecionaMenuConsultaAluno matricula idDisciplina op
         putStrLn "Voltando..."
         menuMinhasDisciplinas matricula
     | op == 5 = putStrLn "Saindo..."
-
     | otherwise = do 
         putStrLn "Opção Inválida, Redirecionado para a seleção do material a ser cadastrado!"
         menuCadastraMateriaisAluno matricula

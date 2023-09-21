@@ -516,7 +516,7 @@ verComentariosResumo idGrupo idDisciplina idResumo matriculaAluno = do
             else 
                 return "Você não está no grupo."
         Nothing ->
-            return "Disciplina Não Encontrada."
+            return "Disciplina Não Encontrada ou Grupo não encontrado."
 
 -- Testa para saber se um comentário está vazio 
 comentarioEstaVazio :: Resumo -> Bool
