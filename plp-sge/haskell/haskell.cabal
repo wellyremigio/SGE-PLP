@@ -30,6 +30,7 @@ executable haskell
     Model.Resumo
     DataBase.Gerenciador.AlunoGerenciador
     DataBase.Gerenciador.GrupoGerenciador
+    DataBase.Gerenciador.DisciplinaGerenciador
     Function.AlunoFunction
     Function.GrupoFunction
     Menus
