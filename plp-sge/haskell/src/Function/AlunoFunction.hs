@@ -17,18 +17,18 @@ cadastraUsuario matricula nome senha = do
     saveAluno matricula nome senha
     return "Cadastro realizado com sucesso!\n"
 
-verificaLogin :: String -> String -> IO Bool
-verificaLogin matricula senha = do
+verificaLogin :: String -> IO Bool
+verificaLogin matricula = do
+    listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let matriculas = map Model.Aluno.matricula listaAlunos
+    return $ matricula `elem` matriculas
+
+
+verificaSenhaAluno :: String -> String -> IO Bool
+verificaSenhaAluno matricula senha = do
     listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
     let aluno = getAlunoByMatricula matricula listaAlunos
-    senhaValida <- verificaSenha senha
-    return $ Model.Aluno.matricula aluno /= "" && senhaValida
-
-verificaSenha :: String -> IO Bool
-verificaSenha senha = do
-    listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
-    let aluno = getAlunoBySenha senha listaAlunos
-    return $ Model.Aluno.senha aluno /= ""
+    return $ Model.Aluno.senha aluno == senha
 
 organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
@@ -153,7 +153,6 @@ adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUt
         disciplina : adicionarLinkUtilNaDisciplina idDisciplina outrasDisciplinas linkUtil
 
 
-
 adicionarDataNaDisciplina :: Int -> [Disciplina] -> Data -> [Disciplina]
 adicionarDataNaDisciplina _ [] _ = []
 adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
@@ -235,7 +234,6 @@ showData matriculaAluno idDisciplina idData = do
                 Just dataEncontrado -> return (show dataEncontrado)
                 Nothing -> return "Data não cadastrada"
         Nothing -> return "Disciplina Não Cadastrada"
-
 
 removeMateriaisDisciplinaAluno :: String -> Int -> String -> String  -> IO String
 removeMateriaisDisciplinaAluno op idDisciplina matricula chave  = do

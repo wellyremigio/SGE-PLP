@@ -8,6 +8,7 @@ import Model.Data
 import Model.Resumo
 import Model.LinkUtil
 import Model.Comentario
+import Function.AlunoFunction(disciplinaExiste)
 import DataBase.Gerenciador.GrupoGerenciador as G
 import DataBase.Gerenciador.AlunoGerenciador as A
 import Data.List
@@ -310,5 +311,74 @@ adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
         in disciplinaAtualizada : outrasDisciplinas
     | otherwise =
         disciplina : adicionarDataNaDisciplina idDisciplina outrasDisciplinas dataObj
+
+adicionarComentarioResumoDisciplinaDoGrupo :: Int -> Int -> String -> String -> String -> IO String
+adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno idResumo comentario = do
+    listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
+    let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
+    let aluno = A.getAlunoByMatricula matriculaAluno alunoList
+    let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+
+    case disciplinaM of
+        Just disciplina -> do
+            if codigo grupoEncontrado == -1 then
+                return "Grupo não encontrado."
+            else if grupoContainsAluno grupoEncontrado aluno then do
+                if resumoExisteNaDisciplina idResumo disciplina then do 
+                    idComentario <- generateID 'c'
+                    let comentarioObj = Comentario idComentario matriculaAluno comentario
+                    let disciplinaListaAtualizada = adicionarComentarioEmDisciplina idDisciplina disciplinasGrupo idResumo comentarioObj
+                    let grupoAtualizado = grupoEncontrado { Model.Grupo.disciplinas = disciplinaListaAtualizada }
+                    let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+                    saveAlteracoesGrupo gruposAtualizados
+                    return "Comentário adicionado ao resumo!"
+                else
+                    return "Resumo não cadastrado!"
+            else 
+                return "Você não está no grupo."
+        Nothing ->
+            return "Disciplina Não Encontrada"
+
+
+
+
+-- Função para adicionar um comentário a um resumo
+adicionarComentarioAoResumo :: String -> Comentario -> Resumo -> Resumo
+adicionarComentarioAoResumo idDoResumo comentarioAtualizado resumo =
+    if idDoResumo == idResumo resumo
+        then resumo { comentario = comentarioAtualizado : comentario resumo }
+        else resumo
+
+
+-- Função para adicionar um comentário a um resumo em uma disciplina
+adicionarComentarioNaDisciplina :: Int -> String -> Comentario -> [Disciplina] -> [Disciplina]
+adicionarComentarioNaDisciplina codigoDisciplina codigoResumo comentarioAtualizado disciplinas =
+    case find (\disciplina -> Model.Disciplina.id disciplina == codigoDisciplina) disciplinas of
+        Just disciplinaEncontrada ->
+            let resumosAtualizados = map (\resumo -> adicionarComentarioAoResumo codigoResumo comentarioAtualizado resumo) (resumos disciplinaEncontrada)
+                disciplinaAtualizada = disciplinaEncontrada { Model.Disciplina.resumos = resumosAtualizados }
+            in disciplinaAtualizada : filter (\disciplina -> Model.Disciplina.id disciplina /= codigoDisciplina) disciplinas
+        Nothing -> disciplinas
+
+-- Função principal para adicionar um comentário a um resumo em uma disciplina
+adicionarComentarioEmDisciplina :: Int -> [Disciplina] -> String -> Comentario -> [Disciplina]
+adicionarComentarioEmDisciplina codigoDisciplina disciplinas codigoResumo comentarioAtualizado =
+    adicionarComentarioNaDisciplina codigoDisciplina codigoResumo comentarioAtualizado disciplinas
+
+resumoExisteNaDisciplina :: String -> Disciplina -> Bool
+resumoExisteNaDisciplina idResumo disciplina =
+    any (\res -> Model.Resumo.idResumo res == idResumo) (resumos disciplina)
+
+getDisciplinaByCodigo :: Int -> [Disciplina] -> Maybe Disciplina
+getDisciplinaByCodigo _ [] = Nothing
+getDisciplinaByCodigo codigoDisciplina (d:ds)
+    | Model.Disciplina.id d == codigoDisciplina = Just d
+    | otherwise = getDisciplinaByCodigo codigoDisciplina ds
+
+
+
+
 
 

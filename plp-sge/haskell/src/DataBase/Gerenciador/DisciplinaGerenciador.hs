@@ -11,7 +11,6 @@ import DataBase.Gerenciador.AlunoGerenciador as A
 import DataBase.Gerenciador.GrupoGerenciador as G
 --import qualified Data.ByteString.Lazy.Char8 as BC
 import Data.List
-import Model.Resultado
 -- import Data.Aeson
 -- import GHC.Generics
 -- import qualified Data.ByteString.Lazy as B
@@ -56,13 +55,6 @@ getDisciplinaByCodigo _ [] = Nothing
 getDisciplinaByCodigo codigoDisciplina (d:ds)
     | Model.Disciplina.id d == codigoDisciplina = Just d
     | otherwise = getDisciplinaByCodigo codigoDisciplina ds
-
-getDisciplinaByCodigoCadastroMaterial :: Int -> [Disciplina] -> Resultado Disciplina
-getDisciplinaByCodigoCadastroMaterial codigo disciplinas =
-    case find (\disciplina -> Model.Disciplina.id disciplina == codigo) disciplinas of
-        Just disciplinaEncontrada -> Encontrado disciplinaEncontrada
-        Nothing -> NaoEncontrado
-
 
 getLinksUteisDasDisciplinas :: [Disciplina] -> [LinkUtil]
 getLinksUteisDasDisciplinas disciplinas =
