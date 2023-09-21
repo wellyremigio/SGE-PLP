@@ -3,6 +3,7 @@ import Model.Aluno
 import Model.Disciplina
 import Model.Resumo
 import Model.Data
+import Model.Comentario
 import Model.LinkUtil
 import Data.List (deleteBy)
 import DataBase.Gerenciador.AlunoGerenciador
@@ -132,7 +133,11 @@ cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo url = do
 
     if possuiDisciplina then do
         idLinkUtil <- generateID 'l'
+<<<<<<< HEAD
         let linkUtil = LinkUtil idLinkUtil titulo url[]
+=======
+        let linkUtil = LinkUtil idLinkUtil titulo url []
+>>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
         let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
@@ -170,7 +175,11 @@ cadastraDataDisciplinaAluno idDisciplina matricula titulo datainicio dataFim = d
 
     if possuiDisciplina then do
         idData <- generateID 'D'
+<<<<<<< HEAD
         let dataObj = Data titulo idData datainicio dataFim[]
+=======
+        let dataObj = Data titulo idData datainicio dataFim []
+>>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
         let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [
     {
         "disciplinas": [
@@ -41,3 +42,6 @@
         "senha": "1234"
     }
 ]
+=======
+[{"disciplinas":[],"matricula":"1","nome":"1","senha":"1"}]
+>>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100

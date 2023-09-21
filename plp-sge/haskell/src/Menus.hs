@@ -108,7 +108,11 @@ selecaoMenuInicial op matricula
     | op == 3 = do
         menuMeusGrupos matricula 
     | op == 4 = menuMinhasDisciplinas matricula
+<<<<<<< HEAD
    -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
+=======
+   -- | op == 5 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
+>>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
     | op == 6 = do
         result <- listagemDeGruposEmComum matricula
         putStr result
@@ -219,7 +223,11 @@ menuMateriaisGrupo matricula = do
     putStrLn "3. Remover materiais"
     putStrLn "4. Editar materiais"
     putStrLn "5. Comentar no material"
+<<<<<<< HEAD
     putStrLn "6. Ver Comentarios do material"
+=======
+    putStrLn "6. ver Comentarios do material"
+>>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
     putStrLn "7. Voltar"
     op <- readLn :: IO Int
     selecionaMateriaisGrupo matricula op
@@ -229,18 +237,61 @@ selecionaMateriaisGrupo:: String -> Int -> IO()
 selecionaMateriaisGrupo matricula op
     | op == 1 = menuSelecionaMaterial matricula
     | op == 2 = menuCadastraMateriaisGrupo matricula
+<<<<<<< HEAD
     | op == 3 = menuRemoverMateriaisGrupo matricula
  --  | op == 4 = menuEditarMateriaisGrupo
+=======
+{-   | op == 3 = menuRemoverMateriaisGrupo
+    | op == 4 = menuEditarMateriaisGrupo-}
+>>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
     | op == 5 = menuComentarMaterial matricula
     | op == 6 = putStrLn "ok"
     | op == 7 = menuMeusGrupos matricula
     | otherwise = do
+<<<<<<< HEAD
         putStrLn "Opção inválida! Tente novamente."
         menuMateriaisGrupo matricula
         
 menuComentarMaterial :: String -> IO()
 menuComentarMaterial matricula = do
     putStrLn "\nVocê deseja comentar qual Material?"
+=======
+       putStrLn "Opção inválida! Tente novamente."
+       menuMateriaisGrupo matricula
+
+menuComentarMaterial :: String -> IO()
+menuComentarMaterial matricula = do
+    putStrLn "\nVocê deseja comentar qual Material?"
+    putStrLn "1. Resumo"
+    putStrLn "2. Link Úteis"
+    putStrLn "3. Datas Importantes"
+    putStrLn "4. Voltar"
+    op <- readLn:: IO Int
+    selecionaMaterialComentario matricula op
+
+selecionaMaterialComentario :: String -> Int -> IO ()
+selecionaMaterialComentario matricula op
+    | op == 1 = do
+        putStrLn "\nID grupo? "
+        idGrupo <- getLine
+        putStrLn "ID disciplina: "
+        idDisciplina <- readLn :: IO Int
+        putStrLn "ID Resumo: "
+        idResumo <- getLine
+        putStrLn "Conteúdo do resumo: "
+        conteudo <- getLine
+        putStrLn "ok"
+    | otherwise = do
+        putStrLn "Opção inválida! Tente novamente."
+
+    
+    
+
+
+menuSelecionaMaterial:: String -> IO()
+menuSelecionaMaterial matricula = do
+    putStrLn "\nVocê deseja ver qual material?"
+>>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
     putStrLn "1. Resumo"
     putStrLn "2. Link Úteis"
     putStrLn "3. Datas Importantes"
