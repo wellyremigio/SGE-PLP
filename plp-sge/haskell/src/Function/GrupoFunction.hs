@@ -100,22 +100,27 @@ adicionarAluno matricula codGrupo = do
             grupoAtualizado <- adicionarAlunoLista aluno codGrupo
             return "Aluno adicionado com sucesso"
 
+-- Função que retorna a lista de grupos que compartilham disciplinas com um aluno.
 listaDeGruposEmComum :: [Disciplina] -> [Grupo] -> [Grupo]
 listaDeGruposEmComum disciplinasAluno grupos =
     filter (\grupo -> any (\disciplinaGrupo -> any (\disciplinaAluno -> disciplinaGrupo == disciplinaAluno) disciplinasAluno) (getDisciplinasGrupo grupo)) grupos
 
+-- Função que retorna os grupos que têm disciplinas em comum com um aluno.
 gruposDisciplinasEmComum :: String -> IO [Grupo]
 gruposDisciplinasEmComum matriculaAluno = do
     alunoDisciplinas <- A.getDisciplinasAluno matriculaAluno
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
     return (listaDeGruposEmComum alunoDisciplinas grupos)    
-    
+
+-- Função que lista os grupos em comum com um aluno.
 listagemDeGruposEmComum :: String -> IO String
 listagemDeGruposEmComum idAluno = do
     grupos <- gruposDisciplinasEmComum idAluno
     if null grupos
         then return "Não existem grupos que tenham disciplinas em comum com as que você está cursando."
         else return ("Esses são os grupos em comum com as disciplinas que está cursando:\n" ++ organizaListagem grupos)
+
+-- Função que lista os alunos de um grupo.
 listagemAlunoGrupo :: Int -> IO String
 listagemAlunoGrupo codGrupo = do 
     alunosGrupo <- G.getAlunoGrupo codGrupo
@@ -124,7 +129,7 @@ listagemAlunoGrupo codGrupo = do
     else 
         return $ organizaListagem alunosGrupo
 
-
+-- Função que remove um aluno de um grupo.
 removerAlunoGrupo ::  Int -> String -> IO String
 removerAlunoGrupo idGrupo matricula  = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -133,7 +138,6 @@ removerAlunoGrupo idGrupo matricula  = do
     let aluno = A.getAlunoByMatricula matricula alunoList
     if grupoContainsAluno grupo aluno then do
         let alunosAtualizadas = removeAlunoPorID matricula (alunos grupo)
-
         let novoGrupo = grupo { Model.Grupo.alunos = alunosAtualizadas }
         let gruposAtualizados = G.removeGrupoByCodigo idGrupo grupos
         let newListGrupo = novoGrupo: gruposAtualizados
@@ -142,24 +146,24 @@ removerAlunoGrupo idGrupo matricula  = do
     else
         return " não foi encontrada ou não foi removida"
         
-
+-- Função que remove um aluno de uma lista de alunos por ID.
 removeAlunoPorID :: String -> [Aluno] -> [Aluno]
 removeAlunoPorID _ [] = [] -- Caso base: a lista de alunos está vazia, não há nada a fazer
 removeAlunoPorID idToRemove alunos =
     deleteBy (\aluno1 aluno2 -> Model.Aluno.matricula aluno1 == Model.Aluno.matricula aluno2)
              (Aluno idToRemove "" "" []) alunos
 
-
+-- Função que verifica se uma disciplina com o ID especificado existe em uma lista de disciplinas.
 verificaDisciplina :: Int -> [Disciplina] -> Bool
 verificaDisciplina idDisciplina disciplinas = any (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas
 
+-- Função que cadastra uma disciplina em um grupo.
 cadastraDisciplina :: Int -> Int-> String -> String -> String -> IO Bool
 cadastraDisciplina codGrupo idDisciplina nome professor periodo = do
      listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json" 
      let grupoExistente = G.getGruposByCodigo codGrupo listaGrupos
      let disciplinaNova = Disciplina idDisciplina nome professor periodo [] [] []
      let disciplinaExiste = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
-     
      if not disciplinaExiste then do
         let disciplinasExistente = Model.Grupo.disciplinas grupoExistente
         let novoGrupo = grupoExistente { Model.Grupo.disciplinas = disciplinasExistente ++ [disciplinaNova] }
@@ -175,6 +179,7 @@ removeDisciplinaPorID :: Int -> [Disciplina] -> [Disciplina]
 removeDisciplinaPorID _ [] = [] -- Caso base: a lista está vazia, não há nada a fazer
 removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" [] [] []) disciplinas
 
+-- Função que remove uma disciplina de um grupo.
 removerDisciplinaGrupo ::  Int -> Int -> IO String
 removerDisciplinaGrupo idGrupo idDisciplina   = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -190,6 +195,7 @@ removerDisciplinaGrupo idGrupo idDisciplina   = do
     else
         return " não foi encontrada ou não foi removida"
 
+-- Função que lista as disciplinas de um grupo.
 listagemDisciplinaGrupo :: Int -> String -> IO String
 listagemDisciplinaGrupo codigoGrupo matricula = do
     grupoList <- getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -209,15 +215,13 @@ listagemDisciplinaGrupo codigoGrupo matricula = do
                 then return "Nenhuma disciplina cadastrada!"
                 else return (organizaListagem disciplinasGrupo)
 
-
+-- Função que lista as disciplinas de um grupo.
 listaDisciplinaGrupo :: Int -> String -> IO String
 listaDisciplinaGrupo codigoGrupo matricula = do
     grupoList <- getGruposJSON "src/DataBase/Data/Grupo.json"
     alunoList <- getAlunoJSON "src/DataBase/Data/Aluno.json"
-    
     let grupo = getGruposByCodigo codigoGrupo grupoList
     let aluno = getAlunoByMatricula matricula alunoList
-    
     case (Model.Grupo.codigo grupo) of
         (-1) -> return "Grupo Inválido!"
         (_) -> do
@@ -226,7 +230,7 @@ listaDisciplinaGrupo codigoGrupo matricula = do
                 then return "Nenhuma disciplina cadastrada!"
                 else return (organizaListagem disciplinasGrupo)
 
-
+-- Função que atualiza a lista de grupos com um grupo modificado.
 atualizarGrupo :: Int -> [Grupo] -> Grupo -> [Grupo]
 atualizarGrupo _ [] _ = []
 atualizarGrupo idGrupo (grupo:outrosGrupos) grupoAtualizado
@@ -235,13 +239,12 @@ atualizarGrupo idGrupo (grupo:outrosGrupos) grupoAtualizado
     | otherwise =
         grupo : atualizarGrupo idGrupo outrosGrupos grupoAtualizado
 
-
+-- Função que cadastra um link em uma disciplina de um grupo.
 cadastraLink :: Int -> Int -> String ->  String -> IO String
 cadastraLink  idGrupo idDisciplina titulo url = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupoExistente = getGruposByCodigo idGrupo listaGrupos
     let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
-
     if possuiDisciplina then do
         idLinkUtil <- generateID 'l'
         let linkUtil = LinkUtil idLinkUtil titulo url []
@@ -254,6 +257,7 @@ cadastraLink  idGrupo idDisciplina titulo url = do
     else
         return "Disciplina Não existe"
 
+-- Função para adicionar um LinkUtil a uma disciplina existente.
 adicionarLinkUtilNaDisciplina :: Int -> [Disciplina] -> LinkUtil -> [Disciplina]
 adicionarLinkUtilNaDisciplina _ [] _ = []
 adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUtil
@@ -262,13 +266,12 @@ adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUt
     | otherwise =
         disciplina : adicionarLinkUtilNaDisciplina idDisciplina outrasDisciplinas linkUtil 
 
-
+-- Função que cadastra um Resumo em uma disciplina de um grupo.
 cadastraResumo :: Int -> Int -> String -> String -> IO String
 cadastraResumo  idGrupo idDisciplina titulo corpo = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupoExistente = getGruposByCodigo idGrupo listaGrupos
     let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
-
     if possuiDisciplina then do
         idResumo <- generateID 'r'
         let resumo = Resumo idResumo titulo corpo []
@@ -290,13 +293,12 @@ adicionarResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) resumo
     | otherwise =
         disciplina : adicionarResumoNaDisciplina idDisciplina outrasDisciplinas resumo
 
-
+-- Função que cadastra uma data em uma disciplina de um grupo.
 cadastraData :: Int -> Int -> String -> String -> String -> IO String
 cadastraData  idGrupo idDisciplina tag datainicio dataFim = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupoExistente = getGruposByCodigo idGrupo listaGrupos
     let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
-
     if possuiDisciplina then do
         idData <-  generateID 'D'
         let dataObj = Data tag idData datainicio dataFim []
@@ -309,6 +311,7 @@ cadastraData  idGrupo idDisciplina tag datainicio dataFim = do
     else
         return "Disciplina Não existe"
 
+-- Função para adicionar uma Data a uma disciplina existente.
 adicionarDataNaDisciplina :: Int -> [Disciplina] -> Data -> [Disciplina]
 adicionarDataNaDisciplina _ [] _ = []
 adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
@@ -318,6 +321,7 @@ adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
     | otherwise =
         disciplina : adicionarDataNaDisciplina idDisciplina outrasDisciplinas dataObj
 
+-- Função para adicionar um comentário a um resumo de uma disciplina em um grupo.
 adicionarComentarioResumoDisciplinaDoGrupo :: Int -> Int -> String -> String -> String -> IO String
 adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno idResumo comentario = do
     listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -326,7 +330,6 @@ adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno i
     let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
     let aluno = A.getAlunoByMatricula matriculaAluno alunoList
     let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
-
     case disciplinaM of
         Just disciplina -> do
             if codigo grupoEncontrado == -1 then
@@ -347,16 +350,12 @@ adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno i
         Nothing ->
             return "Disciplina Não Encontrada"
 
-
-
-
 -- Função para adicionar um comentário a um resumo
 adicionarComentarioAoResumo :: String -> Comentario -> Resumo -> Resumo
 adicionarComentarioAoResumo idDoResumo comentarioAtualizado resumo =
     if idDoResumo == idResumo resumo
         then resumo { comentario = comentarioAtualizado : comentario resumo }
         else resumo
-
 
 -- Função para adicionar um comentário a um resumo em uma disciplina
 adicionarComentarioNaDisciplinaResumo :: Int -> String -> Comentario -> [Disciplina] -> [Disciplina]
@@ -391,7 +390,6 @@ removeMateriaisDisciplinaGrupo op idDisciplina idGrupo chave  = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let gruposExistente =  getGruposByCodigo idGrupo listaGrupos
     let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas gruposExistente)
-    
     if possuiDisciplina then do
         let disciplinasAtuais = Model.Grupo.disciplinas gruposExistente
         if(op == "resumo") then do

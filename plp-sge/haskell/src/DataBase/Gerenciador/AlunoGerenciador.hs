@@ -23,14 +23,12 @@ instance ToJSON LinkUtil
 instance FromJSON Comentario
 instance ToJSON Comentario
 
-
 --Salva alterações da lista de alunos no json.
 saveAlunoAlteracoes :: [Aluno] -> IO ()
 saveAlunoAlteracoes alunoList = do
   B.writeFile "../Temp.json" $ encode alunoList
   removeFile "src/DataBase/Data/Aluno.json"
   renameFile "../Temp.json" "src/DataBase/Data/Aluno.json"
-
 
 --Pega alunos no json.
 getAlunoJSON :: FilePath -> IO [Aluno]
@@ -57,14 +55,12 @@ getAlunoByMatricula matriculaProcurada (x:xs)
     | matricula x == matriculaProcurada = x
     | otherwise = getAlunoByMatricula matriculaProcurada xs
 
-
 --Pega o aluno pela senha.
 getAlunoBySenha :: String -> [Aluno] -> Aluno
 getAlunoBySenha _ [] = Aluno "" "" "" []
 getAlunoBySenha senhaProcurada (x:xs)
     | senha x == senhaProcurada = x
     | otherwise = getAlunoBySenha senhaProcurada xs
-
 
 --Pega as disciplinas do aluno.
 getDisciplinasAluno :: String -> IO [Disciplina]

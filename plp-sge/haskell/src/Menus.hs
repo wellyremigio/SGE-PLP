@@ -49,11 +49,11 @@ verificaSolucao:: Int -> IO()
 verificaSolucao op
     | op == 1 = menuLogin
     | op == 2 = menuCadastro
-    | op == 3 =  putStrLn "Saindo..."
+    | op == 3 =  putStrLn "Voltar..."
     | otherwise = do 
         putStrLn "\nOpção inválida. Escolha corretamente."
         op <- readLn:: IO Int
-        verificaSolucao op
+        menuLogin
 
 -- Função responsável pelo cadastro do usuário.
 menuCadastro :: IO ()
@@ -123,7 +123,10 @@ selecaoMenuInicial op matricula
     | op == 5 = do
         result <- listagemDeGruposEmComum matricula
         putStr result
-    | op == 6 = putStrLn "Saindo...\n"
+    | op == 6 = do
+        result <- listagemDeGruposEmComum matricula
+        putStr result
+    | op == 7 = putStrLn "Saindo...\n"
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
         menuInicial matricula

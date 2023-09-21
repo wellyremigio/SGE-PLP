@@ -124,3 +124,4 @@ disciplinasDoGrupo codigoGrupo = do
     grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupo = getGruposByCodigo codigoGrupo grupos
     return (getDisciplinasGrupo grupo)
+    
