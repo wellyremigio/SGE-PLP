@@ -489,3 +489,35 @@ editarCorpoResumo chave novoCorpo (resumo:outrosResumos)
     | idResumo resumo == chave =
         resumo { corpo = novoCorpo } : outrosResumos
     | otherwise = resumo : editarCorpoResumo chave novoCorpo outrosResumos
+
+--Lista os comentários cadastrados em determinado Resumo
+verComentariosResumo :: Int -> Int -> String -> String -> IO String
+verComentariosResumo idGrupo idDisciplina idResumo matriculaAluno = do
+    listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
+    let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
+    let aluno = A.getAlunoByMatricula matriculaAluno alunoList
+    let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+    case disciplinaM of
+        Just disciplina -> do
+            if codigo grupoEncontrado == -1 then
+                return "Grupo não encontrado."
+            else if grupoContainsAluno grupoEncontrado aluno then do
+                let resumoM = getResumo disciplina idResumo
+                case resumoM of
+                    Just resumo -> do
+                        if not (comentarioEstaVazio resumo) then 
+                            return (organizaListagem (getComentarios resumo))
+                        else  
+                            return "Não existem comentários!" 
+                    Nothing ->
+                        return "Resumo Não Cadastrado."
+            else 
+                return "Você não está no grupo."
+        Nothing ->
+            return "Disciplina Não Encontrada."
+
+-- Testa para saber se um comentário está vazio 
+comentarioEstaVazio :: Resumo -> Bool
+comentarioEstaVazio resumo = null (comentario resumo)

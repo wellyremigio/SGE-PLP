@@ -19,3 +19,5 @@ instance Show Resumo where
                   "Título: " ++ titulo resumo ++ "\n" ++
                   "Corpo: " ++ corpo resumo
 
+getComentarios :: Resumo -> [Comentario]
+getComentarios resumo = comentario resumo
