@@ -37,18 +37,6 @@ verificaIdGrupo codigo = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupos = getGruposByCodigo codigo listaGrupos
     return $ Model.Grupo.codigo grupos /= (-1)
-
--- Verifica quem é o adm do grupo.
-verificarAdmDeGrupo :: Int -> String -> IO Bool
-verificarAdmDeGrupo codigoGrupo admDesejado = do
-    codigoValido <- verificaIdGrupo codigoGrupo
-    if codigoValido
-        then do
-            listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
-            let grupo = getGruposByCodigo codigoGrupo listaGrupos
-            return $ adm grupo == admDesejado
-        else
-            return False
             
 -- Remove um grupo do banco de dados.
 removeGrupo:: Int -> IO String
@@ -74,9 +62,9 @@ organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
 organizaListagem (x:xs) = show x ++ "\n" ++ organizaListagem xs
 
--- Função repetida. Não apaguei pq nao sei qual é a certa.
-verificaAdmGrupo :: String -> Int -> IO Bool
-verificaAdmGrupo matricula codigoGrupo  = do
+-- Verifica quem é o adm do grupo.
+verificaAdmGrupo :: Int -> String -> IO Bool
+verificaAdmGrupo codigoGrupo matricula = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
     return $ case find (\grupo -> codigo grupo == codigoGrupo) grupos of
         Just grupo -> adm grupo == matricula
@@ -455,25 +443,25 @@ showDataGrupo idGrupo idDisciplina idData = do
                 Nothing -> return "Data não cadastrada"
         Nothing -> return "Disciplina Não Cadastrada"
 
--- Esta função permite editar o corpo de um resumo em uma disciplina de um grupo.
+
+
+-- Editar o corpo de um resumo em uma disciplina de um grupo.
 editaCorpoResumo :: Int -> Int -> String -> String -> IO String
 editaCorpoResumo idDisciplina idGrupo chave novoCorpo = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
-    let gruposExistente = getGruposByCodigo idGrupo listaGrupos
-    let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas gruposExistente)
-    
+    let grupoExistente = getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas grupoExistente)
     if possuiDisciplina then do
-        let disciplinasAtuais = Model.Grupo.disciplinas gruposExistente
+        let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = editarCorpoResumoNaDisciplina idDisciplina disciplinasAtuais chave novoCorpo
-        let grupoAtualizado = gruposExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
+        let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
         let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
         saveAlteracoesGrupo gruposAtualizados
         return ("Corpo do resumo editado com sucesso!")
     else
         return "Disciplina não existe"
 
-
--- Esta função edita o corpo de um resumo na lista de disciplinas.
+-- Edita o corpo de um resumo na lista de disciplinas.
 editarCorpoResumoNaDisciplina :: Int -> [Disciplina] -> String -> String -> [Disciplina]
 editarCorpoResumoNaDisciplina _ [] _ _ = []
 editarCorpoResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chave novoCorpo
@@ -482,13 +470,13 @@ editarCorpoResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chave 
         in disciplina { Model.Disciplina.resumos = resumosAtualizados } : outrasDisciplinas
     | otherwise = disciplina : editarCorpoResumoNaDisciplina idDisciplina outrasDisciplinas chave novoCorpo
 
--- Esta função edita o corpo de um resumo na lista de resumos.
+-- Edita o corpo de um resumo na lista de resumos.
 editarCorpoResumo :: String -> String -> [Resumo] -> [Resumo]
 editarCorpoResumo _ _ [] = []
 editarCorpoResumo chave novoCorpo (resumo:outrosResumos)
-    | idResumo resumo == chave =
-        resumo { corpo = novoCorpo } : outrosResumos
+    | idResumo resumo == chave = resumo { corpo = novoCorpo } : editarCorpoResumo chave novoCorpo outrosResumos
     | otherwise = resumo : editarCorpoResumo chave novoCorpo outrosResumos
+
 
 --Lista os comentários cadastrados em determinado Resumo
 verComentariosResumo :: Int -> Int -> String -> String -> IO String

@@ -9,32 +9,22 @@ menuLogin :: IO ()
 menuLogin = do
     putStr "Matrícula: \n"
     matriculaInput <- getLine
-    putStr "Senha: \n"
-    senhaInput <- getLine
-    senhaCorreta <- verificaSenhaAluno matriculaInput senhaInput
-    if not senhaCorreta
+    alunoCadastrado <- verificaLogin matriculaInput
+    if not alunoCadastrado
         then do
-            putStr "Senha incorreta! "
+            putStr "Cadastro não encontrado :/\n"
             menuEscolhaLogin
         else do
-            resposta <- verificaLogin matriculaInput
-            if resposta
-                then menuInicial matriculaInput
-                else do
-                    putStr "Cadastro não encontrado :/\n"
+            putStr "Senha: \n"
+            senhaInput <- getLine
+            senhaCorreta <- verificaSenhaAluno matriculaInput senhaInput
+
+            if not senhaCorreta
+                then do
+                    putStr "Senha incorreta! "
                     menuEscolhaLogin
-    senhaCorreta <- verificaSenhaAluno matriculaInput senhaInput
-    if not senhaCorreta
-        then do
-            putStr "Senha incorreta! "
-            menuEscolhaLogin
-        else do
-            resposta <- verificaLogin matriculaInput
-            if resposta
-                then menuInicial matriculaInput
                 else do
-                    putStr "Cadastro não encontrado :/\n"
-                    menuEscolhaLogin
+                    menuInicial matriculaInput
 
 -- Função que dá alternativas ao usuário caso ele não tenha cadastro ainda.
 menuEscolhaLogin:: IO()
@@ -109,7 +99,7 @@ selecaoMenuInicial op matricula
         putStrLn "\n==Removendo Grupo=="
         putStrLn "Id do grupo: "
         idGrupo <- readLn :: IO Int
-        ehAdm <- verificarAdmDeGrupo idGrupo matricula
+        ehAdm <- verificaAdmGrupo idGrupo matricula
         if(ehAdm) then do
             resultado <- removeGrupo idGrupo
             print resultado
@@ -156,7 +146,7 @@ selecaoMenuMeusGrupos op matricula
          matriculaAluno <- getLine
          putStrLn "Código do grupo?"
          codigo <- readLn :: IO Int
-         resposta <- verificaAdmGrupo matricula codigo-- metodo que vai conferir se a pessoa q quer remover eh o adm
+         resposta <- verificaAdmGrupo codigo matricula
          if resposta then do
             resultado <- adicionarAluno matriculaAluno codigo
             putStrLn resultado
@@ -167,7 +157,7 @@ selecaoMenuMeusGrupos op matricula
         matriculaAlunoRemovido <- getLine
         putStrLn "Código do grupo?"
         idGrupo <- readLn :: IO Int
-        result <- verificaAdmGrupo matricula idGrupo
+        result <- verificaAdmGrupo idGrupo matricula
         if result then do
             saida <- removerAlunoGrupo idGrupo matriculaAlunoRemovido
             print saida
@@ -499,9 +489,8 @@ menuMateriaisAluno matricula = do
     putStrLn "\n1. Ver materiais"
     putStrLn "2. Adicionar materiais"
     putStrLn "3. Remover materiais"
-    putStrLn "4. Editar materiais"
-    putStrLn "5. Voltar"
-    putStrLn "6. Sair"
+    putStrLn "4. Voltar"
+    putStrLn "5. Sair"
     op <- readLn :: IO Int
     selecionaMateriaisAluno matricula op
 
@@ -510,12 +499,11 @@ selecionaMateriaisAluno :: String -> Int -> IO ()
 selecionaMateriaisAluno matricula op
     | op == 1 = menuConsultaAluno matricula
     | op == 2 = menuCadastraMateriaisAluno matricula
-     | op == 3 = menuRemoverMateriais matricula
-    -- | op == 4 = menuEditaMaterias
-    | op == 5 = do
+    | op == 3 = menuRemoverMateriais matricula
+    | op == 4 = do
         putStrLn "Voltando..."
         menuMinhasDisciplinas matricula
-    | op == 6 =  putStrLn "Saindo..."
+    | op == 5 =  putStrLn "Saindo..."
     | otherwise = do 
         putStrLn "Escolha inválida. Tente novamente." 
         menuMateriaisAluno matricula
@@ -618,45 +606,19 @@ menuEditaMateriais matricula = do
     putStrLn "\nQual codigo do grupo: "
     idGrupo <- readLn :: IO Int
     putStrLn "\nQual codigo da disciplina: \n"
-    idDisciplina <- readLn :: IO Int
-    
-    putStrLn "1. Resumo"
-    putStrLn "1. Resumo"
-    putStrLn "2. Links"
-    putStrLn "3. Datas"
-    op <- readLn :: IO Int
-    selecionaMenuEditaMateriais matricula op idGrupo idDisciplina
-
--- Redireciona a escolha do menuMateriais para os métodos competentes.
-selecionaMenuEditaMateriais:: String -> Int -> Int -> Int -> IO()
-selecionaMenuEditaMateriais matricula op idGrupo idDisciplina
-    | op == 1 = do
-        putStrLn "\nCodigo do resumo: "
-        chave <- getLine
-        putStrLn "\nNovo corpo do resumo: "
-        corpo <- getLine
-        saida <- editaCorpoResumo  idDisciplina idGrupo chave corpo
-        putStrLn saida
-        menuMateriaisAluno matricula 
---     | op == 2 = do
---         putStrln "ID disciplina: "
---         id <- readLn :: IO Int
---         putStrLn "Link: "
---         link <- getLine
---         editarLink id link
---         if (editarLink) then do putStrLn "Editado com sucesso" else putStrLn "Não encontrado" 
---     | op == 3 = do
---         putStrln "ID disciplina: "
---         id <- readLn :: IO Int
---         putStrLn "Titulo: "
---         titulo <- getLine
---         editaData id titulo
---         if (editaData) then do putStrLn "Editado com sucesso" else putStrLn "Não encontrado"
+    idDisciplina <- readLn :: IO Int  
+    putStrLn "\nCodigo do resumo: "
+    chave <- getLine
+    putStrLn "\nNovo corpo do resumo: "
+    corpo <- getLine
+    saida <- editaCorpoResumo  idDisciplina idGrupo chave corpo
+    putStrLn saida
+    menuMateriaisGrupo matricula 
 
 -- Menu para o usuário ver o material de um aluno
 menuConsultaAluno::String -> IO()
 menuConsultaAluno matricula = do
-     putStrLn "Você deseja ver o material de qual disciplina? Informe o id"
+     putStrLn "\nId disciplina: "
      idDisciplina <- readLn::IO Int
      putStrLn "Qual o tipo de material?"
      putStrLn "1. Resumo"
@@ -671,27 +633,27 @@ menuConsultaAluno matricula = do
 selecionaMenuConsultaAluno::String -> Int -> Int -> IO()
 selecionaMenuConsultaAluno matricula idDisciplina op
     | op == 1 = do
-        putStrLn "ID do Resumo:"
+        putStrLn "\nID do Resumo:"
         idResumo <- getLine
         result <- showResumo matricula idDisciplina idResumo
         putStrLn result
         menuMateriaisAluno matricula
     | op == 2 = do
-        putStrLn "ID LinkUtil:"
+        putStrLn "\nID LinkUtil:"
         idLinkUtil <- getLine
         result <- showLinkUtil matricula idDisciplina idLinkUtil
         putStrLn result
         menuMateriaisAluno matricula
      | op == 3 = do
-         putStrLn "ID Data:"
+         putStrLn "\nID Data:"
          idData <- getLine
          result <- showData matricula idDisciplina idData
          putStrLn result
          menuMateriaisAluno matricula
     | op == 4 = do
-        putStrLn "Voltando..."
+        putStrLn "\nVoltando..."
         menuMinhasDisciplinas matricula
     | op == 5 = putStrLn "Saindo..."
     | otherwise = do 
-        putStrLn "Opção Inválida, Redirecionado para a seleção do material a ser cadastrado!"
+        putStrLn "\nOpção Inválida, Redirecionado para a seleção do material a ser cadastrado!"
         menuCadastraMateriaisAluno matricula
