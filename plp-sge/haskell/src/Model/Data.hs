@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Model.Data where
-
+import Model.Comentario
 import GHC.Generics ( Generic )
 import Data.Aeson
 import Model.Comentario

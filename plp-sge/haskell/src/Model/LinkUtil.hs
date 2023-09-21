@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Model.LinkUtil where
-
+import Model.Comentario
 import GHC.Generics ( Generic )
 import Data.Aeson
 import Model.Comentario

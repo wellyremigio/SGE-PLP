@@ -11,6 +11,7 @@ import Data.Maybe
 import Data.List (find)
 import Data.Char (isAlpha, isAlphaNum, toLower)
 import System.Random
+import Model.Comentario
 
 cadastraUsuario :: String -> String -> String -> IO String
 cadastraUsuario matricula nome senha = do
@@ -22,7 +23,6 @@ verificaLogin matricula = do
     listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
     let matriculas = map Model.Aluno.matricula listaAlunos
     return $ matricula `elem` matriculas
-
 
 verificaSenhaAluno :: String -> String -> IO Bool
 verificaSenhaAluno matricula senha = do
