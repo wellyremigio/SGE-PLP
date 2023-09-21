@@ -301,11 +301,7 @@ cadastraData  idGrupo idDisciplina tag datainicio dataFim = do
 
     if possuiDisciplina then do
         idData <-  generateID 'D'
-<<<<<<< HEAD
-        let dataObj = Data tag idData datainicio dataFim[]
-=======
         let dataObj = Data tag idData datainicio dataFim []
->>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
         let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }

@@ -6,7 +6,6 @@ import Function.GrupoFunction
 
 -- Função que lê os dados de login do usuário.
 menuLogin :: IO ()
-menuLogin :: IO ()
 menuLogin = do
     putStr "Matrícula: \n"
     matriculaInput <- getLine
@@ -65,13 +64,9 @@ menuCadastro = do
     nomeCadastrado <- getLine
     putStr "Senha: \n"
     senhaCadastrada <- getLine
-
-    matriculaJaCadastrada <- verificaLogin matriculaCadastrada
-    if matriculaJaCadastrada
     matriculaJaCadastrada <- verificaLogin matriculaCadastrada
     if matriculaJaCadastrada
         then do
-            putStr "Aluno já cadastrado! "
             putStr "Aluno já cadastrado! "
             menuEscolhaLogin
         else do
@@ -106,7 +101,6 @@ selecaoMenuInicial op matricula
         if not resposta then do 
             cadastraGrupo nomeGrupo codigo matricula
             putStr "Grupo cadastrado com sucesso! "
-            putStr "Grupo cadastrado com sucesso! "
             menuInicial matricula
         else do 
             putStrLn "Já existe um grupo com esse ID. Cadastre um grupo novo!\n"
@@ -124,13 +118,12 @@ selecaoMenuInicial op matricula
         menuInicial matricula
     | op == 3 = do
         menuMeusGrupos matricula 
-        menuMeusGrupos matricula 
     | op == 4 = menuMinhasDisciplinas matricula
-   -- | op == 6 = menuConsulta -- vai perguntar quais materiais quer ver e a opção de comentar/responder comentário.
-    | op == 6 = do
+
+    | op == 5 = do
         result <- listagemDeGruposEmComum matricula
         putStr result
-    | op == 7 = putStrLn "Saindo...\n"
+    | op == 6 = putStrLn "Saindo...\n"
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
         menuInicial matricula
@@ -288,44 +281,16 @@ selecionaMaterialComentario matricula op
 --Menu para o usuário escolher qual material quer ver 
 menuSelecionaMaterial:: String -> IO()
 menuSelecionaMaterial matricula = do
-    putStrLn "\nVocê deseja ver qual material?"
->>>>>>> 6a1f7c6aa8f282c85ab7bfc5fa4acead1f13b100
+    putStrLn "\nVocê deseja ver o material de qual disciplina? Informe o id"
+    idDisciplina <- readLn::IO Int
+    putStrLn "Id grupo: "
+    idGrupo <- readLn::IO Int
     putStrLn "1. Resumo"
     putStrLn "2. Link Úteis"
     putStrLn "3. Datas Importantes"
     putStrLn "4. Voltar"
     op <- readLn:: IO Int
-    selecionaMaterialComentario matricula op
-
--- Recebe a escolha do usuário e redireciona.
-selecionaMaterialComentario :: String -> Int -> IO ()
-selecionaMaterialComentario matricula op
-    | op == 1 = do
-        putStrLn "\nID grupo? "
-        idGrupo <- readLn :: IO Int
-        putStrLn "ID disciplina: "
-        idDisciplina <- readLn :: IO Int
-        putStrLn "ID Resumo: "
-        idResumo <- getLine
-        putStrLn "Comentario a ser enviado: "
-        comentario <- getLine
-        result <- adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matricula idResumo comentario
-        putStrLn result
-        menuComentarMaterial matricula
-    | otherwise = do
-        putStrLn "Opção inválida! Tente novamente."
-
---Menu para o usuário escolher qual material quer ver 
-menuSelecionaMaterial:: String -> IO()
-menuSelecionaMaterial matricula = do
-    putStrLn "\nVocê deseja ver qual material?"
-    putStrLn "1. Resumo"
-    putStrLn "2. Link Úteis"
-    putStrLn "3. Datas Importantes"
-    putStrLn "4. Voltar"
-    op <- readLn:: IO Int
-    selecionaOpMaterial matricula op
-
+    selecionaOpMaterial matricula op idDisciplina  idGrupo
 -- Recebe a escolha do usuário e redireciona.
 selecionaOpMaterial:: String -> Int -> Int -> Int -> IO()
 selecionaOpMaterial matricula op idDisciplina  idGrupo 
