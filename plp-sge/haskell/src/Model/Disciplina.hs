@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
-
+--Model de disciplina, com seus atributos e instância show, para mostrar ao usuário o que é necessário.
+-- Tem um método que confere se duas disciplpinas são iguais.
 module Model.Disciplina where
 
 import GHC.Generics ( Generic )

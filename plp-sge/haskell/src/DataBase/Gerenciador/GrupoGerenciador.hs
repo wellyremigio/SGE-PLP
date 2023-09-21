@@ -7,26 +7,12 @@ import GHC.Generics
 import qualified Data.ByteString.Lazy as B
 import System.Directory
 import DataBase.Gerenciador.AlunoGerenciador (getAlunoByMatricula, getAlunoJSON)
---import qualified Data.ByteString.Lazy.Char8 as BC
 import Data.List
 
 instance FromJSON Grupo
 instance ToJSON Grupo
-{-instance FromJSON Aluno
-instance ToJSON Aluno
-instance FromJSON Disciplina
-instance ToJSON Disciplina-}
 
---salvarGrupoJSON :: String -> String -> [Aluno] -> Int -> [Disciplina] -> Int -> IO()
---salvarGrupoJSON jsonFilePath nome listaAlunos codigo listaDisciplinas adm = do
- --   let grupo = Grupo nome listaAlunos codigo listaDisciplinas 
-  --  let grupoList = (getGrupoJSON jsonFilePath) ++ [grupo]
-
-    --B.writeFile "../Temp.json" $ encode grupoList
-    --removeFile jsonFilePath
-    --renameFile "../Temp.json" jsonFilePath
-
-
+-- Salva o grupo no json.
 saveGrupo :: String ->  Int  -> String -> IO()
 saveGrupo nomeGrupo  codigo  matAdm = do
     let grupo = Grupo nomeGrupo [] codigo [] matAdm
@@ -34,12 +20,15 @@ saveGrupo nomeGrupo  codigo  matAdm = do
     let newGrupoList = grupoList ++ [grupo]
     saveAlteracoesGrupo newGrupoList
 
+--Salva alterações feitas no grupo.
 saveAlteracoesGrupo :: [Grupo] -> IO ()
 saveAlteracoesGrupo grupoList = do
   B.writeFile "../Temp.json" $ encode grupoList
   removeFile "src/DataBase/Data/Grupo.json"
   renameFile "../Temp.json" "src/DataBase/Data/Grupo.json"
 
+
+--Pega os grupos do json.
 getGruposJSON :: FilePath -> IO [Grupo]
 getGruposJSON path = do
   contents <- B.readFile path
@@ -47,12 +36,8 @@ getGruposJSON path = do
     Left err -> error err
     Right grupos -> return grupos
 
---getGruposByCodigoCadastraMaterial :: Int -> [Grupo] -> Grupo
---getGruposByCodigoCadastraMaterial codigo grupos =
-   -- case find (\grupo -> Model.Grupo.codigo grupo == codigo) grupos of
-     --   Just grupoEncontrado -> Encontrado grupoEncontrado
-    --    Nothing -> NaoEncontrado
-    
+
+--Pega um grupo pelo codigo e retorna um IO Grupo.
 getGruposByCodigoIO :: Int -> [Grupo] -> IO Grupo
 getGruposByCodigoIO _ [] = do
   let alunoList = [] :: [Aluno]
@@ -62,27 +47,23 @@ getGruposByCodigoIO codigoGrupo (x:xs)
     | codigo x == codigoGrupo = return x
     | otherwise = getGruposByCodigoIO codigoGrupo xs
 
+-- Pega um grup pelo codigo e retorna esse grupo.
 getGruposByCodigo :: Int -> [Grupo] -> Grupo
 getGruposByCodigo _ [] = Grupo "" [] (-1) [] ""
 getGruposByCodigo codigoGrupo (x:xs)
     | codigo x == codigoGrupo = x
     | otherwise = getGruposByCodigo codigoGrupo xs
 
--- Função que pega os grupos que um aluno específico faz parte.
-{-getGruposDoAluno :: String -> IO [Grupo]
-getGruposDoAluno matriculaProcurada = do
-    grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
-    alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
-    let aluno = getAlunoByMatricula matriculaProcurada alunos
-    let gruposDoAluno = filter (\grupo -> matricula aluno `elem` alunos) grupos
-    return gruposDoAluno-}
 
+-- Pega os grupos de um aluno.
 getGruposDoAluno :: String -> IO [Grupo]
 getGruposDoAluno matriculaProcurada = do
     grupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
     return $ filter (alunoPertenceAoGrupo matriculaProcurada) grupos
 
+
+--Confere se o aluno pertence ao grupo.
 alunoPertenceAoGrupo :: String -> Grupo -> Bool
 alunoPertenceAoGrupo matriculaProcurada grupo =
     any (\aluno -> matricula aluno == matriculaProcurada) (alunos grupo)
@@ -93,7 +74,9 @@ getAlunoGrupo codGrupo = do
   listaGrupo <- getGruposJSON "src/DataBase/Data/Grupo.json"
   let grupo = getGruposByCodigo codGrupo listaGrupo
   return (getAlunos grupo)
-   
+ 
+  
+--Remove o grupo pelo código.
 removeGrupoByCodigo :: Int -> [Grupo] -> [Grupo]
 removeGrupoByCodigo codigoGrupo grupos = deleteGrupo grupos
   where
@@ -102,6 +85,7 @@ removeGrupoByCodigo codigoGrupo grupos = deleteGrupo grupos
       | codigo g == codigoGrupo = deleteGrupo gs
       | otherwise = g : deleteGrupo gs
 
+--Remove o grupo pelo código.
 removeGrupoByCodigoIO :: Int -> IO [Grupo]
 removeGrupoByCodigoIO codGrupo = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json" -- Substitua pelo caminho correto
@@ -113,11 +97,11 @@ removeGrupoByCodigoIO codGrupo = do
             | codigo a == codGrupo = deleteGrupo codGrupo as
             | otherwise = a : deleteGrupo codGrupo as
     
-
+--Pega os alunos dos grupos.
 getAlunos :: Grupo -> [Aluno]
 getAlunos = alunos
 
-
+--Adiciona alunos no grupo.
 adicionarAlunoLista :: Aluno -> Int -> IO ()
 adicionarAlunoLista aluno codGrupo = do
   existingGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -127,7 +111,7 @@ adicionarAlunoLista aluno codGrupo = do
   let newAlunoList = removeGrupoByCodigo codGrupo existingGrupos ++ [newGrupo]
   saveAlteracoesAluno newAlunoList
 
-
+--Salva a mudança na lista de alunos no json.
 saveAlteracoesAluno :: [Grupo] -> IO ()
 saveAlteracoesAluno grupoList = do
   B.writeFile "../Temp.json" $ encode grupoList

@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
-
+-- Modulo de Datas Importantes, com os atributos e a instância Show, que mostra os atributos necessários do aluno ao usuário.
 module Model.Data where
 import Model.Comentario
 import GHC.Generics ( Generic )

@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
-
+--Model grupo, com seus atributos e intsância show para mostrar ao usuário as características dele.
+-- Tem um método que pega as disciplinas de um Grupo.
 module Model.Grupo where
 
 import GHC.Generics (Generic)

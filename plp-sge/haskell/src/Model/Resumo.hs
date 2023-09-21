@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
-
+--Módulo Resumo, com sseus atributos e instância Show.
 module Model.Resumo where
 
 import Model.Comentario ( Comentario )

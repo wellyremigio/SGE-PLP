@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
-
+-- Módulo do comentário, com os atributos e o Show dele.s
 module Model.Comentario where
 
 import GHC.Generics ( Generic )

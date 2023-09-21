@@ -1,4 +1,3 @@
-
 -- Módulo responsável pelas funções cabíveis aos Grupos.
 module Function.GrupoFunction where
 import Model.Aluno
@@ -374,17 +373,19 @@ adicionarComentarioEmDisciplinaResumo :: Int -> [Disciplina] -> String -> Coment
 adicionarComentarioEmDisciplinaResumo codigoDisciplina disciplinas codigoResumo comentarioAtualizado =
     adicionarComentarioNaDisciplinaResumo codigoDisciplina codigoResumo comentarioAtualizado disciplinas
 
+--Função que confere se o resumo existe na disciplina selecionada.
 resumoExisteNaDisciplina :: String -> Disciplina -> Bool
 resumoExisteNaDisciplina idResumo disciplina =
     any (\res -> Model.Resumo.idResumo res == idResumo) (resumos disciplina)
 
+--Pega a disciplina através do id.
 getDisciplinaByCodigo :: Int -> [Disciplina] -> Maybe Disciplina
 getDisciplinaByCodigo _ [] = Nothing
 getDisciplinaByCodigo codigoDisciplina (d:ds)
     | Model.Disciplina.id d == codigoDisciplina = Just d
     | otherwise = getDisciplinaByCodigo codigoDisciplina ds
 
-
+-- Remove o material de uma disciplina dentro do grupo.
 removeMateriaisDisciplinaGrupo :: String -> Int -> Int -> String  -> IO String
 removeMateriaisDisciplinaGrupo op idDisciplina idGrupo chave  = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -417,7 +418,7 @@ removeMateriaisDisciplinaGrupo op idDisciplina idGrupo chave  = do
     else
         return "Disciplina Não existe"
 
-
+--Mostra os resumos que tem no grupo. 
 showResumoGrupo :: Int -> Int -> String -> IO String
 showResumoGrupo idGrupo idDisciplina idResumo = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -430,7 +431,7 @@ showResumoGrupo idGrupo idDisciplina idResumo = do
                 Nothing -> return "Resumo não cadastrado"
         Nothing -> return "Disciplina Não Cadastrada"
 
-
+--Mostra os links do grupo.
 showLinkUtilGrupo :: Int -> Int -> String -> IO String
 showLinkUtilGrupo idGrupo idDisciplina idLinkUtil = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
@@ -443,6 +444,7 @@ showLinkUtilGrupo idGrupo idDisciplina idLinkUtil = do
                 Nothing -> return "Link util não cadastrado"
         Nothing -> return "Disciplina Não Cadastrada"
 
+--Mostra as datas importantes do grupo.
 showDataGrupo :: Int-> Int -> String -> IO String
 showDataGrupo idGrupo idDisciplina idData = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"

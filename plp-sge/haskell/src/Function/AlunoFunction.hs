@@ -13,27 +13,32 @@ import Data.Char (isAlpha, isAlphaNum, toLower)
 import System.Random
 import Model.Comentario
 
+--Função que cadastra um novo usuário do sistema.
 cadastraUsuario :: String -> String -> String -> IO String
 cadastraUsuario matricula nome senha = do
     saveAluno matricula nome senha
     return "Cadastro realizado com sucesso!\n"
 
+-- Verifica se a maatrícula já nao existe.
 verificaLogin :: String -> IO Bool
 verificaLogin matricula = do
     listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
     let matriculas = map Model.Aluno.matricula listaAlunos
     return $ matricula `elem` matriculas
 
+--Verifica se a senha está correta.
 verificaSenhaAluno :: String -> String -> IO Bool
 verificaSenhaAluno matricula senha = do
     listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
     let aluno = getAlunoByMatricula matricula listaAlunos
     return $ Model.Aluno.senha aluno == senha
 
+-- Função genérica que recebe uma lista e organiza essa lista conforme a instância Show do model.
 organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
 organizaListagem (x:xs) = show x ++ "\n" ++ organizaListagem xs
 
+--Lista as disciplinas do aluno.
 listagemDisciplinaALuno :: String -> IO String
 listagemDisciplinaALuno matriculaAluno = do 
     disciplinasAluno <- getDisciplinasAluno matriculaAluno
@@ -42,13 +47,17 @@ listagemDisciplinaALuno matriculaAluno = do
     else 
         return (organizaListagem disciplinasAluno)
 
+-- Confere se a disciplina existe.
 disciplinaExiste :: Int -> [Disciplina] -> Bool
 disciplinaExiste idDisciplina disciplinas = any (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas
 
+
+-- Encontra uma disciplina pelo seu id.
 encontrarDisciplinaPorID :: Int -> [Disciplina] -> Maybe Disciplina
 encontrarDisciplinaPorID idDisciplina disciplinas =
     find (\disciplina -> Model.Disciplina.id disciplina == idDisciplina) disciplinas
 
+-- Adiciona uma disicplina.
 adicionarDisciplina :: String -> Int -> String -> String -> String -> IO Bool
 adicionarDisciplina matriculaAluno idDisciplina nome professor periodo = do
      alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json" 
@@ -66,6 +75,7 @@ adicionarDisciplina matriculaAluno idDisciplina nome professor periodo = do
      else 
         return False
 
+-- Remove uma disciplina.
 removerDisciplinaAluno :: String -> Int -> IO Bool
 removerDisciplinaAluno matriculaAluno idDisciplina = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -87,6 +97,7 @@ removeDisciplinaPorID _ [] = []
 removeDisciplinaPorID idToRemove disciplinas = deleteBy (\disciplina1 disciplina2 -> Model.Disciplina.id disciplina1 == Model.Disciplina.id disciplina2) (Disciplina idToRemove "" "" "" [] [] []) disciplinas
 
 
+--Cadastra um resumo nas disciplinas do aluno.
 cadastraResumoDisciplinaAluno :: Int -> String -> String -> String -> IO String
 cadastraResumoDisciplinaAluno idDisciplina matricula titulo corpo = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -124,7 +135,7 @@ atualizarAluno matricula (aluno:outrosAlunos) alunoAtualizado
         aluno : atualizarAluno matricula outrosAlunos alunoAtualizado
 
 
-
+-- Cadastra um link na disciplina do aluno.
 cadastraLinkUtilDisciplinaAluno :: Int -> String -> String -> String -> IO String
 cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo url = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -152,7 +163,7 @@ adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUt
     | otherwise =
         disciplina : adicionarLinkUtilNaDisciplina idDisciplina outrasDisciplinas linkUtil
 
-
+-- Adiciona data importante na disciplina do aluno.
 adicionarDataNaDisciplina :: Int -> [Disciplina] -> Data -> [Disciplina]
 adicionarDataNaDisciplina _ [] _ = []
 adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
@@ -162,6 +173,7 @@ adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
     | otherwise =
         disciplina : adicionarDataNaDisciplina idDisciplina outrasDisciplinas dataObj
 
+-- Cadastra uma data na disciplina do aluno.
 cadastraDataDisciplinaAluno :: Int -> String -> String -> String -> String -> IO String
 cadastraDataDisciplinaAluno idDisciplina matricula titulo datainicio dataFim = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -180,25 +192,30 @@ cadastraDataDisciplinaAluno idDisciplina matricula titulo datainicio dataFim = d
     else
         return "Disciplina Não existe"
 
-
+-- Pega um resumo da disciplina.
 getResumo :: Disciplina -> String -> Maybe Resumo
 getResumo disciplina idResumoDesejado = 
     case find (\resumo -> idResumoDesejado == idResumo resumo) (resumos disciplina) of
         Just res -> Just res
         Nothing -> Nothing
 
+
+-- Pega mum link util da disciplina.
 getLinkUtil :: Disciplina -> String -> Maybe LinkUtil
 getLinkUtil disciplina idLinkDesejado = 
     case find (\link -> idLinkDesejado == idLink link) (links disciplina) of
         Just link -> Just link
         Nothing -> Nothing
 
+-- Pega uma data importante da disciplina.
 getData :: Disciplina -> String -> Maybe Data
 getData disciplina idDataDesejada = 
     case find (\dataObj -> idDataDesejada == iddata dataObj) (datas disciplina) of
         Just dataEncontrada -> Just dataEncontrada
         Nothing -> Nothing
 
+
+-- Mostra o resumo de uma disciplina.
 showResumo :: String -> Int -> String -> IO String
 showResumo matriculaAluno idDisciplina idResumo = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -211,6 +228,8 @@ showResumo matriculaAluno idDisciplina idResumo = do
                 Nothing -> return "Resumo não cadastrado"
         Nothing -> return "Disciplina Não Cadastrada"
 
+
+-- Mostra um link util de uma disciplina.
 showLinkUtil :: String -> Int -> String -> IO String
 showLinkUtil matriculaAluno idDisciplina idLinkUtil = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -223,6 +242,8 @@ showLinkUtil matriculaAluno idDisciplina idLinkUtil = do
                 Nothing -> return "Link util não cadastrado"
         Nothing -> return "Disciplina Não Cadastrada"
 
+
+-- Mostra uma data importante de uma disciplina.
 showData :: String -> Int -> String -> IO String
 showData matriculaAluno idDisciplina idData = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -235,6 +256,7 @@ showData matriculaAluno idDisciplina idData = do
                 Nothing -> return "Data não cadastrada"
         Nothing -> return "Disciplina Não Cadastrada"
 
+--Remove um material de uma disciplina do aluno.
 removeMateriaisDisciplinaAluno :: String -> Int -> String -> String  -> IO String
 removeMateriaisDisciplinaAluno op idDisciplina matricula chave  = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -266,6 +288,7 @@ removeMateriaisDisciplinaAluno op idDisciplina matricula chave  = do
     else
         return "Disciplina Não existe"
 
+--Remove um resumo.
 removerResumoNaDisciplina :: Int -> [Disciplina] -> String -> [Disciplina]
 removerResumoNaDisciplina _ [] _ = []  -- Lista vazia, não há disciplinas para remover
 removerResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chaveResumo
@@ -276,6 +299,7 @@ removerResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chaveResum
     | otherwise =
         disciplina : removerResumoNaDisciplina idDisciplina outrasDisciplinas chaveResumo
 
+--Remove um link.
 removerLinkNaDisciplina :: Int -> [Disciplina] -> String -> [Disciplina]
 removerLinkNaDisciplina _ [] _ = []  -- Lista vazia, não há disciplinas para remover
 removerLinkNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chaveLink
@@ -297,6 +321,7 @@ removerDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chaveData
     | otherwise =
         disciplina : removerDataNaDisciplina idDisciplina outrasDisciplinas chaveData
 
+--Gera um ID para o material cadastrado.
 generateID :: Char -> IO String
 generateID c = do
     seed <- randomIO  -- Gera uma semente aleatória

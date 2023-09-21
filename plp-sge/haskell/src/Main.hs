@@ -1,6 +1,8 @@
 -- Main do programa. Dá boas vindas ao usuário e redireciona as operações para o módulo Menus.
 module Main where
 import Menus
+
+--Main do sistema. Dá boas vindas ao usuário e redireciona-o para os métodos responsáveis pelas acções escolhidas.
 main :: IO ()
 main = do
     putStr "\n =========== Olá! Seja bem vindo ao SGE: Sistema de Gerenciamento de Estudos :D ===========\n"

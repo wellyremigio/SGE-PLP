@@ -10,16 +10,6 @@ import Data.Aeson ( eitherDecode', encode, FromJSON, ToJSON )
 import qualified Data.ByteString.Lazy as B
 import System.Directory
 
--- import Data.Aeson
--- import GHC.Generics
--- import qualified Data.ByteString.Lazy as B
--- import qualified Data.ByteString.Lazy.Char8 as BC
--- import Data.Maybe (fromMaybe)
--- import System.Directory (renameFile)  -- Adicione esta linha
--- import System.FilePath ((</>))
--- import Model.Aluno
--- import System.Directory (removeFile)
-
 instance FromJSON Aluno
 instance ToJSON Aluno
 instance FromJSON Disciplina
@@ -33,46 +23,16 @@ instance ToJSON LinkUtil
 instance FromJSON Comentario
 instance ToJSON Comentario
 
--- salvarAlunoJSON :: String -> Int -> String -> String -> IO ()
--- salvarAlunoJSON jsonFilePath matricula nome senha = do
---     let aluno = Aluno matricula nome senha
---     alunos <- getAlunosJSON jsonFilePath -- Obtém a lista de alunos do arquivo JSON
---     let alunoList = alunos ++ [aluno] -- Concatena o novo aluno à lista existente
 
---     B.writeFile "../Temp.json" $ encode alunoList
---     removeFile jsonFilePath
---     renameFile "../Temp.json" jsonFilePath
-
-
--- getAlunoByMatricula :: Int -> [Aluno] -> Aluno
--- getAlunoByMatricula _ [] = Aluno 0 "" ""
--- getAlunoByMatricula matriculaProcurada (x:xs)
---     | matricula x == matriculaProcurada = x
---     |  otherwise = getAlunoByMatricula matriculaProcurada xs    
-    
-
--- getAlunosJSON :: FilePath -> IO [Aluno]
--- getAlunosJSON path = do
---     let filePath = path </> "aluno.json"
---     conteudo <- B.readFile filePath
---     let alunos = fromMaybe [] (decode conteudo)
---     return alunos
-
--- -- Salva um novo filme no arquivos de filmes --
--- saveFilmeJSON :: String -> String -> String -> String -> Float -> IO ()
--- saveFilmeJSON identificador nome descricao categoria preco = do
---   let p = Filme identificador nome descricao categoria 0 preco
---   filmeList <- getFilmeJSON "app/DataBase/Filme.json" 
---   let newFilmeList = filmeList ++ [p]
-
---   saveAlteracoesFilme newFilmeList
-
+--Salva alterações da lista de alunos no json.
 saveAlunoAlteracoes :: [Aluno] -> IO ()
 saveAlunoAlteracoes alunoList = do
   B.writeFile "../Temp.json" $ encode alunoList
   removeFile "src/DataBase/Data/Aluno.json"
   renameFile "../Temp.json" "src/DataBase/Data/Aluno.json"
 
+
+--Pega alunos no json.
 getAlunoJSON :: FilePath -> IO [Aluno]
 getAlunoJSON path = do
   contents <- B.readFile path
@@ -80,7 +40,7 @@ getAlunoJSON path = do
     Left err -> error err
     Right alunos -> return alunos
 
-
+-- Salva o aluno no json.
 saveAluno :: String -> String -> String -> IO()
 saveAluno matricula nome senha = do
     let disciplinas = [] :: [Disciplina]
@@ -90,18 +50,23 @@ saveAluno matricula nome senha = do
     let newAlunoList = alunoList ++ [a]
     saveAlunoAlteracoes newAlunoList
 
+--Pega o aluno pela matríecula.
 getAlunoByMatricula :: String -> [Aluno] -> Aluno
 getAlunoByMatricula _ [] = Aluno "" "" "" []
 getAlunoByMatricula matriculaProcurada (x:xs)
     | matricula x == matriculaProcurada = x
     | otherwise = getAlunoByMatricula matriculaProcurada xs
 
+
+--Pega o aluno pela senha.
 getAlunoBySenha :: String -> [Aluno] -> Aluno
 getAlunoBySenha _ [] = Aluno "" "" "" []
 getAlunoBySenha senhaProcurada (x:xs)
     | senha x == senhaProcurada = x
     | otherwise = getAlunoBySenha senhaProcurada xs
 
+
+--Pega as disciplinas do aluno.
 getDisciplinasAluno :: String -> IO [Disciplina]
 getDisciplinasAluno idAluno = do
     existingAluno <- getAlunoJSON "src/DataBase/Data/Aluno.json"
@@ -109,6 +74,7 @@ getDisciplinasAluno idAluno = do
     
     return (getDisciplinas aluno)
 
+--Remove um aluno pela sua matrícula.
 removeAlunoByMatricula :: String -> IO [Aluno]
 removeAlunoByMatricula matriculaAluno = do
     alunos <- getAlunoJSON "src/DataBase/Data/Aluno.json" -- Substitua pelo caminho correto
@@ -119,4 +85,3 @@ removeAlunoByMatricula matriculaAluno = do
         deleteAluno matriculaAluno (a : as)
             | matricula a == matriculaAluno = deleteAluno matriculaAluno as
             | otherwise = a : deleteAluno matriculaAluno as
-
