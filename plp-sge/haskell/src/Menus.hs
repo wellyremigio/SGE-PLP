@@ -244,7 +244,7 @@ selecionaMateriaisGrupo matricula op
     | op == 1 = menuSelecionaMaterial matricula
     | op == 2 = menuCadastraMateriaisGrupo matricula
     | op == 3 = menuRemoverMateriaisGrupo matricula
- --  | op == 4 = menuEditarMateriaisGrupo
+    | op == 4 = menuEditaMateriais matricula
     | op == 5 = menuComentarMaterial matricula
     | op == 6 = do
         putStrLn "\nID grupo? "
@@ -613,8 +613,8 @@ selecionaMenuRemoveMateriaisAluno op matricula
         selecionaMenuRemoveMateriaisAluno op matricula
 
 -- Menu para escolha do material a ser editado.
-menuEditaMaterias:: String -> IO()
-menuEditaMaterias matricula = do
+menuEditaMateriais:: String -> IO()
+menuEditaMateriais matricula = do
     putStrLn "\nQual codigo do grupo: "
     idGrupo <- readLn :: IO Int
     putStrLn "\nQual codigo da disciplina: \n"
