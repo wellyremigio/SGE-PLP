@@ -117,7 +117,6 @@ listagemDeGruposEmComum idAluno = do
     if null grupos
         then return "Não existem grupos que tenham disciplinas em comum com as que você está cursando."
         else return ("Esses são os grupos em comum com as disciplinas que está cursando:\n" ++ organizaListagem grupos)
-
 listagemAlunoGrupo :: Int -> IO String
 listagemAlunoGrupo codGrupo = do 
     alunosGrupo <- G.getAlunoGrupo codGrupo
@@ -337,7 +336,7 @@ adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno i
                 if resumoExisteNaDisciplina idResumo disciplina then do 
                     idComentario <- generateID 'c'
                     let comentarioObj = Comentario idComentario matriculaAluno comentario
-                    let disciplinaListaAtualizada = adicionarComentarioEmDisciplina idDisciplina disciplinasGrupo idResumo comentarioObj
+                    let disciplinaListaAtualizada = adicionarComentarioEmDisciplinaResumo idDisciplina disciplinasGrupo idResumo comentarioObj
                     let grupoAtualizado = grupoEncontrado { Model.Grupo.disciplinas = disciplinaListaAtualizada }
                     let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
                     saveAlteracoesGrupo gruposAtualizados
@@ -361,8 +360,8 @@ adicionarComentarioAoResumo idDoResumo comentarioAtualizado resumo =
 
 
 -- Função para adicionar um comentário a um resumo em uma disciplina
-adicionarComentarioNaDisciplina :: Int -> String -> Comentario -> [Disciplina] -> [Disciplina]
-adicionarComentarioNaDisciplina codigoDisciplina codigoResumo comentarioAtualizado disciplinas =
+adicionarComentarioNaDisciplinaResumo :: Int -> String -> Comentario -> [Disciplina] -> [Disciplina]
+adicionarComentarioNaDisciplinaResumo codigoDisciplina codigoResumo comentarioAtualizado disciplinas =
     case find (\disciplina -> Model.Disciplina.id disciplina == codigoDisciplina) disciplinas of
         Just disciplinaEncontrada ->
             let resumosAtualizados = map (\resumo -> adicionarComentarioAoResumo codigoResumo comentarioAtualizado resumo) (resumos disciplinaEncontrada)
@@ -371,9 +370,9 @@ adicionarComentarioNaDisciplina codigoDisciplina codigoResumo comentarioAtualiza
         Nothing -> disciplinas
 
 -- Função principal para adicionar um comentário a um resumo em uma disciplina
-adicionarComentarioEmDisciplina :: Int -> [Disciplina] -> String -> Comentario -> [Disciplina]
-adicionarComentarioEmDisciplina codigoDisciplina disciplinas codigoResumo comentarioAtualizado =
-    adicionarComentarioNaDisciplina codigoDisciplina codigoResumo comentarioAtualizado disciplinas
+adicionarComentarioEmDisciplinaResumo :: Int -> [Disciplina] -> String -> Comentario -> [Disciplina]
+adicionarComentarioEmDisciplinaResumo codigoDisciplina disciplinas codigoResumo comentarioAtualizado =
+    adicionarComentarioNaDisciplinaResumo codigoDisciplina codigoResumo comentarioAtualizado disciplinas
 
 resumoExisteNaDisciplina :: String -> Disciplina -> Bool
 resumoExisteNaDisciplina idResumo disciplina =
@@ -384,10 +383,6 @@ getDisciplinaByCodigo _ [] = Nothing
 getDisciplinaByCodigo codigoDisciplina (d:ds)
     | Model.Disciplina.id d == codigoDisciplina = Just d
     | otherwise = getDisciplinaByCodigo codigoDisciplina ds
-
-
-
-
 
 
 removeMateriaisDisciplinaGrupo :: String -> Int -> Int -> String  -> IO String
@@ -459,3 +454,38 @@ showDataGrupo idGrupo idDisciplina idData = do
                 Just dataEncontrado -> return (show dataEncontrado)
                 Nothing -> return "Data não cadastrada"
         Nothing -> return "Disciplina Não Cadastrada"
+
+-- Esta função permite editar o corpo de um resumo em uma disciplina de um grupo.
+editaCorpoResumo :: Int -> Int -> String -> String -> IO String
+editaCorpoResumo idDisciplina idGrupo chave novoCorpo = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let gruposExistente = getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas gruposExistente)
+    
+    if possuiDisciplina then do
+        let disciplinasAtuais = Model.Grupo.disciplinas gruposExistente
+        let disciplinaAtualizada = editarCorpoResumoNaDisciplina idDisciplina disciplinasAtuais chave novoCorpo
+        let grupoAtualizado = gruposExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
+        let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+        saveAlteracoesGrupo gruposAtualizados
+        return ("Corpo do resumo editado com sucesso!")
+    else
+        return "Disciplina não existe"
+
+
+-- Esta função edita o corpo de um resumo na lista de disciplinas.
+editarCorpoResumoNaDisciplina :: Int -> [Disciplina] -> String -> String -> [Disciplina]
+editarCorpoResumoNaDisciplina _ [] _ _ = []
+editarCorpoResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chave novoCorpo
+    | Model.Disciplina.id disciplina == idDisciplina =
+        let resumosAtualizados = editarCorpoResumo chave novoCorpo (Model.Disciplina.resumos disciplina)
+        in disciplina { Model.Disciplina.resumos = resumosAtualizados } : outrasDisciplinas
+    | otherwise = disciplina : editarCorpoResumoNaDisciplina idDisciplina outrasDisciplinas chave novoCorpo
+
+-- Esta função edita o corpo de um resumo na lista de resumos.
+editarCorpoResumo :: String -> String -> [Resumo] -> [Resumo]
+editarCorpoResumo _ _ [] = []
+editarCorpoResumo chave novoCorpo (resumo:outrosResumos)
+    | idResumo resumo == chave =
+        resumo { corpo = novoCorpo } : outrosResumos
+    | otherwise = resumo : editarCorpoResumo chave novoCorpo outrosResumos

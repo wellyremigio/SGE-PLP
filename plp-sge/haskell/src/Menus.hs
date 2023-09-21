@@ -252,11 +252,10 @@ selecionaMateriaisGrupo matricula op
 -- Menu com as escolhas do comentario do material
 menuComentarMaterial :: String -> IO()
 menuComentarMaterial matricula = do
-    putStrLn "\nVocê deseja comentar qual Material?"
+    putStrLn "\nVocê deseja comentar o resumo?"
     putStrLn "1. Resumo"
-    putStrLn "2. Link Úteis"
-    putStrLn "3. Datas Importantes"
-    putStrLn "4. Voltar"
+    putStrLn "2. Voltar"
+    putStrLn "3. Sair"
     op <- readLn:: IO Int
     selecionaMaterialComentario matricula op
 
@@ -275,8 +274,15 @@ selecionaMaterialComentario matricula op
         result <- adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matricula idResumo comentario
         putStrLn result
         menuComentarMaterial matricula
+    | op == 2 = do
+        putStrLn "Voltando"
+        menuMateriaisGrupo matricula
+    
+    | op == 3 = putStrLn "Saindo..."
+
     | otherwise = do
         putStrLn "Opção inválida! Tente novamente."
+        menuComentarMaterial matricula
 
 --Menu para o usuário escolher qual material quer ver 
 menuSelecionaMaterial:: String -> IO()
