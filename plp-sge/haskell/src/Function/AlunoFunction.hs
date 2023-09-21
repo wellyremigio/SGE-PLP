@@ -10,24 +10,24 @@ import Data.Maybe
 import Data.List (find)
 import Data.Char (isAlpha, isAlphaNum, toLower)
 import System.Random
+import Model.Comentario
 
 cadastraUsuario :: String -> String -> String -> IO String
 cadastraUsuario matricula nome senha = do
     saveAluno matricula nome senha
     return "Cadastro realizado com sucesso!\n"
 
-verificaLogin :: String -> String -> IO Bool
-verificaLogin matricula senha = do
+verificaLogin :: String -> IO Bool
+verificaLogin matricula = do
+    listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let matriculas = map Model.Aluno.matricula listaAlunos
+    return $ matricula `elem` matriculas
+
+verificaSenhaAluno :: String -> String -> IO Bool
+verificaSenhaAluno matricula senha = do
     listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
     let aluno = getAlunoByMatricula matricula listaAlunos
-    senhaValida <- verificaSenha senha
-    return $ Model.Aluno.matricula aluno /= "" && senhaValida
-
-verificaSenha :: String -> IO Bool
-verificaSenha senha = do
-    listaAlunos <- getAlunoJSON "src/DataBase/Data/Aluno.json"
-    let aluno = getAlunoBySenha senha listaAlunos
-    return $ Model.Aluno.senha aluno /= ""
+    return $ Model.Aluno.senha aluno == senha
 
 organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
@@ -132,7 +132,7 @@ cadastraLinkUtilDisciplinaAluno idDisciplina matricula titulo url = do
 
     if possuiDisciplina then do
         idLinkUtil <- generateID 'l'
-        let linkUtil = LinkUtil idLinkUtil titulo url
+        let linkUtil = LinkUtil idLinkUtil titulo url[]
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
         let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }
@@ -170,7 +170,7 @@ cadastraDataDisciplinaAluno idDisciplina matricula titulo datainicio dataFim = d
 
     if possuiDisciplina then do
         idData <- generateID 'D'
-        let dataObj = Data titulo idData datainicio dataFim
+        let dataObj = Data titulo idData datainicio dataFim[]
         let disciplinasAtuais = disciplinas alunoExistente
         let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
         let alunoAtualizado = alunoExistente { Model.Aluno.disciplinas = disciplinaAtualizada }

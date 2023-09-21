@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Model.Data where
-
+import Model.Comentario
 import GHC.Generics ( Generic )
 import Data.Aeson
 
@@ -9,7 +9,8 @@ data Data = Data {
     titulo:: String,
     iddata :: String,
     dataInicio :: String,
-    dataFim :: String
+    dataFim :: String,
+    comentarios :: [Comentario]
 } deriving (Generic)
 
 instance Show Data where

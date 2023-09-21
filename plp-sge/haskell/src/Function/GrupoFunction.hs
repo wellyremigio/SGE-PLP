@@ -15,6 +15,14 @@ import Data.List (elem)
 import System.Random
 import Data.Char (isAlpha, isAlphaNum, toLower)
 import Function.AlunoFunction (generateID)
+import Function.AlunoFunction (removerResumoNaDisciplina)
+import Function.AlunoFunction (removerLinkNaDisciplina)
+import Function.AlunoFunction (removerDataNaDisciplina)
+import Function.AlunoFunction (getResumo)
+import Function.AlunoFunction (getLinkUtil)
+import Function.AlunoFunction (getData)
+import Function.AlunoFunction (encontrarDisciplinaPorID)
+
 
 -- Recebe nome, código e matrícula do adm do grupo e o adiciona ao banco de dados.
 cadastraGrupo :: String -> Int -> String -> IO String
@@ -237,7 +245,7 @@ cadastraLink  idGrupo idDisciplina titulo url = do
 
     if possuiDisciplina then do
         idLinkUtil <- generateID 'l'
-        let linkUtil = LinkUtil idLinkUtil titulo url
+        let linkUtil = LinkUtil idLinkUtil titulo url []
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarLinkUtilNaDisciplina idDisciplina disciplinasAtuais linkUtil
         let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
@@ -253,7 +261,7 @@ adicionarLinkUtilNaDisciplina idDisciplina (disciplina:outrasDisciplinas) linkUt
     | Model.Disciplina.id disciplina == idDisciplina =
         disciplina { links = linkUtil : links disciplina } : outrasDisciplinas
     | otherwise =
-        disciplina : adicionarLinkUtilNaDisciplina idDisciplina outrasDisciplinas linkUtil
+        disciplina : adicionarLinkUtilNaDisciplina idDisciplina outrasDisciplinas linkUtil 
 
 
 cadastraResumo :: Int -> Int -> String -> String -> IO String
@@ -292,7 +300,7 @@ cadastraData  idGrupo idDisciplina tag datainicio dataFim = do
 
     if possuiDisciplina then do
         idData <-  generateID 'D'
-        let dataObj = Data tag idData datainicio dataFim
+        let dataObj = Data tag idData datainicio dataFim[]
         let disciplinasAtuais = Model.Grupo.disciplinas grupoExistente
         let disciplinaAtualizada = adicionarDataNaDisciplina idDisciplina disciplinasAtuais dataObj
         let grupoAtualizado = grupoExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
@@ -312,3 +320,72 @@ adicionarDataNaDisciplina idDisciplina (disciplina:outrasDisciplinas) dataObj
         disciplina : adicionarDataNaDisciplina idDisciplina outrasDisciplinas dataObj
 
 
+removeMateriaisDisciplinaGrupo :: String -> Int -> Int -> String  -> IO String
+removeMateriaisDisciplinaGrupo op idDisciplina idGrupo chave  = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let gruposExistente =  getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = verificaDisciplina idDisciplina (Model.Grupo.disciplinas gruposExistente)
+    
+    if possuiDisciplina then do
+        let disciplinasAtuais = Model.Grupo.disciplinas gruposExistente
+        if(op == "resumo") then do
+
+            let disciplinaAtualizada = removerResumoNaDisciplina idDisciplina  disciplinasAtuais chave
+            let grupoAtualizado = gruposExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
+            let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+            saveAlteracoesGrupo gruposAtualizados
+            return ("Resumo removido com sucesso!")
+        else
+            if (op == "link") then do
+                let disciplinaAtualizada = removerLinkNaDisciplina idDisciplina  disciplinasAtuais chave
+                let grupoAtualizado = gruposExistente { Model.Grupo.disciplinas = disciplinaAtualizada }
+                let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+                saveAlteracoesGrupo gruposAtualizados
+                return ("Link removido com sucesso!")
+            else do
+                let disciplinaAtualizada = removerDataNaDisciplina idDisciplina  disciplinasAtuais chave
+                let grupoAtualizado =gruposExistente {Model.Grupo.disciplinas = disciplinaAtualizada }
+                let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+                saveAlteracoesGrupo gruposAtualizados
+                return ("Data removida com sucesso!")
+                
+    else
+        return "Disciplina Não existe"
+
+
+showResumoGrupo :: Int -> Int -> String -> IO String
+showResumoGrupo idGrupo idDisciplina idResumo = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let gruposExistente =  getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = encontrarDisciplinaPorID idDisciplina (Model.Grupo.disciplinas gruposExistente)
+    case possuiDisciplina of
+        Just disciplinaEncontrada -> do
+            case getResumo disciplinaEncontrada idResumo of
+                Just resumoEncontrado -> return (show resumoEncontrado)
+                Nothing -> return "Resumo não cadastrado"
+        Nothing -> return "Disciplina Não Cadastrada"
+
+
+showLinkUtilGrupo :: Int -> Int -> String -> IO String
+showLinkUtilGrupo idGrupo idDisciplina idLinkUtil = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let gruposExistente =  getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = encontrarDisciplinaPorID idDisciplina (Model.Grupo.disciplinas gruposExistente)
+    case possuiDisciplina of
+        Just disciplinaEncontrada -> do
+            case getLinkUtil disciplinaEncontrada idLinkUtil of
+                Just linkUtilEncontrado -> return (show linkUtilEncontrado)
+                Nothing -> return "Link util não cadastrado"
+        Nothing -> return "Disciplina Não Cadastrada"
+
+showDataGrupo :: Int-> Int -> String -> IO String
+showDataGrupo idGrupo idDisciplina idData = do
+    listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
+    let gruposExistente =  getGruposByCodigo idGrupo listaGrupos
+    let possuiDisciplina = encontrarDisciplinaPorID idDisciplina (Model.Grupo.disciplinas gruposExistente)
+    case possuiDisciplina of
+        Just disciplinaEncontrada -> do
+            case getData disciplinaEncontrada idData of
+                Just dataEncontrado -> return (show dataEncontrado)
+                Nothing -> return "Data não cadastrada"
+        Nothing -> return "Disciplina Não Cadastrada"
