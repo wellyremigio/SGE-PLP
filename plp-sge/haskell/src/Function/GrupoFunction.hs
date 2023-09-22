@@ -21,6 +21,7 @@ import Function.AlunoFunction (removerDataNaDisciplina)
 import Function.AlunoFunction (getResumo)
 import Function.AlunoFunction (getLinkUtil)
 import Function.AlunoFunction (getData)
+import Function.AlunoFunction (isAlunoVazio)
 import Function.AlunoFunction (encontrarDisciplinaPorID)
 
 
@@ -37,19 +38,7 @@ verificaIdGrupo codigo = do
     listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
     let grupos = getGruposByCodigo codigo listaGrupos
     return $ Model.Grupo.codigo grupos /= (-1)
-
--- Verifica quem é o adm do grupo.
-verificarAdmDeGrupo :: Int -> String -> IO Bool
-verificarAdmDeGrupo codigoGrupo admDesejado = do
-    codigoValido <- verificaIdGrupo codigoGrupo
-    if codigoValido
-        then do
-            listaGrupos <- getGruposJSON "src/DataBase/Data/Grupo.json"
-            let grupo = getGruposByCodigo codigoGrupo listaGrupos
-            return $ adm grupo == admDesejado
-        else
-            return False
-            
+           
 -- Remove um grupo do banco de dados.
 removeGrupo:: Int -> IO String
 removeGrupo idGrupo = do
@@ -74,9 +63,9 @@ organizaListagem :: Show t => [t] -> String
 organizaListagem [] = ""
 organizaListagem (x:xs) = show x ++ "\n" ++ organizaListagem xs
 
--- Função repetida. Não apaguei pq nao sei qual é a certa.
-verificaAdmGrupo :: String -> Int -> IO Bool
-verificaAdmGrupo matricula codigoGrupo  = do
+-- Verifica quem é o adm do grupo.
+verificaAdmGrupo :: Int -> String -> IO Bool
+verificaAdmGrupo codigoGrupo matricula = do
     grupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
     return $ case find (\grupo -> codigo grupo == codigoGrupo) grupos of
         Just grupo -> adm grupo == matricula
@@ -94,11 +83,15 @@ adicionarAluno matricula codGrupo = do
     alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
     let grupo = G.getGruposByCodigo codGrupo grupoList
     let aluno = A.getAlunoByMatricula matricula alunoList
-    if grupoContainsAluno grupo aluno
-        then return "Aluno já está cadastrado no grupo"
-        else do
-            grupoAtualizado <- adicionarAlunoLista aluno codGrupo
-            return "Aluno adicionado com sucesso"
+    if codigo grupo == -1 then
+        return "Grupo não encontrado."
+    else if isAlunoVazio aluno then 
+        return "Aluno não está cadastrado no sistema"
+    else if grupoContainsAluno grupo aluno then
+        return "Aluno já está cadastrado no grupo"
+    else do
+        grupoAtualizado <- adicionarAlunoLista aluno codGrupo
+        return "Aluno adicionado com sucesso"
 
 -- Função que retorna a lista de grupos que compartilham disciplinas com um aluno.
 listaDeGruposEmComum :: [Disciplina] -> [Grupo] -> [Grupo]
@@ -329,26 +322,28 @@ adicionarComentarioResumoDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno i
     let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
     let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
     let aluno = A.getAlunoByMatricula matriculaAluno alunoList
-    let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
-    case disciplinaM of
-        Just disciplina -> do
-            if codigo grupoEncontrado == -1 then
-                return "Grupo não encontrado."
-            else if grupoContainsAluno grupoEncontrado aluno then do
-                if resumoExisteNaDisciplina idResumo disciplina then do 
-                    idComentario <- generateID 'c'
-                    let comentarioObj = Comentario idComentario matriculaAluno comentario
-                    let disciplinaListaAtualizada = adicionarComentarioEmDisciplinaResumo idDisciplina disciplinasGrupo idResumo comentarioObj
-                    let grupoAtualizado = grupoEncontrado { Model.Grupo.disciplinas = disciplinaListaAtualizada }
-                    let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
-                    saveAlteracoesGrupo gruposAtualizados
-                    return "Comentário adicionado ao resumo!"
-                else
-                    return "Resumo não cadastrado!"
-            else 
-                return "Você não está no grupo."
-        Nothing ->
-            return "Disciplina Não Encontrada"
+    if codigo grupoEncontrado == -1 then
+        return "Grupo não encontrado."
+    else
+        let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+        in case disciplinaM of
+            Just disciplina -> do
+                if grupoContainsAluno grupoEncontrado aluno then do
+                    if resumoExisteNaDisciplina idResumo disciplina then do 
+                        idComentario <- generateID 'c'
+                        let comentarioObj = Comentario idComentario matriculaAluno comentario
+                        let disciplinaListaAtualizada = adicionarComentarioEmDisciplinaResumo idDisciplina disciplinasGrupo idResumo comentarioObj
+                        let grupoAtualizado = grupoEncontrado { Model.Grupo.disciplinas = disciplinaListaAtualizada }
+                        let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+                        saveAlteracoesGrupo gruposAtualizados
+                        return "Comentário adicionado ao resumo!"
+                    else
+                        return "Resumo não cadastrado!"
+                else 
+                    return "Você não está no grupo."
+            Nothing ->
+                return "Disciplina Não Encontrada"
+
 
 -- Função para adicionar um comentário a um resumo
 adicionarComentarioAoResumo :: String -> Comentario -> Resumo -> Resumo
@@ -486,8 +481,7 @@ editarCorpoResumoNaDisciplina idDisciplina (disciplina:outrasDisciplinas) chave 
 editarCorpoResumo :: String -> String -> [Resumo] -> [Resumo]
 editarCorpoResumo _ _ [] = []
 editarCorpoResumo chave novoCorpo (resumo:outrosResumos)
-    | idResumo resumo == chave =
-        resumo { corpo = novoCorpo } : outrosResumos
+    | idResumo resumo == chave = resumo { corpo = novoCorpo } : editarCorpoResumo chave novoCorpo outrosResumos
     | otherwise = resumo : editarCorpoResumo chave novoCorpo outrosResumos
 
 --Lista os comentários cadastrados em determinado Resumo
@@ -496,28 +490,200 @@ verComentariosResumo idGrupo idDisciplina idResumo matriculaAluno = do
     listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
     alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
     let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
+    let aluno = A.getAlunoByMatricula matriculaAluno alunoList
+    let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
+    let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+    if codigo grupoEncontrado == idGrupo then
+        case disciplinaM of
+            Just disciplina -> do 
+                if grupoContainsAluno grupoEncontrado aluno then do
+                    let resumoM = getResumo disciplina idResumo
+                    case resumoM of
+                        Just resumo -> do
+                            if not (comentarioEstaVazio resumo) then 
+                                return (organizaListagem (getComentarios resumo))
+                            else  
+                                return "Não existem comentários!" 
+                        Nothing ->
+                            return "Resumo Não Cadastrado."
+                else 
+                    return "Você não está no grupo." 
+            Nothing -> 
+                return "Disciplina não cadastrada no grupo."  
+    else
+        return "Grupo não encontrado."
+
+
+adicionarComentarioAoLinkUtil :: String -> Comentario -> LinkUtil -> LinkUtil
+adicionarComentarioAoLinkUtil idDoLink comentarioAtualizado linkUtil =
+    if idDoLink == idLink linkUtil
+        then linkUtil { Model.LinkUtil.comentariosLink = comentarioAtualizado : Model.LinkUtil.comentariosLink linkUtil }
+        else linkUtil
+
+adicionarComentarioAoLinkUtilNaDisciplina :: Int -> String -> Comentario -> [Disciplina] -> [Disciplina]
+adicionarComentarioAoLinkUtilNaDisciplina codigoDisciplina codigoLink comentarioAtualizado disciplinas =
+    case find (\disciplina -> Model.Disciplina.id disciplina == codigoDisciplina) disciplinas of
+        Just disciplinaEncontrada ->
+            let linkUtilsAtualizados = map (\linkUtil -> adicionarComentarioAoLinkUtil codigoLink comentarioAtualizado linkUtil) (Model.Disciplina.links disciplinaEncontrada)
+                disciplinaAtualizada = disciplinaEncontrada { Model.Disciplina.links = linkUtilsAtualizados }
+            in disciplinaAtualizada : filter (\disciplina -> Model.Disciplina.id disciplina /= codigoDisciplina) disciplinas
+        Nothing -> disciplinas
+
+adicionarComentarioEmDisciplinaLinkUtil :: Int -> [Disciplina] -> String -> Comentario -> [Disciplina]
+adicionarComentarioEmDisciplinaLinkUtil codigoDisciplina disciplinas codigoLink comentarioAtualizado =
+    adicionarComentarioAoLinkUtilNaDisciplina codigoDisciplina codigoLink comentarioAtualizado disciplinas
+
+
+adicionarComentarioLinkUtilDisciplinaDoGrupo :: Int -> Int -> String -> String -> String -> IO String
+adicionarComentarioLinkUtilDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno idLinkUtil comentario = do
+    listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
     let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
     let aluno = A.getAlunoByMatricula matriculaAluno alunoList
-    let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
-    case disciplinaM of
-        Just disciplina -> do
-            if codigo grupoEncontrado == -1 then
-                return "Grupo não encontrado."
-            else if grupoContainsAluno grupoEncontrado aluno then do
-                let resumoM = getResumo disciplina idResumo
-                case resumoM of
-                    Just resumo -> do
-                        if not (comentarioEstaVazio resumo) then 
-                            return (organizaListagem (getComentarios resumo))
-                        else  
-                            return "Não existem comentários!" 
-                    Nothing ->
-                        return "Resumo Não Cadastrado."
-            else 
-                return "Você não está no grupo."
-        Nothing ->
-            return "Disciplina Não Encontrada ou Grupo não encontrado."
+    if codigo grupoEncontrado == -1 then
+        return "Grupo não encontrado."
+    else
+        let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+        in case disciplinaM of
+            Just disciplina -> do
+                if grupoContainsAluno grupoEncontrado aluno then do
+                    if linkUtilExisteNaDisciplina idLinkUtil disciplina then do 
+                        idComentario <- generateID 'c'
+                        let comentarioObj = Comentario idComentario matriculaAluno comentario
+                        let disciplinaListaAtualizada = adicionarComentarioEmDisciplinaLinkUtil idDisciplina disciplinasGrupo idLinkUtil comentarioObj
+                        let grupoAtualizado = grupoEncontrado { Model.Grupo.disciplinas = disciplinaListaAtualizada }
+                        let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+                        saveAlteracoesGrupo gruposAtualizados
+                        return "Comentário adicionado ao Link Util!"
+                    else
+                        return "Link Util não cadastrado!"
+                else 
+                    return "Você não está no grupo."
+            Nothing ->
+                return "Disciplina Não Encontrada"
+
+linkUtilExisteNaDisciplina :: String -> Disciplina -> Bool
+linkUtilExisteNaDisciplina idLinkUtil disciplina =
+    any (\link -> Model.LinkUtil.idLink link == idLinkUtil) (links disciplina)
+
+adicionarComentarioAData :: String -> Comentario -> Data -> Data
+adicionarComentarioAData idDaData comentarioAtualizado dataObj =
+    if idDaData == Model.Data.iddata dataObj
+        then dataObj { Model.Data.comentariosData = comentarioAtualizado : Model.Data.comentariosData dataObj }
+        else dataObj
+        
+adicionarComentarioADataNaDisciplina :: Int -> String -> Comentario -> [Disciplina] -> [Disciplina]
+adicionarComentarioADataNaDisciplina codigoDisciplina idData comentarioAtualizado disciplinas =
+    case find (\disciplina -> Model.Disciplina.id disciplina == codigoDisciplina) disciplinas of
+        Just disciplinaEncontrada ->
+            let datasAtualizadas = map (\dataObj -> adicionarComentarioAData idData comentarioAtualizado dataObj) (Model.Disciplina.datas disciplinaEncontrada)
+                disciplinaAtualizada = disciplinaEncontrada { Model.Disciplina.datas = datasAtualizadas }
+            in disciplinaAtualizada : filter (\disciplina -> Model.Disciplina.id disciplina /= codigoDisciplina) disciplinas
+        Nothing -> disciplinas
+
+dataExisteNaDisciplina :: String -> Disciplina -> Bool
+dataExisteNaDisciplina idData disciplina =
+    any (\dataObj -> Model.Data.iddata dataObj == idData) (datas disciplina)
+
+
+adicionarComentarioEmDisciplinaData :: Int -> [Disciplina] -> String -> Comentario -> [Disciplina]
+adicionarComentarioEmDisciplinaData codigoDisciplina disciplinas idData comentarioAtualizado =
+    adicionarComentarioADataNaDisciplina codigoDisciplina idData comentarioAtualizado disciplinas
+
+adicionarComentarioDataDisciplinaDoGrupo :: Int -> Int -> String -> String -> String -> IO String
+adicionarComentarioDataDisciplinaDoGrupo idGrupo idDisciplina matriculaAluno idData comentario = do
+    listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
+    let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
+    let aluno = A.getAlunoByMatricula matriculaAluno alunoList
+    if codigo grupoEncontrado == -1 then
+        return "Grupo não encontrado."
+    else
+        let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+        in case disciplinaM of
+            Just disciplina -> do
+                if grupoContainsAluno grupoEncontrado aluno then do
+                    if dataExisteNaDisciplina idData disciplina then do 
+                        idComentario <- generateID 'c'
+                        let comentarioObj = Comentario idComentario matriculaAluno comentario
+                        let disciplinaListaAtualizada = adicionarComentarioEmDisciplinaData  idDisciplina disciplinasGrupo idData comentarioObj
+                        let grupoAtualizado = grupoEncontrado { Model.Grupo.disciplinas = disciplinaListaAtualizada }
+                        let gruposAtualizados = atualizarGrupo idGrupo listaGrupos grupoAtualizado
+                        saveAlteracoesGrupo gruposAtualizados
+                        return "Comentário adicionado a data importante"
+                    else
+                        return "Data não cadastrada!"
+                else 
+                    return "Você não está no grupo."
+            Nothing ->
+                return "Disciplina Não Encontrada"
 
 -- Testa para saber se um comentário está vazio 
 comentarioEstaVazio :: Resumo -> Bool
 comentarioEstaVazio resumo = null (comentario resumo)
+
+comentarioEstaVazioLink :: LinkUtil -> Bool
+comentarioEstaVazioLink linkUtil = null (comentariosLink linkUtil)
+
+comentarioEstaVazioData :: Data -> Bool
+comentarioEstaVazioData dataObj = null (comentariosData dataObj)
+
+verComentariosLinkUtil :: Int -> Int -> String -> String -> IO String
+verComentariosLinkUtil idGrupo idDisciplina idLinkUtil matriculaAluno = do
+    listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
+    let aluno = A.getAlunoByMatricula matriculaAluno alunoList
+    let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
+    let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+    if codigo grupoEncontrado == idGrupo then
+        case disciplinaM of
+            Just disciplina -> do 
+                if grupoContainsAluno grupoEncontrado aluno then do
+                    let linkUtilM = getLinkUtil disciplina idLinkUtil
+                    case linkUtilM  of
+                        Just linkUtil -> do
+                            if not (comentarioEstaVazioLink linkUtil) then 
+                                return (organizaListagem (getComentariosLink linkUtil))
+                            else  
+                                return "Não existem comentários!" 
+                        Nothing ->
+                            return "LinkUtil Não Cadastrado."
+                else 
+                    return "Você não está no grupo." 
+            Nothing -> 
+                return "Disciplina não cadastrada no grupo."  
+    else
+        return "Grupo não encontrado."
+
+
+verComentariosData :: Int -> Int -> String -> String -> IO String
+verComentariosData idGrupo idDisciplina idData matriculaAluno = do
+    listaGrupos <- G.getGruposJSON "src/DataBase/Data/Grupo.json"
+    alunoList <- A.getAlunoJSON "src/DataBase/Data/Aluno.json"
+    let grupoEncontrado = getGruposByCodigo idGrupo listaGrupos
+    let aluno = A.getAlunoByMatricula matriculaAluno alunoList
+    let disciplinasGrupo = Model.Grupo.disciplinas grupoEncontrado
+    let disciplinaM = getDisciplinaByCodigo idDisciplina disciplinasGrupo
+    if codigo grupoEncontrado == idGrupo then
+        case disciplinaM of
+            Just disciplina -> do 
+                if grupoContainsAluno grupoEncontrado aluno then do
+                    let dataM = getData disciplina idData
+                    case dataM of
+                        Just dataa -> do
+                            if not (comentarioEstaVazioData dataa) then 
+                                return (organizaListagem (getComentariosData dataa))
+                            else  
+                                return "Não existem comentários!" 
+                        Nothing ->
+                            return "Data Não Cadastrado."
+                else 
+                    return "Você não está no grupo." 
+            Nothing -> 
+                return "Disciplina não cadastrada no grupo."  
+    else
+        return "Grupo não encontrado."
+

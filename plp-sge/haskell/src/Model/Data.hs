@@ -11,7 +11,7 @@ data Data = Data {
     iddata :: String,
     dataInicio :: String,
     dataFim :: String,
-    comentarios :: [Comentario]
+    comentariosData :: [Comentario]
 } deriving (Generic)
 
 instance Show Data where
@@ -19,4 +19,9 @@ instance Show Data where
                    "ID da Data: " ++ iddata dataObj ++ "\n" ++
                    "Data de Início: " ++ dataInicio dataObj ++ "\n" ++
                    "Data de Fim: " ++ dataFim dataObj
+                   
+getComentariosData :: Data -> [Comentario]
+getComentariosData dataObj = comentariosData dataObj
+
+        
 

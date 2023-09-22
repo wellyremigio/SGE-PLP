@@ -199,6 +199,8 @@ getResumo disciplina idResumoDesejado =
         Just res -> Just res
         Nothing -> Nothing
 
+isAlunoVazio :: Aluno -> Bool
+isAlunoVazio aluno = null (matricula aluno)
 
 -- Pega mum link util da disciplina.
 getLinkUtil :: Disciplina -> String -> Maybe LinkUtil
