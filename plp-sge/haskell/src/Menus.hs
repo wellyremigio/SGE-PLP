@@ -71,9 +71,8 @@ menuInicial matricula = do
     putStrLn "2- Remover grupo"
     putStrLn "3- Meus grupos"
     putStrLn "4- Minhas disciplinas"
-    putStrLn "5- Consultar"
-    putStrLn "6- Procurar Grupo"
-    putStrLn "7- Sair"
+    putStrLn "5- Procurar Grupo"
+    putStrLn "6- Sair"
     op <- readLn :: IO Int
     selecaoMenuInicial op matricula
 
@@ -112,10 +111,7 @@ selecaoMenuInicial op matricula
     | op == 5 = do
         result <- listagemDeGruposEmComum matricula
         putStr result
-    | op == 6 = do
-        result <- listagemDeGruposEmComum matricula
-        putStr result
-    | op == 7 = putStrLn "Saindo...\n"
+    | op == 6 = putStrLn "Saindo...\n"
     | otherwise = do
         putStrLn "Opção inválida. Tente de novo!"
         menuInicial matricula
