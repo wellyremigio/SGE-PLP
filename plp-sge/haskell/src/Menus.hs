@@ -144,7 +144,7 @@ selecaoMenuMeusGrupos op matricula
          if resposta then do
             resultado <- adicionarAluno matriculaAluno codigo
             putStrLn resultado
-            else putStr "O aluno já está cadastrado."
+            else putStr "Não foi possível cadastrar!"
          menuMeusGrupos matricula
     | op == 2 = do
         putStrLn "\nMatrícula do aluno a ser removido?"
