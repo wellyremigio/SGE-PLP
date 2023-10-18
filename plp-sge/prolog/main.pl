@@ -34,3 +34,34 @@ opSelecionada(3):-
 opSelecionada(_):-
     write('Ops! Entrada Inválida...\n'),
     main.
+
+
+
+menuMinhasDisciplinas(Matricula) :-
+    write('\n1. Visualizar disciplinas\n'),
+    write('2. Cadastrar disciplina\n'),
+    write('3. Remover disciplina\n'),
+    write('4. Materiais\n'),
+    write('5. Voltar\n'),
+    write('6. Sair\n'),
+    read(Opcao),
+    opselecionadaDisciplinaAluno(Opcao, Matricula).
+    
+opselecionadaDisciplinaAluno(1, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
+    
+opselecionadaDisciplinaAluno(2, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
+    
+opselecionadaDisciplinaAluno(3, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
+    
+opselecionadaDisciplinaAluno(4, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
+    
+opselecionadaDisciplinaAluno(5, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
+    
+opselecionadaDisciplinaAluno(6, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
+
