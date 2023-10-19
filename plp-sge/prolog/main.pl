@@ -97,14 +97,6 @@ opselecionadaCadastroMateriaisAluno(1, Matricula) :-
     prompt('Conteúdo do resumo: ',Resumo),
     menuCadastraMateriaisAluno(Matricula) :-
 
-        putStrLn "\nID disciplina: "
-        idDisciplina <- readLn :: IO Int
-        putStrLn "Titulo: "
-        titulo <- getLine
-        putStrLn "Data Inicio: "
-        dti <- getLine
-        putStrLn "Data Fim: "
-
 opselecionadaCadastroMateriaisAluno(2, Matricula) :-
     prompt('Código da disciplina: ', Codigo),
     prompt('Titulo: ', Titulo),
