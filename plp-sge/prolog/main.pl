@@ -51,6 +51,10 @@ opselecionadaDisciplinaAluno(1, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(2, Matricula) :-
+    prompt('O código da disciplina que você quer cadastrar: ', Codigo),
+    prompt('Nome da disciplina: ', Nome),
+    prompt('Professor que ministra: ',Professor),
+    prompt('Período: ', Periodo),
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
