@@ -2,6 +2,14 @@
 % swipl -s main.pl
 
 
+% Inclusão dos utilitários
+:- consult('utils.pl').
+:- encoding(utf8).
+:- set_prolog_flag(encoding, utf8).
+:- use_module(library(http/json)).
+:- use_module(library(date)).
+:- use_module(library(random)).
+
 prompt(Message, String):-
     write(Message),
     flush_output,
@@ -46,6 +54,7 @@ menuMinhasDisciplinas(Matricula) :-
     write('6. Sair\n'),
     read(Opcao),
     opselecionadaDisciplinaAluno(Opcao, Matricula).
+
     
 opselecionadaDisciplinaAluno(1, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -58,10 +67,11 @@ opselecionadaDisciplinaAluno(2, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
+    prompt('Código da discplina que você quer remover: ', Codigo),
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(4, Matricula) :-
-    menuMinhasDisciplinas(Matricula).
+menuCadastraMateriaisAluno(Matricula).
     
 opselecionadaDisciplinaAluno(5, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -69,3 +79,43 @@ opselecionadaDisciplinaAluno(5, Matricula) :-
 opselecionadaDisciplinaAluno(6, Matricula) :-
     menuMinhasDisciplinas(Matricula).
 
+
+menuCadastraMateriaisAluno(Matricula) :-
+    write('\nSelecione o tipo de material que você gostaria de cadastrar:\n'),
+    write('1. Resumo\n'),
+    write('2. Links\n'),
+    write('3. Datas\n'),
+    write('4. Voltar\n'),
+    read(Opcao),
+    selecionaMenuCadastroMateriaisAluno(Opcao, Matricula).
+
+
+opselecionadaCadastroMateriaisAluno(1, Matricula) :-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('Nome do resumo: ', Nome),
+    prompt('Conteúdo do resumo: ',Resumo),
+    menuCadastraMateriaisAluno(Matricula) :-
+
+        putStrLn "\nID disciplina: "
+        idDisciplina <- readLn :: IO Int
+        putStrLn "Titulo: "
+        titulo <- getLine
+        putStrLn "Data Inicio: "
+        dti <- getLine
+        putStrLn "Data Fim: "
+
+opselecionadaCadastroMateriaisAluno(2, Matricula) :-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('Titulo: ', Titulo),
+    prompt('Link: ',Link),
+    menuCadastraMateriaisAluno(Matricula) :-
+
+opselecionadaCadastroMateriaisAluno(3, Matricula) :-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('Titulo: ', Titulo),
+    prompt('Data início: ',DataI),
+    prompt('Data fim: ',DataF),
+    menuCadastraMateriaisAluno(Matricula) :-
+
+opselecionadaCadastroMateriaisAluno(4, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
