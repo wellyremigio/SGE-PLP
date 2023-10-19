@@ -77,7 +77,8 @@ opselecionadaDisciplinaAluno(5, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(6, Matricula) :-
-    menuMinhasDisciplinas(Matricula).
+    write('Saindo...'), 
+    halt.
 
 
 menuCadastraMateriaisAluno(Matricula) :-
