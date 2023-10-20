@@ -29,6 +29,7 @@ main:-
 
 opSelecionada(1):-
     menuLogin,
+    %menuMeusGrupos(1),
     main.
 
 opSelecionada(2):-
@@ -44,6 +45,95 @@ opSelecionada(_):-
     main.
 
 
+menuMeusGrupos(Matricula):-
+    writeln('\nEscolha o que você quer fazer: '),
+    write('1. Adicionar Aluno\n'),
+    write('2. Remover Aluno\n'),
+    write('3. Visualizar Alunos\n'),
+    write('4. Adicionar Disciplina\n'),
+    write('5. Visualizar Disciplina\n'),
+    write('6. Remover Disciplina\n'),
+    write('7. Acessar Materiais\n'),
+    write('8. Ver grupos\n'),
+    write('9. Voltar\n'),
+    prompt('->', Input),
+    atom_number(Input, Opcao),
+    write('\n'),
+    opSelecionadaMeusGrupos(Opcao, Matricula).
+
+
+    %Adicionar aluno
+    opSelecionadaMeusGrupos(1, Matricula):-
+        prompt('Matrícula do aluno a ser adicionado: ', MatriculaAluno),
+        prompt('Código do grupo: ', CodGrupo),
+        adicionaAlunoGrupo(Matricula, MatriculaAluno, CodGrupo, Result),
+        write(Result),
+        menuMeusGrupos(Matricula).
+
+     %Remover aluno
+    opSelecionadaMeusGrupos(2, Matricula):-
+        prompt('Matrícula do aluno a ser removido: ', MatriculaAluno),
+        prompt('Código do grupo: ', CodGrupo),
+        removeAlunoGrupo(Matricula, MatriculaAluno, CodGrupo, Result),
+        write(Result),
+        menuMeusGrupos(Matricula).
+
+    %Visualizar Alunos
+    opSelecionadaMeusGrupos(3, Matricula):-
+        prompt('Código do grupo para listar os alunos: ', CodGrupo),
+        listagemAlunosGrupo(CodGrupo, Result),
+        write(Result),
+        menuMeusGrupos(Matricula).
+
+    %Adicionar Disciplina
+    opSelecionadaMeusGrupos(4, Matricula):-
+        prompt('Código do grupo: ', CodGrupo),
+        prompt('Código da disciplina que você quer adicionar: ', IdDiscilina),
+        prompt('Nome da disciplina: ', NomeDiscilina),
+        prompt('Nome do professor: ', NomeProfessor),
+        prompt('Período: ', Periodo),
+        cadastraDisciplinaGrupo(CodGrupo, IdDiscilina, NomeDiscilina, NomeProfessor, Periodo, Result),
+        write(Result),
+        menuMeusGrupos(Matricula).
+
+    %Visualizar Disciplina
+    opSelecionadaMeusGrupos(5, Matricula):-
+        prompt('Código do grupo: ', CodGrupo),
+        listagemDisciplinaGrupo(CodGrupo, Result),
+        write(Result),
+        menuMeusGrupos(Matricula).
+
+    %Remover Disciplina
+    opSelecionadaMeusGrupos(6, Matricula):-
+        prompt('Código da disciplina que você quer remover: ', IdDiscilina),
+        prompt('Código do grupo: ', CodGrupo),
+        removeDisciplinaGrupo(IdDiscilina, CodGrupo, Result),
+        write(Result),
+        menuMeusGrupos(Matricula).
+   
+    %Acessar Materiais
+    opSelecionadaMeusGrupos(7, Matricula):-
+        menuMateriaisGrupo (Matricula).
+        %menuMeusGrupos(Matricula).
+    
+    %Ver grupos
+    opSelecionadaMeusGrupos(8, Matricula):-
+        write('\nEsses são os seus grupos: \n'),
+        listagemGrupos(Matricula, Result),
+        write(Result),
+        menuMeusGrupos(Matricula).
+   
+    %Voltar para o menu inicial
+    opSelecionadaMeusGrupos(9, Matricula):-
+        menuInicial.
+    
+    opSelecionadaMeusGrupos(_, Matricula):-
+        write('Opção inválida'),
+        menuMeusGrupos(Matricula).
+
+
+
+
 
 menuMinhasDisciplinas(Matricula) :-
     write('\n1. Visualizar disciplinas\n'),
@@ -54,7 +144,6 @@ menuMinhasDisciplinas(Matricula) :-
     write('6. Sair\n'),
     read(Opcao),
     opselecionadaDisciplinaAluno(Opcao, Matricula).
-
     
 opselecionadaDisciplinaAluno(1, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -72,6 +161,13 @@ opselecionadaDisciplinaAluno(3, Matricula) :-
     
 opselecionadaDisciplinaAluno(4, Matricula) :-
 menuCadastraMateriaisAluno(Matricula).
+    menuMinhasDisciplinas(Matricula).
+    
+opselecionadaDisciplinaAluno(3, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
+    
+opselecionadaDisciplinaAluno(4, Matricula) :-
+    menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(5, Matricula) :-
     menuMinhasDisciplinas(Matricula).
