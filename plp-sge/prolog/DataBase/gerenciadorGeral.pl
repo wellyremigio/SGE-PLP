@@ -29,12 +29,12 @@ extract_info_comentario(json([id=Id, idAluno=IdAluno, texto=Texto]), Id, IdAluno
 % Regra que generalizam a extração do Id das entidades do banco de dados já citadas
 % (Esse regra é importante para generalizar o uso do regra de busca por ID)
 extract_id_object('alunos', Head_Object, Matricula) :- extract_info_aluno(Head_Object, Matricula, _, _, _).
-extract_id_object('disciplinas', Head_Object, Object_Id) :- extract_info_disciplina(Head_Object, Object_Id, _, _, _, _, _, _).
+extract_id_object('disciplina', Head_Object, Object_Id) :- extract_info_disciplina(Head_Object, Object_Id, _, _, _, _, _, _).
 extract_id_object('grupos', Head_Object, Object_Id) :- extract_info_grupo(Head_Object, Object_Id, _, _, _, _).
-extract_id_object('resumos', Head_Object, Object_Id) :- extract_info_resumo(Head_Object, Object_Id, _, _, _).
-extract_id_object('links', Head_Object, Object_Id) :- extract_info_link_util(Head_Object, Object_Id, _, _, _).
-extract_id_object('datas', Head_Object, Object_Id) :- extract_info_data(Head_Object, Object_Id, _, _, _, _).
-extract_id_object('comentarios', Head_Object, Object_Id) :- extract_info_comentario(Head_Object, Object_Id, _, _).
+extract_id_object('resumo', Head_Object, Object_Id) :- extract_info_resumo(Head_Object, Object_Id, _, _, _).
+extract_id_object('link', Head_Object, Object_Id) :- extract_info_link_util(Head_Object, Object_Id, _, _, _).
+extract_id_object('data', Head_Object, Object_Id) :- extract_info_data(Head_Object, Object_Id, _, _, _, _).
+extract_id_object('comentario', Head_Object, Object_Id) :- extract_info_comentario(Head_Object, Object_Id, _, _).
 
 % Regra geral que busca qualquer entidade por ID
 % Caso a entidade não seja encontrada, -1 é retornado

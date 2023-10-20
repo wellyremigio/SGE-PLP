@@ -3,6 +3,7 @@
 
 % Inclusão da base de dados
 :- consult('DataBase/gerenciadorAluno.pl').
+:- consult('DataBase/gerenciadorGeral.pl').
 :- consult('constantes.pl').
 
 % Inclusão das funções das entidades
@@ -16,6 +17,9 @@
 :- use_module(library(date)).
 :- use_module(library(random)).
 */
+
+:- encoding(utf8).
+:- set_prolog_flag(encoding, utf8).
 
 %Recebe os dados do usuário
 prompt(Message, String):-
@@ -268,8 +272,11 @@ menuMinhasDisciplinas(Matricula) :-
     write('4. Materiais\n'),
     write('5. Voltar\n'),
     write('6. Sair\n'),
-    read(Opcao),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    write('\n'),
     opselecionadaDisciplinaAluno(Opcao, Matricula).
+
     
 opselecionadaDisciplinaAluno(1, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -279,6 +286,8 @@ opselecionadaDisciplinaAluno(2, Matricula) :-
     prompt('Nome da disciplina: ', Nome),
     prompt('Professor que ministra: ',Professor),
     prompt('Período: ', Periodo),
+    cadastra_disciplina_aluno(Matricula, Codigo, Nome, Professor, Periodo, Result),
+    write(Result),
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
