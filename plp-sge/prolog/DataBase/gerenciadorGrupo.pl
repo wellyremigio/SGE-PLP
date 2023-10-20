@@ -5,8 +5,12 @@ get_grupos(Data):- grupos_path(Path), load_json_file(Path, Data).
 
 %Regra que adiciona um grupo ao banco de dados
 %Os alunos e as disciplinas iniciam vazio por padrao
-add_grupo(Codigo, Nome, Adm):- add_grupo(Nome, Codigo,[],[], Adm).
+add_grupo(Codigo, Nome, Adm):- add_grupo(Codigo, Nome, [],[], Adm).
 
+add_aluno(Codigo, Nome, Alunos, Disciplinas, Adm):-
+    Grupo = json([codigo=Codigo, nome=Nome, alunos=Alunos, disciplinas=Disciplinas, adm=Adm]),
+    grupos_path(Path),
+    save_object(Path, Grupo).
 
 %Regra para pegar um Grupo pelo código
 
