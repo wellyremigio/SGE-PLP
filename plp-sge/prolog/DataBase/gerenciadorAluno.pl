@@ -1,4 +1,5 @@
 %%% Regras para Aluno
+:- use_module(library(http/json)).
 
 %Regra especídfica que busca os alunos no banco de dados
 
@@ -6,7 +7,26 @@ get_aluno(Data):- alunos_path(Path), load_json_file(Path, Data).
 
 %Regra que adiciona um aluno ao banco de dados
 
-add_aluno(Matricula, Nome , Senha):- add_aluno(Matricula, Nome, Senha, []).
+alunos_path('DataBase/Aluno.json').
+
+save_object(File, Element) :- 
+    load_json_file(File, Data),
+    New_Data = [Element | Data],
+    save_json_file(File, New_Data).
+
+load_json_file(File, Data) :-
+    open(File, read, Stream),
+    json_read(Stream, Data),
+    close(Stream).
+
+% Regra geral salvar no banco de dados uma estrutura JSON recebida como parâmetro
+save_json_file(File, Data) :-
+    open(File, write, Stream),
+    json_write(Stream, Data),
+    close(Stream).
+
+add_aluno(Matricula, Nome , Senha):- 
+    add_aluno(Matricula, Nome, Senha, []).
 
 add_aluno(Matricula, Nome , Senha, Disciplina):-
     Aluno = json([matricula=Matricula, nome=Nome, senha=Senha, disciplina=Disciplina]),
@@ -35,4 +55,3 @@ get_aluno_disciplina(Matricula, Disciplinas):-
 get_aluno_senha(Matricula, Senha):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, Senha, _).
-

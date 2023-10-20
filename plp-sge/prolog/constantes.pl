@@ -4,5 +4,4 @@ grupos_path('DataBase/Grupo.json').
 
 % constantes para alunos
 
-alunos_path('DataBase/Aluno.json')
-
+alunos_path('DataBase/Aluno.json').
