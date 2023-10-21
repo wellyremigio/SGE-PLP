@@ -1,5 +1,9 @@
 :- initialization (main).
 
+%Comando pra rodar 
+% swipl -s main.pl
+
+% Inclusão da base de dados
 :- consult('DataBase/gerenciadorGeral.pl').
 :- consult('DataBase/gerenciadorAluno.pl').
 :- consult('DataBase/gerenciadorGrupo.pl').
@@ -9,20 +13,14 @@
 :- include('aluno.pl').
 :- include('grupo.pl').
 
+% Inclusão dos utilitários
+%:- consult('utils.pl').
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
 :- use_module(library(http/json)).
 :- use_module(library(date)).
 :- use_module(library(random)).
 
-% Inclusão dos utilitários
-/*:- consult('utils.pl').
-:- encoding(utf8).
-:- set_prolog_flag(encoding, utf8).
-:- use_module(library(http/json)).
-:- use_module(library(date)).
-:- use_module(library(random)).
-*/
 
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
@@ -47,42 +45,39 @@ main:-
 
 opSelecionada(1):-
     menuLogin,
-    %menuMeusGrupos(1),
     main.
 
 opSelecionada(2):-
     menuCadastro,
     main.
-
+    
 opSelecionada(3):-
     write('Saindo...\n'),
     halt.
 
 opSelecionada(_):-
-    write('Ops! Entrada Inválida...\n'),
+    write('Ops! Entrada Invalida...\n'),
     main.
 
 %Menu responsável por fazer o login
-menuLogin :-
+menuLogin:-
     prompt('Matrícula: ', Matricula),
-    verificaLogin(Matricula, AlunoCadastrado),
-    (
-        AlunoCadastrado = false ->
-        write('Cadastro não encontrado :/'), nl,
-        menuEscolhaLogin;
-        prompt('Senha: ', SenhaInput),
-        verificaSenhaAluno(Matricula, SenhaInput, SenhaCorreta),
-        (
-            SenhaCorreta = false ->
-            write('Senha incorreta! '),
-            menuEscolhaLogin;
+    (verificaLogin(Matricula) ->
+        prompt('Senha: ', Senha),
+        (verificaSenhaAluno(Matricula, Senha) ->
             menuInicial(Matricula)
-        )
+        ;
+            write('Senha incorreta, tente novamente. \n'),
+            menuLogin)
+    ;
+        write('Aluno não encontrado!'), 
+        menuEscolhaLogin
     ).
+
 
 menuEscolhaLogin:-
     write('\nEscolha uma opção para seguir\n'),
-    write('1. Tentar Fazer login novamente\n'),
+    write('1. Fazer login \n'),
     write('2. Fazer cadastro\n'),
     write('3. Sair\n'),
     prompt('->', Input),
@@ -105,18 +100,6 @@ verificaEscolha(_):-
     menuEscolhaLogin.
 
 %Menu resonsável por fazer o cadastro 
-/*menuCadastro :-
-    prompt('Matrícula: ', MatriculaCadastrada),
-    prompt('Nome: ', Nome),
-    prompt('Senha: ', Senha),
-    verificaLogin(MatriculaCadastrada, MatriculaJaCadastrada),
-    (   MatriculaJaCadastrada = false
-    ->  cadastraAluno(MatriculaCadastrada, Nome, Senha, Result),
-        write(Result),
-        menuInicial(MatriculaCadastrada)
-    ;   write('Aluno já cadastrado! '),
-        menuEscolhaLogin
-    ). */
 menuCadastro :-
     prompt('Matrícula: ', Matricula),
     prompt('Nome: ', Nome),
@@ -137,7 +120,7 @@ menuInicial(Matricula):-
     write('3. Meus grupos\n'),
     write('4. Minhas disciplinas\n'),
     write('5. Procurar Grupo\n'),
-    write('6. Voltar\n'),
+    write('6. Sair\n'),
     prompt('->', Input),
     atom_number(Input, Opcao),
     write('\n'),
@@ -177,7 +160,8 @@ selecaoMenuInicial(5, Matricula):-
 
 %Voltando para o menu
 selecaoMenuInicial(6, _):-
-    main.
+    write('Saindo...\n'),
+    halt.
 
 selecaoMenuInicial(_, Matricula):-
     write('Opção inválida'),

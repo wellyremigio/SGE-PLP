@@ -1,7 +1,5 @@
 get_aluno(Data):- alunos_path(Path), load_json_file(Path, Data).
 
-%Regra que adiciona um aluno ao banco de dados
-
 alunos_path('DataBase/Aluno.json').
 
 save_object(File, Element) :- 
@@ -20,6 +18,7 @@ save_json_file(File, Data) :-
     json_write(Stream, Data),
     close(Stream).
 
+%Regra que adiciona um aluno ao banco de dados
 add_aluno(Matricula, Nome , Senha):-
     add_aluno(Matricula, Nome, Senha, []).
 
@@ -28,10 +27,7 @@ add_aluno(Matricula, Nome , Senha, Disciplinas):-
     alunos_path(Path),
     save_object(Path, Aluno).
 
-
-
-%Regra ppara pegar um aluno pela matricula
-
+%Regra para pegar um aluno pela matricula
 get_aluno_by_matricula(Matricula, Aluno):-
     alunos_path(Path),
     get_object_by_id(Path, Matricula, Aluno, 'aluno').
@@ -64,7 +60,6 @@ valida_disciplina(Matricula, IdDisciplina):-
     Disciplina \= -1.
 
  
-
 add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo):-
     \+ valida_disciplina(Matricula, IdDisciplina),
     Disciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=[], datas=[], links=[]]),
@@ -73,5 +68,3 @@ add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo
     NewDisciplinas = [Disciplina | Disciplinas],
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NewDisciplinas).
-
-
