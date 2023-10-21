@@ -1,6 +1,3 @@
-%%%REGRAS PARA CLIENTE %%%
-% Regra específica para buscar todos os grupos do banco de dados
-
 get_grupos(Data):- grupos_path(Path), load_json_file(Path, Data).
 
 %Regra que adiciona um grupo ao banco de dados

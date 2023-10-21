@@ -1,13 +1,19 @@
-%Comando pra rodar 
-% swipl -s main.pl
+:- initialization (main).
 
-% Inclusão da base de dados
-:- consult('DataBase/gerenciadorAluno.pl').
 :- consult('DataBase/gerenciadorGeral.pl').
+:- consult('DataBase/gerenciadorAluno.pl').
+:- consult('DataBase/gerenciadorGrupo.pl').
+
 :- consult('constantes.pl').
 
-% Inclusão das funções das entidades
 :- include('aluno.pl').
+:- include('grupo.pl').
+
+:- encoding(utf8).
+:- set_prolog_flag(encoding, utf8).
+:- use_module(library(http/json)).
+:- use_module(library(date)).
+:- use_module(library(random)).
 
 % Inclusão dos utilitários
 /*:- consult('utils.pl').
