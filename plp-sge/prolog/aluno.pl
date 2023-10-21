@@ -1,14 +1,13 @@
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
 
-
 cadastraAluno(Matricula, Nome, Senha, Result) :-
     atom_string(MatriculaAtom, Matricula),
     (\+ valida_aluno(MatriculaAtom) ->
         add_aluno(MatriculaAtom, Nome, Senha),
-        Result = 'Aluno cadastrado!'
+        Result = 'ok'
     ;  
-        Result = 'Aluno não cadastrado!'
+        Result = 'erro'
     ).
 
 cadastra_disciplina_aluno(Matricula, IdDisciplina, Nome, Professor, Periodo, Result):-
@@ -19,6 +18,7 @@ cadastra_disciplina_aluno(Matricula, IdDisciplina, Nome, Professor, Periodo, Res
     atom_string(PeriodoAtom, Periodo),
     add_disciplina_aluno(MatriculaAtom, IdDisciplinaAtom, NomeAtom, ProfessorAtom, PeriodoAtom),
     atomic_concat('Disciplina cadastrada! Código: ', IdDisciplinaAtom, Result).
+
 
 cadastra_disciplina_aluno(_, _, _, _, _, 'Disciplina não cadastrada!').
 

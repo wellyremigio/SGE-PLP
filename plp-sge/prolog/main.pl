@@ -117,16 +117,17 @@ verificaEscolha(_):-
     ;   write('Aluno já cadastrado! '),
         menuEscolhaLogin
     ). */
-
-menuCadastro:-
-    prompt('Matrícula: ', MatriculaCadastrada),
+menuCadastro :-
+    prompt('Matrícula: ', Matricula),
     prompt('Nome: ', Nome),
     prompt('Senha: ', Senha),
-    cadastraAluno(MatriculaCadastrada, Nome, Senha, Result),
-    write(Result),
-    menuInicial(MatriculaCadastrada).
-
-
+    cadastraAluno(Matricula, Nome, Senha, ResultParcial),
+    (ResultParcial = 'ok' -> 
+        write('Aluno Cadastrado'),
+        menuInicial(Matricula)
+        ;
+        write('Não foi possível fazer o cadastro'),
+        menuEscolhaLogin).
 
 % Menu para mostra as opções do SGE para o usuário.
 menuInicial(Matricula):-
