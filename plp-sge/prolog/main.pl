@@ -277,6 +277,8 @@ menuMinhasDisciplinas(Matricula) :-
 
     
 opselecionadaDisciplinaAluno(1, Matricula) :-
+    exibe_disciplinas(Matricula,Result),
+    write(Result),
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(2, Matricula) :-

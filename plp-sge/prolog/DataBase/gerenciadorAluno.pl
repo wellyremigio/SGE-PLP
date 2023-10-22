@@ -80,5 +80,10 @@ remove_disciplina_aluno(Matricula, IdDisciplina):-
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NewDisciplinas).
 
+has_disciplines(Matricula) :-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, _, _, Disciplinas),
+    length(Disciplinas, N),
+    N > 0.
 
 

@@ -27,16 +27,25 @@ cadastra_disciplina_aluno(Matricula, IdDisciplina, Nome, Professor, Periodo, Res
     atom_string(ProfessorAtom, Professor),
     atom_string(PeriodoAtom, Periodo),
     add_disciplina_aluno(MatriculaAtom, IdDisciplinaAtom, NomeAtom, ProfessorAtom, PeriodoAtom),
-    atomic_concat('Disciplina cadastrada! Código: ', IdDisciplinaAtom, Result).
+    atomic_list_concat(['\nDisciplina cadastrada! Código: ', IdDisciplinaAtom, '\n'], Result).
 
-cadastra_disciplina_aluno(_, _, _, _, _, 'Disciplina não cadastrada!').
+
+cadastra_disciplina_aluno(_, _, _, _, _, '\nDisciplina não cadastrada!\n').
 
 rm_disciplina_aluno(Matricula, IdDisciplina, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
     remove_disciplina_aluno(MatriculaAtom, IdDisciplinaAtom),
-    Result = 'Disciplina Removida com Sucesso!'.
+    Result = '\nDisciplina Removida com Sucesso!\n'.
 
-rm_disciplina_aluno(_, _, 'Disciplina não encontrada!').
+rm_disciplina_aluno(_, _, '\nDisciplina não encontrada!\n').
+
+exibe_disciplinas(Matricula,Result):-
+    atom_string(MatriculaAtom, Matricula),
+    has_disciplines(MatriculaAtom),
+    listaDisciplinas(MatriculaAtom, Result).
+
+exibe_disciplinas(_,'\nNão Possui Disciplinas Cadastradas!\n').
+
 
 
