@@ -29,12 +29,7 @@ add_aluno(Matricula, Nome , Senha, Disciplinas):-
     alunos_path(Path),
     save_object(Path, Aluno).
 
-<<<<<<< HEAD
 %Regra para pegar um aluno pela matricula
-=======
-%Regra ppara pegar um aluno pela matricula
-
->>>>>>> alun
 get_aluno_by_matricula(Matricula, Aluno):-
     alunos_path(Path),
     get_object_by_id(Path, Matricula, Aluno, 'aluno').
@@ -56,8 +51,9 @@ get_aluno_senha(Matricula, Senha):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, Senha, _).
 
-valida_aluno(Matricula):- 
-    get_aluno_by_matricula(Matricula, Aluno),
+valida_aluno(Matricula):-
+    atom_string(MatriculaAton, Matricula),
+    get_aluno_by_matricula(MatriculaAton, Aluno),
     Aluno \= -1.
 
 valida_disciplina(Matricula, IdDisciplina):-
@@ -65,7 +61,6 @@ valida_disciplina(Matricula, IdDisciplina):-
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
     seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
     Disciplina \= -1.
-
 
 add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo):-
     \+ valida_disciplina(Matricula, IdDisciplina),
@@ -90,5 +85,3 @@ has_disciplines(Matricula) :-
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
     length(Disciplinas, N),
     N > 0.
-
-

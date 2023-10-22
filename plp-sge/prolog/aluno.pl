@@ -47,5 +47,3 @@ exibe_disciplinas(Matricula,Result):-
 
 exibe_disciplinas(_,'\nNão Possui Disciplinas Cadastradas!\n').
 
-
-

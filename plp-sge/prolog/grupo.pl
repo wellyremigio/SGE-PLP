@@ -13,3 +13,9 @@ cadastraGrupo(CodGrupo, NomeGrupo, Adm, Result) :-
 verificaGrupo(CodGrupo):-
     atom_string(CodGrupoAtom, CodGrupo),
     valida_grupo(CodGrupoAtom).
+
+adicionaAlunoGrupo(CodGrupo, MatriculaAluno):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(MatriculaAtom, MatriculaAluno),
+    adiciona_aluno_grupo(CodGrupoAtom, MatriculaAtom).
+
