@@ -171,7 +171,7 @@ selecaoMenuInicial(6, _):-
     halt.
 
 selecaoMenuInicial(_, Matricula):-
-    write('Opção inválida),
+    write('Opção inválida'),
     menuInicial(Matricula).
 
 
@@ -312,7 +312,7 @@ opselecionadaDisciplinaAluno(6, Matricula) :-
     write('Saindo...'), 
     halt.
 
-opselecionadaDisciplinaAluno(_,Matricula) :- write('Opcao invalida!'), menuMinhasDisciplinas(Matricula).
+opselecionadaDisciplinaAluno(_,Matricula) :- write('Opcão inválida!'), menuMinhasDisciplinas(Matricula).
 
 
 menuCadastraMateriaisAluno(Matricula) :-
