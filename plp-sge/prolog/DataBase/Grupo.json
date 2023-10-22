@@ -1,5 +1,12 @@
 [
   {
+    "id":"5",
+    "nome":"5",
+    "alunos": [ {"id":"3", "nome":"1231", "senha":"3", "disciplinas": []} ],
+    "disciplinas": [],
+    "adm":"1"
+  },
+  {
     "id":"6",
     "nome":"6",
     "alunos": [
@@ -10,7 +17,6 @@
     "disciplinas": [],
     "adm":"1"
   },
-  {"id":"5", "nome":"5", "alunos": [], "disciplinas": [], "adm":"1"},
   {"id":"2", "nome":"2", "alunos": [], "disciplinas": [], "adm":"2"},
   {"id":"1", "nome":"1", "alunos": [], "disciplinas": [], "adm":"2"}
 ]
