@@ -30,13 +30,11 @@ add_aluno(Matricula, Nome , Senha, Disciplinas):-
     save_object(Path, Aluno).
 
 %Regra ppara pegar um aluno pela matricula
-
 get_aluno_by_matricula(Matricula, Aluno):-
     alunos_path(Path),
     get_object_by_id(Path, Matricula, Aluno, 'aluno').
 
 %Regra para remover um aluno pela matricula
-
 remove_aluno_by_matricula(Matricula):-
     alunos_path(Path),
     remove_object_by_id(Path, Matricula, 'aluno').
@@ -47,13 +45,14 @@ get_aluno_disciplina(Matricula, Disciplinas):-
     extract_info_aluno(Aluno, _, _, _, Disciplinas).
 
 %Regra para pegar a senha de um aluno
-
 get_aluno_senha(Matricula, Senha):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, Senha, _).
 
+
 valida_aluno(Matricula):- 
-    get_aluno_by_matricula(Matricula, Aluno),
+    atom_string(MatriculaAtom, Matricula),
+    get_aluno_by_matricula(MatriculaAtom, Aluno),
     Aluno \= -1.
 
 valida_disciplina(Matricula, IdDisciplina):-
@@ -87,4 +86,23 @@ has_disciplines(Matricula) :-
     length(Disciplinas, N),
     N > 0.
 
+getResumoAluno(IdResumo,Matricula,IdDisciplina,Result):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, _, _, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, _, _, _, Resumos, _, _),
+    seach_id(Resumos, IdResumo, Resumo,'resumo'),
+    Result = Resumo.
 
+adiciona_resumo_aluno(Matricula, IdDisciplina, IdResumo, TituloR, ConteudoR):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Links, Datas),
+    NewResumo = json([id=IdResumo, titulo=TituloR, corpo=ConteudoR, comentarios=[]]),
+    NewResumos = [NewResumo | Resumos],
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NewResumos, datas=Links, links=Datas]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NDisciplinas).
