@@ -7,7 +7,7 @@ cadastraAluno(Matricula, Nome, Senha, Result) :-
         add_aluno(MatriculaAtom, Nome, Senha),
         Result = 'ok'
     ;  
-        Result = 'erro'
+        Result = 'falha'
     ).
 
 verificaLogin(Matricula):-
