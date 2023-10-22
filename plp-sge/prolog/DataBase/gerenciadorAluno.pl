@@ -28,8 +28,6 @@ add_aluno(Matricula, Nome , Senha, Disciplinas):-
     alunos_path(Path),
     save_object(Path, Aluno).
 
-
-
 %Regra ppara pegar um aluno pela matricula
 
 get_aluno_by_matricula(Matricula, Aluno):-
