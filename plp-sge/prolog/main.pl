@@ -209,9 +209,16 @@ menuMeusGrupos(Matricula):-
     selecaoMenuMeusGrupos(1, Matricula):-
         prompt('Matrícula do aluno a ser adicionado: ', MatriculaAluno),
         prompt('Código do grupo: ', CodGrupo),
-        verifica_adm(CodGrupo, Matricula, R),
-        (R = 1 -> adiciona_aluno_grupo(MatriculaAluno, CodGrupo, Result), write(Result);
-        write('Não é Adm do grupo')),
+        (verificaGrupo(CodGrupo) ->
+            (verifica_adm(CodGrupo, Matricula) -> 
+                (valida_aluno(MatriculaAluno) -> 
+                    ( \+ verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
+                        write('4') ,adicionaAlunoGrupo(CodGrupo, MatriculaAluno),
+                        write('Cadastrado com sucesso')
+                    ;write('Aluno já esta no grupo') )
+                ; write('Aluno não cadastrado'))
+            ; write('Aluno não é adm do grupo'))
+        ; write('Grupo não cadastrado')),
         menuMeusGrupos(Matricula).
 
      %Remover aluno

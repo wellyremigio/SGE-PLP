@@ -1,4 +1,5 @@
-
+:- encoding(utf8).
+:- set_prolog_flag(encoding, utf8).
 grupos_path('DataBase/Grupo.json').
 
 
@@ -49,19 +50,28 @@ get_grupo_alunos(Codigo, Alunos):-
     extract_info_grupo(Grupo, _, _, Alunos, _, _).
 
 %Regra para retornar o adm de um grupo
-get_adm_grupo(Codigo, Adm):- 
-    get_grupo_by_codigo(Codigo, Grupo),
+get_adm_grupo(Codigo, Adm):-
+    atom_string(CodigoAtom, Codigo),
+    get_grupo_by_codigo(CodigoAtom, Grupo),
     extract_info_grupo(Grupo, _, _, _, _, Adm).
 
-%Verifica se o aluno é adm do grupo
-verifica_adm(Codigo, Matricula, Result):-
-    get_adm_grupo(Codigo,Adm),
-    write('Matricula: '),
-    write(Matricula),
-    write('\n Adm: '),
-    write(Adm),
-    write('\n'),
-    (Adm = Matricula -> Result = 1; Result = -1).
+verifica_adm(Codigo, Matricula):-
+    atom_string(CodigoAtom, Codigo),
+    atom_string(MatriculaAtom, Matricula),
+    get_adm_grupo(CodigoAtom,Adm),
+    Adm = MatriculaAtom.
+
+verifica_aluno_grupo(CodigoGrupo, Matricula):-
+    atom_string(CodigoAtom, CodigoGrupo),
+    atom_string(MatriculaAtom, Matricula),
+    valida_aluno_grupo(CodigoAtom, MatriculaAtom).
+
+
+valida_aluno_grupo(CodigoGrupo, Matricula):-
+    get_grupo_by_codigo(CodigoGrupo, Grupo),
+    extract_info_grupo(Grupo, _, _, Alunos, _, _),
+    seach_id(Alunos, Matricula, Aluno, 'aluno'),
+    Aluno \= -1.
 
 %Regra para validar se o Codigo já esta em um grupo
 valida_grupo(Codigo):- 
@@ -69,16 +79,15 @@ valida_grupo(Codigo):-
     Grupo \= -1.
 
 %Regra para adicionar um aluno na lista de alunos
-adiciona_aluno_grupo(Codigo, Matricula):-
-    get_grupo_by_codigo(Codigo, Grupo),
+adiciona_aluno_grupo(CodigoG, Matricula):-
+    get_grupo_by_codigo(CodigoG, Grupo),
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
     NewAlunos = [Aluno | Alunos],
-    remove_grupo_by_codigo(Codigo),
-    add_grupo(Codigo, Nome, NewAlunos, Disciplinas, Adm).
+    remove_grupo_by_codigo(CodigoG),
+    add_grupo(CodigoG, Nome, NewAlunos, Disciplinas, Adm).
 
 %Regra para remover um aluno da lista de alunos
-
 remove_aluno_grupo(Codigo, Matricula):-
     get_grupo_by_codigo(Codigo, Grupo),
     extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
@@ -89,4 +98,3 @@ remove_aluno_grupo(Codigo, Matricula):-
 
 listagem_alunos_grupo(Codigo, Result):-
     get_grupo_by_codigo(Codigo, Grupo),
-

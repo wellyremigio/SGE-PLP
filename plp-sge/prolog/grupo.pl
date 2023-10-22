@@ -25,3 +25,9 @@ removeGrupo(Codigo, Adm) :-
     get_grupo_by_codigo(CodigoAtom, Grupo),
     Grupo \= -1,
     remove_grupo_by_codigo(CodigoAtom).
+    
+adicionaAlunoGrupo(CodGrupo, MatriculaAluno):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(MatriculaAtom, MatriculaAluno),
+    adiciona_aluno_grupo(CodGrupoAtom, MatriculaAtom).
+

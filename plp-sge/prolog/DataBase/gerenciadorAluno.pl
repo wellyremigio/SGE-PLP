@@ -52,8 +52,8 @@ get_aluno_senha(Matricula, Senha):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, Senha, _).
 
-valida_aluno(Matricula):- 
-    get_aluno_by_matricula(Matricula, Aluno),
+valida_aluno(Matricula):-
+    get_aluno_by_matricula(MatriculaAton, Aluno),
     Aluno \= -1.
 
 valida_disciplina(Matricula, IdDisciplina):-
@@ -61,7 +61,6 @@ valida_disciplina(Matricula, IdDisciplina):-
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
     seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
     Disciplina \= -1.
-
 
 add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo):-
     \+ valida_disciplina(Matricula, IdDisciplina),
