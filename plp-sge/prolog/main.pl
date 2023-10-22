@@ -367,7 +367,7 @@ opselecionadaCadastraMateriaisAluno(4, Matricula) :-
     menuMinhasDisciplinas(Matricula).
 
 opselecionadaCadastraMateriaisAluno(_, Matricula):- 
-    write('Opcão inválida!'),
+    write('\nOpcão inválida!\n'),
     menuCadastraMateriaisAluno(Matricula).
 
 menuMateriaisAluno(Matricula) :-
@@ -398,5 +398,5 @@ opselecionadaMateriaisAluno(5, Matricula):-
     halt.
 
 opselecionadaMateriaisAluno(_, Matricula):- 
-    write('Opcão inválida!'),   
+    write('\nOpcão inválida!\n'),   
     menuMateriaisAluno(Matricula).
