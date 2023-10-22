@@ -29,7 +29,12 @@ add_aluno(Matricula, Nome , Senha, Disciplinas):-
     alunos_path(Path),
     save_object(Path, Aluno).
 
+<<<<<<< HEAD
 %Regra para pegar um aluno pela matricula
+=======
+%Regra ppara pegar um aluno pela matricula
+
+>>>>>>> alun
 get_aluno_by_matricula(Matricula, Aluno):-
     alunos_path(Path),
     get_object_by_id(Path, Matricula, Aluno, 'aluno').

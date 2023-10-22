@@ -153,6 +153,7 @@ selecaoMenuInicial(2, Matricula):-
 %Acessando grupos
 selecaoMenuInicial(3, Matricula):-
     menuMeusGrupos(Matricula).
+
     %menuInicial(Matricula).
 
 selecaoMenuInicial(4, Matricula):-
@@ -197,22 +198,24 @@ menuMeusGrupos(Matricula):-
     selecaoMenuMeusGrupos(1, Matricula):-
         prompt('Matrícula do aluno a ser adicionado: ', MatriculaAluno),
         prompt('Código do grupo: ', CodGrupo),
-        adicionaAlunoGrupo(Matricula, MatriculaAluno, CodGrupo, Result),
-        write(Result),
+        verifica_adm(CodGrupo, Matricula, R),
+        (R = 1 -> adiciona_aluno_grupo(MatriculaAluno, CodGrupo, Result), write(Result);
+        write('Não é Adm do grupo')),
         menuMeusGrupos(Matricula).
 
      %Remover aluno
     selecaoMenuMeusGrupos(2, Matricula):-
         prompt('Matrícula do aluno a ser removido: ', MatriculaAluno),
         prompt('Código do grupo: ', CodGrupo),
-        removeAlunoGrupo(Matricula, MatriculaAluno, CodGrupo, Result),
-        write(Result),
+        verifica_adm(CodGrupo, Matricula, R),
+        (R = 1 -> remove_aluno_grupo(Matricula, MatriculaAluno, CodGrupo, Result), write(Result);
+        write('Não é Adm do grupo')),
         menuMeusGrupos(Matricula).
 
     %Visualizar Alunos
     selecaoMenuMeusGrupos(3, Matricula):-
         prompt('Código do grupo para listar os alunos: ', CodGrupo),
-        listagemAlunosGrupo(CodGrupo, Result),
+        listagem_alunos_grupo(CodGrupo, Result),
         write(Result),
         menuMeusGrupos(Matricula).
 
@@ -262,6 +265,7 @@ menuMeusGrupos(Matricula):-
     selecaoMenuMeusGrupos(_, Matricula):-
         write('Opção inválida'),
         menuMeusGrupos(Matricula).
+
 
 menuMinhasDisciplinas(Matricula) :-
     write('\n1. Visualizar disciplinas\n'),
