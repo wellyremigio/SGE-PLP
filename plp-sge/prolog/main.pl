@@ -141,7 +141,6 @@ selecaoMenuInicial(1, Matricula):-
         menuInicial(Matricula)
     ). 
 
-
 %Remover grupo
 selecaoMenuInicial(2, Matricula):-
     writeln('\n==Removendo Grupo==\n'),
@@ -165,17 +164,20 @@ selecaoMenuInicial(2, Matricula):-
 selecaoMenuInicial(3, Matricula):-
     menuMeusGrupos(Matricula).
 
-    %menuInicial(Matricula).
-
+%Acessando as disciplinas
 selecaoMenuInicial(4, Matricula):-
     menuMinhasDisciplinas(Matricula).
-    %menuInicial(Matricula).
 
-%Listagem de grupos em comum
+
+%Listagem dos grupos 
 selecaoMenuInicial(5, Matricula):-
-    listagemGruposEmComum(Matricula, Result),
-    write(Result),
-    menuInicial(Matricula).
+    listagemGrupos(Result),
+    (Result = 'Não existem grupos cadastrados' ->
+        write(Result)
+    ;
+        write(Result),
+        menuInicial(Matricula)
+    ).
 
 %Voltando para o menu
 selecaoMenuInicial(6, _):-
@@ -204,9 +206,8 @@ menuMeusGrupos(Matricula):-
     write('\n'),
     selecaoMenuMeusGrupos(Opcao, Matricula).
 
-
     %Adicionar aluno
-    selecaoMenuMeusGrupos(1, Matricula):-
+selecaoMenuMeusGrupos(1, Matricula):-
         prompt('Matrícula do aluno a ser adicionado: ', MatriculaAluno),
         prompt('Código do grupo: ', CodGrupo),
         (verificaGrupo(CodGrupo) ->
@@ -222,67 +223,80 @@ menuMeusGrupos(Matricula):-
         menuMeusGrupos(Matricula).
 
      %Remover aluno
-    selecaoMenuMeusGrupos(2, Matricula):-
-        prompt('Matrícula do aluno a ser removido: ', MatriculaAluno),
-        prompt('Código do grupo: ', CodGrupo),
-        verifica_adm(CodGrupo, Matricula, R),
-        (R = 1 -> remove_aluno_grupo(Matricula, MatriculaAluno, CodGrupo, Result), write(Result);
-        write('Não é Adm do grupo')),
-        menuMeusGrupos(Matricula).
+selecaoMenuMeusGrupos(2, Matricula):-
+    prompt('Matrícula do aluno a ser removido: ', MatriculaAluno),
+    prompt('Código do grupo: ', CodGrupo),
+    verifica_adm(CodGrupo, Matricula, R),
+    (R = 1 -> remove_aluno_grupo(Matricula, MatriculaAluno, CodGrupo, Result), write(Result);
+    write('Não é Adm do grupo')),
+    menuMeusGrupos(Matricula).
 
-    %Visualizar Alunos
-    selecaoMenuMeusGrupos(3, Matricula):-
-        prompt('Código do grupo para listar os alunos: ', CodGrupo),
-        listagem_alunos_grupo(CodGrupo, Result),
+%Visualizar Alunos
+selecaoMenuMeusGrupos(3, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    (verificaGrupo(CodGrupo) ->
+        listagemAlunosGrupo(CodGrupo, Result),
         write(Result),
-        menuMeusGrupos(Matricula).
+        menuMeusGrupos(Matricula)
+    ;
+        write('Grupo não encontrado'),
+        menuMeusGrupos(Matricula)
+    ).
 
-    %Adicionar Disciplina
-    selecaoMenuMeusGrupos(4, Matricula):-
-        prompt('Código do grupo: ', CodGrupo),
-        prompt('Código da disciplina que você quer adicionar: ', IdDiscilina),
-        prompt('Nome da disciplina: ', NomeDiscilina),
-        prompt('Nome do professor: ', NomeProfessor),
-        prompt('Período: ', Periodo),
-        cadastraDisciplinaGrupo(CodGrupo, IdDiscilina, NomeDiscilina, NomeProfessor, Periodo, Result),
-        write(Result),
-        menuMeusGrupos(Matricula).
+%Adicionar Disciplina
+selecaoMenuMeusGrupos(4, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina que você quer adicionar: ', IdDisciplina),
+    prompt('Nome da disciplina: ', NomeDisciplina),
+    prompt('Nome do professor: ', NomeProfessor),
+    prompt('Período: ', Periodo),
+    cadastraDisciplinaGrupo(CodGrupo, IdDisciplina, NomeDisciplina, NomeProfessor, Periodo, Result),
+    write(Result),
+    menuMeusGrupos(Matricula).
 
-    %Visualizar Disciplina
-    selecaoMenuMeusGrupos(5, Matricula):-
-        prompt('Código do grupo: ', CodGrupo),
+%Visualizar Disciplina
+selecaoMenuMeusGrupos(5, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    (verificaGrupo(CodGrupo) ->
         listagemDisciplinaGrupo(CodGrupo, Result),
         write(Result),
-        menuMeusGrupos(Matricula).
+        menuMeusGrupos(Matricula)
+    ;
+        write('Grupo não encontrado'),
+        menuMeusGrupos(Matricula)
+    ).
 
-    %Remover Disciplina
-    selecaoMenuMeusGrupos(6, Matricula):-
-        prompt('Código da disciplina que você quer remover: ', IdDiscilina),
-        prompt('Código do grupo: ', CodGrupo),
-        removeDisciplinaGrupo(IdDiscilina, CodGrupo, Result),
-        write(Result),
-        menuMeusGrupos(Matricula).
-   
-    %Acessar Materiais
-    selecaoMenuMeusGrupos(7, Matricula):-
-        menuMateriaisGrupo (Matricula).
-        %menuMeusGrupos(Matricula).
-    
-    %Ver grupos
-    selecaoMenuMeusGrupos(8, Matricula):-
-        write('\nEsses são os seus grupos: \n'),
-        listagemGrupos(Matricula, Result),
-        write(Result),
-        menuMeusGrupos(Matricula).
-   
-    %Voltar para o menu inicial
-    selecaoMenuMeusGrupos(9, Matricula):-
-        menuInicial(Matricula).
-    
-    %Entrada inválida
-    selecaoMenuMeusGrupos(_, Matricula):-
-        write('Opção inválida'),
-        menuMeusGrupos(Matricula).
+
+
+
+%Remover Disciplina
+selecaoMenuMeusGrupos(6, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina que você quer remover: ', IdDiscilina),
+    removeDisciplinaGrupo(CodGrupo, IdDiscilina, Result),
+    write(Result),
+    menuMeusGrupos(Matricula).
+
+%Acessar Materiais
+selecaoMenuMeusGrupos(7, Matricula):-
+    menuMateriaisGrupo (Matricula).
+    %menuMeusGrupos(Matricula).
+
+%Ver grupos
+selecaoMenuMeusGrupos(8, Matricula):-
+    write('\nEsses são os seus grupos: \n'),
+    listagemGrupos(Matricula, Result),
+    write(Result),
+    menuMeusGrupos(Matricula).
+
+%Voltar para o menu inicial
+selecaoMenuMeusGrupos(9, Matricula):-
+    menuInicial(Matricula).
+
+%Entrada inválida
+selecaoMenuMeusGrupos(_, Matricula):-
+    write('Opção inválida'),
+    menuMeusGrupos(Matricula).
 
 
 menuMinhasDisciplinas(Matricula) :-
