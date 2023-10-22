@@ -112,6 +112,7 @@ menuCadastro :-
         write('Não foi possível fazer o cadastro'),
         menuEscolhaLogin).
 
+
 % Menu para mostra as opções do SGE para o usuário.
 menuInicial(Matricula):-
     writeln('\nEscolha uma opção:\n'),
