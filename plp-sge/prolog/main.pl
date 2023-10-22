@@ -312,7 +312,7 @@ opselecionadaDisciplinaAluno(3, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(4, Matricula) :-
-menuCadastraMateriaisAluno(Matricula).
+    menuMateriaisAluno(Matricula),
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
@@ -338,28 +338,65 @@ menuCadastraMateriaisAluno(Matricula) :-
     write('2. Links\n'),
     write('3. Datas\n'),
     write('4. Voltar\n'),
-    read(Opcao),
-    selecionaMenuCadastroMateriaisAluno(Opcao, Matricula).
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    write('\n'),
+    opselecionadaCadastraMateriaisAluno(Opcao, Matricula).
 
 
-opselecionadaCadastroMateriaisAluno(1, Matricula) :-
-    prompt('Código da disciplina: ', Codigo),
+opselecionadaCadastraMateriaisAluno(1, Matricula) :-
+    prompt('Código da disciplina: ', IdDisciplina),
     prompt('Nome do resumo: ', Nome),
-    prompt('Conteúdo do resumo: ',Resumo),
-    menuCadastraMateriaisAluno(Matricula) :-
+    prompt('Conteúdo do resumo: ', Resumo),
+    add_resumo_disciplina_aluno(Matricula, IdDisciplina, Nome, Resumo, Result),
+    write(Result),
+    menuCadastraMateriaisAluno(Matricula).
 
-opselecionadaCadastroMateriaisAluno(2, Matricula) :-
+opselecionadaCadastraMateriaisAluno(2, Matricula) :-
     prompt('Código da disciplina: ', Codigo),
     prompt('Titulo: ', Titulo),
-    prompt('Link: ',Link),
-    menuCadastraMateriaisAluno(Matricula) :-
+    prompt('Link: ', Link).
 
-opselecionadaCadastroMateriaisAluno(3, Matricula) :-
+opselecionadaCadastraMateriaisAluno(3, Matricula) :-
     prompt('Código da disciplina: ', Codigo),
     prompt('Titulo: ', Titulo),
-    prompt('Data início: ',DataI),
-    prompt('Data fim: ',DataF),
-    menuCadastraMateriaisAluno(Matricula) :-
+    prompt('Data início: ', DataI),
+    prompt('Data fim: ', DataF).
 
-opselecionadaCadastroMateriaisAluno(4, Matricula) :-
+opselecionadaCadastraMateriaisAluno(4, Matricula) :-
     menuMinhasDisciplinas(Matricula).
+
+opselecionadaCadastraMateriaisAluno(_, Matricula):- 
+    write('Opcão inválida!'),
+    menuCadastraMateriaisAluno(Matricula).
+
+menuMateriaisAluno(Matricula) :-
+    writeln('\n1. Ver materiais'),
+    writeln('2. Adicionar materiais'),
+    writeln('3. Remover materiais'),
+    writeln('4. Voltar'),
+    writeln('5. Sair'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    write('\n'),
+    opselecionadaMateriaisAluno(Opcao, Matricula).
+
+opselecionadaMateriaisAluno(1, Matricula):-
+    menuMateriaisAluno(Matricula).
+
+opselecionadaMateriaisAluno(2, Matricula):-
+    menuCadastraMateriaisAluno(Matricula).
+
+opselecionadaMateriaisAluno(3 Matricula):-
+    menuMateriaisAluno(Matricula).
+
+opselecionadaMateriaisAluno(4, Matricula):-
+    menuMinhasDisciplinas(Matricula).
+
+opselecionadaMateriaisAluno(5, Matricula):-
+    write('Saindo...'), 
+    halt.
+
+opselecionadaMateriaisAluno(_, Matricula):- 
+    write('Opcão inválida!'),   
+    menuMateriaisAluno(Matricula).

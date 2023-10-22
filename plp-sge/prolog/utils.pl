@@ -4,11 +4,11 @@
 listaDisciplinas(Matricula, Resposta) :- 
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
-    organizaListagemDisciplinaAluno(Disciplinas, Resposta).
+    organizaListagemDisciplina(Disciplinas, Resposta).
 
-organizaListagemDisciplinaAluno([], '').
-organizaListagemDisciplinaAluno([H|T], Resposta) :- 
-    organizaListagemDisciplinaAluno(T, Resposta1),
+organizaListagemDisciplina([], '').
+organizaListagemDisciplina([H|T], Resposta) :- 
+    organizaListagemDisciplina(T, Resposta1),
     extract_info_disciplina(H, Id, Nome,Professor, Periodo, _, _, _),
     concatena_strings(['\nID:' ,Id, '\nNome: ', Nome, '\nProfessor: ',Professor, '\nPeríodo: ', Periodo,'\n'], DisciplinasConcatenados),
     string_concat(DisciplinasConcatenados, Resposta1, Resposta).

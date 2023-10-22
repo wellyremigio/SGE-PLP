@@ -48,4 +48,24 @@ exibe_disciplinas(Matricula,Result):-
 exibe_disciplinas(_,'\nNão Possui Disciplinas Cadastradas!\n').
 
 
+add_resumo_disciplina_aluno(Matricula, IdDisciplina, Nome, Resumo, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(NomeAtom, Nome),
+    atom_string(ResumoAtom, Resumo),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom)->
+        random_id(IdR),
+        adiciona_resumo_aluno(MatriculaAtom, IdDisciplinaAtom, IdR, NomeAtom, ResumoAtom),
+        atomic_list_concat(['\nResumo cadastrado! ID: ', IdR, '\n'], Result)
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+
+% Regra que gera um ID aleatório
+random_id(ID) :-
+    random_between(100000000, 999999999, RandomNumber),
+    number_codes(RandomNumber, RandomNumberCodes),
+    string_codes(ID, RandomNumberCodes).
+
 

@@ -87,4 +87,25 @@ has_disciplines(Matricula) :-
     length(Disciplinas, N),
     N > 0.
 
+getResumoAluno(IdResumo,Matricula,IdDisciplina,Result):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, _, _, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, _, _, _, Resumos, _, _),
+    seach_id(Resumos, IdResumo, Resumo,'resumo'),
+    Result = Resumo.
 
+adiciona_resumo_aluno(Matricula, IdDisciplina, IdResumo, TituloR, ConteudoR):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Links, Datas),
+    NewResumo = json([id=IdResumo, titulo=TituloR, corpo=ConteudoR, comentarios=[]]),
+    NewResumos = [NewResumo | Resumos],
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NewResumos, datas=Links, links=Datas]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NDisciplinas).
+
+    
