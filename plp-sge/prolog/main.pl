@@ -146,9 +146,20 @@ selecaoMenuInicial(1, Matricula):-
 selecaoMenuInicial(2, Matricula):-
     writeln('\n==Removendo Grupo==\n'),
     prompt('Código do grupo: ', CodGrupo),
-    removeGrupo(CodGrupo, Result),
-    write(Result),
-    menuInicial(Matricula).
+    verificaAdm(CodGrupo, Matricula, Result1),
+    (Result1 = 1 ->
+        (removeGrupo(CodGrupo, Matricula) ->
+            write('Grupo removido'),
+            menuInicial(Matricula)
+        ;
+            write('Grupo não encontrado'),
+            menuInicial(Matricula)
+        )
+    ;
+        write('Não é administrador do grupo e não pode remover'),
+        menuInicial(Matricula)
+    ).
+
 
 %Acessando grupos
 selecaoMenuInicial(3, Matricula):-

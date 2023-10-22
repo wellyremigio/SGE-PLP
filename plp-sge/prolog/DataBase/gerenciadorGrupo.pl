@@ -56,6 +56,11 @@ get_adm_grupo(Codigo, Adm):-
 %Verifica se o aluno é adm do grupo
 verifica_adm(Codigo, Matricula, Result):-
     get_adm_grupo(Codigo,Adm),
+    write('Matricula: '),
+    write(Matricula),
+    write('\n Adm: '),
+    write(Adm),
+    write('\n'),
     (Adm = Matricula -> Result = 1; Result = -1).
 
 %Regra para validar se o Codigo já esta em um grupo
