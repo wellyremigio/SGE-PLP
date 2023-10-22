@@ -30,3 +30,13 @@ cadastra_disciplina_aluno(Matricula, IdDisciplina, Nome, Professor, Periodo, Res
     atomic_concat('Disciplina cadastrada! Código: ', IdDisciplinaAtom, Result).
 
 cadastra_disciplina_aluno(_, _, _, _, _, 'Disciplina não cadastrada!').
+
+rm_disciplina_aluno(Matricula, IdDisciplina, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    remove_disciplina_aluno(MatriculaAtom, IdDisciplinaAtom),
+    Result = 'Disciplina Removida com Sucesso!'.
+
+rm_disciplina_aluno(_, _, 'Disciplina não encontrada!').
+
+

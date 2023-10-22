@@ -14,7 +14,7 @@
 :- include('grupo.pl').
 
 % Inclusão dos utilitários
-%:- consult('utils.pl').
+:- consult('utils.pl').
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
 :- use_module(library(http/json)).
@@ -282,7 +282,9 @@ opselecionadaDisciplinaAluno(2, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
-    prompt('Código da discplina que você quer remover: ', Codigo),
+    prompt('Código da disciplina que você quer remover: ', Codigo),
+    rm_disciplina_aluno(Matricula, Codigo, Result),
+    write(Result),
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(4, Matricula) :-
@@ -296,11 +298,14 @@ opselecionadaDisciplinaAluno(4, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(5, Matricula) :-
-    menuMinhasDisciplinas(Matricula).
+    menuInicial(Matricula).
+    
     
 opselecionadaDisciplinaAluno(6, Matricula) :-
     write('Saindo...'), 
     halt.
+
+opselecionadaDisciplinaAluno(_,Matricula) :- write('Opcao invalida!'), menuMinhasDisciplinas(Matricula).
 
 
 menuCadastraMateriaisAluno(Matricula) :-

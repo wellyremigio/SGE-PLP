@@ -68,3 +68,15 @@ add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo
     NewDisciplinas = [Disciplina | Disciplinas],
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NewDisciplinas).
+
+remove_disciplina_aluno(Matricula, IdDisciplina):-
+    valida_disciplina(Matricula, IdDisciplina),
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Elemento, 'disciplina'),
+    remove_object(Disciplinas, Elemento, NewDisciplinas),
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NewDisciplinas).
+
+
+
