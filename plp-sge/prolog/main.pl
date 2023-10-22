@@ -112,6 +112,7 @@ menuCadastro :-
         write('Não foi possível fazer o cadastro'),
         menuEscolhaLogin).
 
+
 % Menu para mostra as opções do SGE para o usuário.
 menuInicial(Matricula):-
     writeln('\nEscolha uma opção:\n'),
@@ -129,11 +130,17 @@ menuInicial(Matricula):-
 %Criar grupo
 selecaoMenuInicial(1, Matricula):-
     writeln('\n==Cadastrando Grupo==\n'),
-    prompt('Nome do grupo: ', NomeGrupo),
     prompt('Código do grupo: ', CodGrupo),
-    cadastraGrupo(NomeGrupo, CodGrupo, Result),
-    write(Result),
-    menuInicial(Matricula).
+    prompt('Nome do grupo: ', NomeGrupo),
+    cadastraGrupo(CodGrupo, NomeGrupo, Matricula, Result),
+    (Result = 'ok' ->
+        write('Grupo Cadastrado'),
+        menuInicial(Matricula)
+    ;
+        write('Já existe um grupo com esse ID. Cadastre um grupo novo!\n'),
+        menuInicial(Matricula)
+    ). 
+
 
 %Remover grupo
 selecaoMenuInicial(2, Matricula):-
@@ -164,7 +171,7 @@ selecaoMenuInicial(6, _):-
     halt.
 
 selecaoMenuInicial(_, Matricula):-
-    write('Opção inválida'),
+    write('Opção inválida),
     menuInicial(Matricula).
 
 
