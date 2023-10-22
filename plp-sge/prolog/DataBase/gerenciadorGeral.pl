@@ -48,7 +48,6 @@ get_object_by_id(File, Id, Object, Type):-
     load_json_file(File, Data),
     seach_id(Data, Id, Object, Type).
  
-
 % Regra geral que remove um elemento de uma lista recebida
 % e tem como resultado a lista sem o elemento
 remove_object([], _, []).

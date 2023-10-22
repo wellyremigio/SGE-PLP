@@ -1,6 +1,8 @@
+alunos_path('DataBase/Aluno.json').
+
+
 get_aluno(Data):- alunos_path(Path), load_json_file(Path, Data).
 
-alunos_path('DataBase/Aluno.json').
 
 save_object(File, Element) :- 
     load_json_file(File, Data),
@@ -59,7 +61,7 @@ valida_disciplina(Matricula, IdDisciplina):-
     seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
     Disciplina \= -1.
 
- 
+
 add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo):-
     \+ valida_disciplina(Matricula, IdDisciplina),
     Disciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=[], datas=[], links=[]]),
