@@ -38,7 +38,7 @@ main:-
     write('1. Login\n'),
     write('2. Cadastrar\n'),
     write('3. Sair\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     opSelecionada(Opcao).
@@ -80,7 +80,7 @@ menuEscolhaLogin:-
     write('1. Fazer login \n'),
     write('2. Fazer cadastro\n'),
     write('3. Sair\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     verificaEscolha(Opcao).
@@ -122,7 +122,7 @@ menuInicial(Matricula):-
     write('4. Minhas disciplinas\n'),
     write('5. Procurar Grupo\n'),
     write('6. Sair\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     selecaoMenuInicial(Opcao, Matricula).
@@ -199,7 +199,7 @@ menuMeusGrupos(Matricula):-
     write('7. Acessar Materiais\n'),
     write('8. Ver grupos\n'),
     write('9. Voltar\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     selecaoMenuMeusGrupos(Opcao, Matricula).
@@ -312,8 +312,8 @@ opselecionadaDisciplinaAluno(3, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(4, Matricula) :-
-    menuMateriaisAluno(Matricula),
-    menuMinhasDisciplinas(Matricula).
+    menuMateriaisAluno(Matricula).
+
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -390,7 +390,7 @@ menuMateriaisAluno(Matricula) :-
     opselecionadaMateriaisAluno(Opcao, Matricula).
 
 opselecionadaMateriaisAluno(1, Matricula):-
-    menuMateriaisAluno(Matricula).
+    menuConsultaAluno(Matricula).
 
 opselecionadaMateriaisAluno(2, Matricula):-
     menuCadastraMateriaisAluno(Matricula).
@@ -447,4 +447,47 @@ selecionaMenuRemoveMateriaisAluno(4, Matricula):-
 selecionaMenuRemoveMateriaisAluno(_, Matricula):-
     write('\nOpcão inválida!\n'), 
     menuRemoverMateriais(Matricula).
-    
+
+
+menuConsultaAluno(Matricula) :-
+    writeln('\nQual o tipo de material que deseja consultar?'),
+    writeln('1. Resumo'),
+    writeln('2. Link'),
+    writeln('3. Data'),
+    writeln('4. Voltar'),
+    writeln('5. Sair'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    selecionaMenuConsultaAluno(Opcao, Matricula).
+
+selecionaMenuConsultaAluno(1, Matricula) :-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID do Resumo: ', Id),
+    visualiza_resumo(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuConsultaAluno(Matricula).
+
+selecionaMenuConsultaAluno(2, Matricula):-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID do Link: ', Id),
+    visualiza_link(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuConsultaAluno(Matricula).
+
+selecionaMenuConsultaAluno(3, Matricula):-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID da Data: ', Id),
+    visualiza_data(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuConsultaAluno(Matricula).
+
+selecionaMenuConsultaAluno(4, Matricula):-
+    menuMateriaisAluno(Matricula).
+
+selecionaMenuConsultaAluno(5, Matricula):-
+    write('Saindo...'), 
+    halt.
+
+selecionaMenuConsultaAluno(_, Matricula):-
+    write('\nOpcão inválida!\n'), 
+    menuConsultaAluno(Matricula).
