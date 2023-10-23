@@ -238,20 +238,7 @@ selecaoMenuMeusGrupos(2, Matricula):-
             ; write('Aluno não é adm do grupo'))
         ; write('Grupo não cadastrado')),
         menuMeusGrupos(Matricula).
-        prompt('Código do grupo: ', CodGrupo),
-        (verificaGrupo(CodGrupo) ->
-            (verifica_adm(CodGrupo, Matricula) -> 
-                (valida_aluno(MatriculaAluno) -> 
-                    ( verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
-                        removeAlunoGrupo(CodGrupo, MatriculaAluno),
-                        write('Aluno removido com sucesso')
-                    ;write('Aluno já esta no grupo') )
-                ; write('Aluno não cadastrado'))
-            ; write('Aluno não é adm do grupo'))
-        ; write('Grupo não cadastrado')),
-        menuMeusGrupos(Matricula).
-
-
+        
 %Visualizar Alunos
 selecaoMenuMeusGrupos(3, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
@@ -334,8 +321,11 @@ menuMateriaisGrupo(Matricula) :-
     writeln('\n1. Ver materiais'),
     writeln('2. Adicionar materiais'),
     writeln('3. Remover materiais'),
-    writeln('4. Voltar'),
-    writeln('5. Sair'),
+    writeln('4. Editar materiais'),
+    writeln('5. Comentar no material'),
+    writeln('6. Ver Comentarios do material'),
+    writeln('7. Voltar'),
+    writeln('8. Sair'),
     prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
@@ -354,6 +344,15 @@ opselecionadaMateriaisGrupo(4, Matricula):-
     menuMeusGrupos(Matricula).
 
 opselecionadaMateriaisGrupo(5, Matricula):-
+    menuMeusGrupos(Matricula).
+
+opselecionadaMateriaisGrupo(6, Matricula):-
+    menuMeusGrupos(Matricula).
+
+opselecionadaMateriaisGrupo(7, Matricula):-
+    menuMeusGrupos(Matricula).
+
+opselecionadaMateriaisGrupo(8, Matricula):-
     write('Saindo...'), 
     halt.
 
@@ -375,27 +374,43 @@ menuConsultaGrupo(Matricula) :-
 
 selecionaMenuConsultaGrupo(1, Matricula) :-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('ID do Resumo: ', Id),
-    visualiza_resumo_grupo(CodGrupo, IdDisciplina, Id, Result),
-    write(Result),
-    menuConsultaGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('ID do Resumo: ', Id),
+        visualiza_resumo_grupo(CodGrupo, IdDisciplina, Id, Result),
+        write(Result),
+        menuConsultaGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuConsultaGrupo(Matricula)
+    ).
 
 selecionaMenuConsultaGrupo(2, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('ID do Link: ', Id),
-    visualiza_link_grupo(CodGrupo, IdDisciplina, Id, Result),
-    write(Result),
-    menuConsultaGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('ID do Link: ', Id),
+        visualiza_link_grupo(CodGrupo, IdDisciplina, Id, Result),
+        write(Result),
+        menuConsultaGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuConsultaGrupo(Matricula)
+    ).
+
 
 selecionaMenuConsultaGrupo(3, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('ID da Data: ', Id),
-    visualiza_data_grupo(CodGrupo, IdDisciplina, Id, Result),
-    write(Result),
-    menuConsultaGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('ID da Data: ', Id),
+        visualiza_data_grupo(CodGrupo, IdDisciplina, Id, Result),
+        write(Result),
+        menuConsultaGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuConsultaGrupo(Matricula)
+    ).
 
 selecionaMenuConsultaGrupo(4, Matricula):-
     menuMateriaisGrupo(Matricula).
@@ -423,31 +438,46 @@ menuCadastraMateriaisGrupo(Matricula) :-
 
 opselecionadaCadastraMateriaisGrupo(1, Matricula) :-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('Nome do resumo: ', Nome),
-    prompt('Conteúdo do resumo: ', Resumo),
-    add_resumo_disciplina_grupo(CodGrupo, IdDisciplina, Nome, Resumo, Result),
-    write(Result),
-    menuCadastraMateriaisGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('Nome do resumo: ', Nome),
+        prompt('Conteúdo do resumo: ', Resumo),
+        add_resumo_disciplina_grupo(CodGrupo, IdDisciplina, Nome, Resumo, Result),
+        write(Result),
+        menuCadastraMateriaisGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuCadastraMateriaisGrupo(Matricula)
+    ).
 
 opselecionadaCadastraMateriaisGrupo(2, Matricula) :-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('Titulo: ', Titulo),
-    prompt('Link: ', Link),
-    add_link_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, Link, Result),
-    write(Result),
-    menuCadastraMateriaisGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('Titulo: ', Titulo),
+        prompt('Link: ', Link),
+        add_link_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, Link, Result),
+        write(Result),
+        menuCadastraMateriaisGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuCadastraMateriaisGrupo(Matricula)
+    ).
 
 opselecionadaCadastraMateriaisGrupo(3, Matricula) :-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('Titulo: ', Titulo),
-    prompt('Data início: ', DataI),
-    prompt('Data fim: ', DataF),
-    add_data_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, DataI, DataF, Result),
-    write(Result),
-    menuCadastraMateriaisGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('Titulo: ', Titulo),
+        prompt('Data início: ', DataI),
+        prompt('Data fim: ', DataF),
+        add_data_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, DataI, DataF, Result),
+        write(Result),
+        menuCadastraMateriaisGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuCadastraMateriaisGrupo(Matricula)
+    ).
 
 opselecionadaCadastraMateriaisGrupo(4, Matricula) :-
     menuMateriaisGrupo(Matricula).
@@ -470,27 +500,42 @@ menuRemoverMateriaisGrupo(Matricula) :-
 
 selecionaMenuRemoveMateriaisGrupo(1, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('ID do Resumo: ', Id),
-    remove_resumo_grupo(CodGrupo, IdDisciplina, Id, Result),
-    write(Result),
-    menuRemoverMateriaisGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('ID do Resumo: ', Id),
+        remove_resumo_grupo(CodGrupo, IdDisciplina, Id, Result),
+        write(Result),
+        menuRemoverMateriaisGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuRemoverMateriaisGrupo(Matricula)
+    ).
 
 selecionaMenuRemoveMateriaisGrupo(2, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('ID do Link: ', Id),
-    remove_link_grupo(CodGrupo, IdDisciplina, Id, Result),
-    write(Result),
-    menuRemoverMateriaisGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('ID do Link: ', Id),
+        remove_link_grupo(CodGrupo, IdDisciplina, Id, Result),
+        write(Result),
+        menuRemoverMateriaisGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuRemoverMateriaisGrupo(Matricula)
+    ).
 
 selecionaMenuRemoveMateriaisGrupo(3, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', IdDisciplina),
-    prompt('ID da Data: ', Id),
-    remove_data_grupo(CodGrupo, IdDisciplina, Id, Result),
-    write(Result),
-    menuRemoverMateriaisGrupo(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        prompt('Código da disciplina: ', IdDisciplina),
+        prompt('ID da Data: ', Id),
+        remove_data_grupo(CodGrupo, IdDisciplina, Id, Result),
+        write(Result),
+        menuRemoverMateriaisGrupo(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuRemoverMateriaisGrupo(Matricula)
+    ).
     
 
 selecionaMenuRemoveMateriaisGrupo(4, Matricula):-

@@ -241,3 +241,4 @@ random_id(ID) :-
     random_between(100000000, 999999999, RandomNumber),
     number_codes(RandomNumber, RandomNumberCodes),
     string_codes(ID, RandomNumberCodes).
+    
