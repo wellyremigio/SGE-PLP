@@ -133,6 +133,7 @@ selecaoMenuInicial(1, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     prompt('Nome do grupo: ', NomeGrupo),
     cadastraGrupo(CodGrupo, NomeGrupo, Matricula, Result),
+    adicionaAlunoGrupo(CodGrupo, Matricula),
     (Result = 'ok' ->
         write('Grupo Cadastrado'),
         menuMeusGrupos(Matricula)
@@ -214,7 +215,7 @@ selecaoMenuMeusGrupos(1, Matricula):-
             (verifica_adm(CodGrupo, Matricula) -> 
                 (valida_aluno(MatriculaAluno) -> 
                     ( \+ verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
-                        write('4') ,adicionaAlunoGrupo(CodGrupo, MatriculaAluno),
+                        adicionaAlunoGrupo(CodGrupo, MatriculaAluno),
                         write('Cadastrado com sucesso')
                     ;write('Aluno já esta no grupo') )
                 ; write('Aluno não cadastrado'))
@@ -225,6 +226,18 @@ selecaoMenuMeusGrupos(1, Matricula):-
      %Remover aluno
 selecaoMenuMeusGrupos(2, Matricula):-
     prompt('Matrícula do aluno a ser removido: ', MatriculaAluno),
+        prompt('Código do grupo: ', CodGrupo),
+        (verificaGrupo(CodGrupo) ->
+            (verifica_adm(CodGrupo, Matricula) -> 
+                (valida_aluno(MatriculaAluno) -> 
+                    ( verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
+                        removeAlunoGrupo(CodGrupo, MatriculaAluno),
+                        write('Aluno removido com sucesso')
+                    ;write('Aluno já esta no grupo') )
+                ; write('Aluno não cadastrado'))
+            ; write('Aluno não é adm do grupo'))
+        ; write('Grupo não cadastrado')),
+        menuMeusGrupos(Matricula).
         prompt('Código do grupo: ', CodGrupo),
         (verificaGrupo(CodGrupo) ->
             (verifica_adm(CodGrupo, Matricula) -> 
@@ -524,6 +537,8 @@ opselecionadaDisciplinaAluno(3, Matricula) :-
 opselecionadaDisciplinaAluno(4, Matricula) :-
     menuMateriaisAluno(Matricula).
 
+    menuMateriaisAluno(Matricula).
+
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -569,11 +584,21 @@ opselecionadaCadastraMateriaisAluno(2, Matricula) :-
     add_link_disciplina_aluno(Matricula, Codigo, Titulo, Link, Result),
     write(Result),
     menuCadastraMateriaisAluno(Matricula).
+    prompt('Link: ', Link),
+    add_link_disciplina_aluno(Matricula, Codigo, Titulo, Link, Result),
+    write(Result),
+    menuCadastraMateriaisAluno(Matricula).
 
 opselecionadaCadastraMateriaisAluno(3, Matricula) :-
     prompt('Código da disciplina: ', Codigo),
     prompt('Titulo: ', Titulo),
     prompt('Data início: ', DataI),
+    prompt('Data fim: ', DataF),
+    add_data_disciplina_aluno(Matricula, Codigo, Titulo, DataI, DataF, Result),
+    write(Result),
+    menuCadastraMateriaisAluno(Matricula).
+
+
     prompt('Data fim: ', DataF),
     add_data_disciplina_aluno(Matricula, Codigo, Titulo, DataI, DataF, Result),
     write(Result),

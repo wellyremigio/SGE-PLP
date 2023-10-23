@@ -91,6 +91,11 @@ removeAlunoGrupo(CodGrupo, MatriculaAluno):-
     atom_string(MatriculaAtom, MatriculaAluno),
     remove_aluno_grupo(CodGrupoAtom, MatriculaAtom).
 
+removeAlunoGrupo(CodGrupo, MatriculaAluno):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(MatriculaAtom, MatriculaAluno),
+    remove_aluno_grupo(CodGrupoAtom, MatriculaAtom).
+
 
 %Regra para adicionar resumo em grupo
 add_resumo_disciplina_grupo(CodGrupo, IdDisciplina, Nome, Resumo, Result) :-
