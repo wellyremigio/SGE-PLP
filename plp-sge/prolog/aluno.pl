@@ -146,6 +146,51 @@ remove_link_aluno(Matricula, IdDisciplina, IdLink, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
+visualiza_resumo(Matricula, IdDisciplina, IdResumo, Result) :-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdResumoAtom, IdResumo),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom) ->
+        (getResumoAluno(IdResumoAtom, MatriculaAtom, IdDisciplinaAtom, R), R \= -1 ->
+            extract_info_resumo(R, _, Titulo, Corpo, _),
+            concatena_strings(['\nID:', IdResumo, '\nTitulo: ', Titulo, '\nConteudo: ', Corpo, '\n'], Result)
+        ;
+            Result = '\nResumo não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+visualiza_data(Matricula, IdDisciplina, IdData, Result) :-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdDataAtom, IdData),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom) ->
+        (getDataAluno(IdDataAtom, MatriculaAtom, IdDisciplinaAtom, R), R \= -1 ->
+            extract_info_data(R, _, Titulo, DataInicio, DataFim, _),
+            concatena_strings(['\nID:', IdData, '\nTitulo: ', Titulo, '\nData Início: ', DataInicio, '\nData Início: ', DataFim, '\n'], Result)
+        ;
+            Result = '\nData não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+visualiza_link(Matricula, IdDisciplina, IdLink, Result) :-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdLinkAtom, IdLink),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom) ->
+        (getLinkAluno(IdLinkAtom, MatriculaAtom, IdDisciplinaAtom, R), R \= -1 ->
+            extract_info_link_util(R, _, Titulo, URL, _),
+            concatena_strings(['\nID:', IdLink, '\nTitulo: ', Titulo, '\nURL: ', URL,'\n'], Result)
+        ;
+            Result = '\nLink não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
 
 % Regra que gera um ID aleatório
 random_id(ID) :-
