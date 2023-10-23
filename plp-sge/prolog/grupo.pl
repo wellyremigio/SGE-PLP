@@ -241,3 +241,47 @@ random_id(ID) :-
     random_between(100000000, 999999999, RandomNumber),
     number_codes(RandomNumber, RandomNumberCodes),
     string_codes(ID, RandomNumberCodes).
+
+
+editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(CodDisciplinaAtom, CodDisciplina),
+    atom_string(CodResumoAtom, CodResumo),
+    atom_string(NewCorpoAtom, NewCorpo),
+    (verificaGrupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
+            (getResumoGrupo(CodResumoAtom, CodGrupoAtom, CodDisciplinaAtom, R), R \= -1 ->
+                edita_resumo_grupo(CodGrupoAtom, CodDisciplinaAtom, CodResumoAtom, NewCorpoAtom),
+                Result = 'Resumo editado com sucesso'
+            ; Result = 'Resumo não cadastrado')    
+        ; Result = 'Disciplina não cadastrada')
+    ; Result = 'Grupo não existe').
+
+editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(CodDisciplinaAtom, CodDisciplina),
+    atom_string(CodDataAtom, CodData),
+    atom_string(NewDataInitAtom, NewDataInit),
+    atom_string(NewDataFimAtom, NewDataFim),
+    (verificaGrupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
+            (getDataGrupo(CodDataAtom, CodGrupoAtom, CodDisciplinaAtom,R), R \= -1 ->
+                edita_data_grupo(CodGrupoAtom, CodDisciplinaAtom, CodDataAtom, NewDataInitAtom, NewDataFimAtom),
+                Result = 'Data editada com sucesso'
+            ; Result = 'Data não cadastrada')    
+        ; Result = 'Disciplina não cadastrada')
+    ; Result = 'Grupo não existe').
+
+editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(CodDisciplinaAtom, CodDisciplina),
+    atom_string(CodLinkAtom, CodLink),
+    atom_string(NewUrlAtom, NewUrl),
+    (verificaGrupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
+            (getLinkGrupo(CodLinkAtom, CodGrupoAtom, CodDisciplinaAtom, R), R \= -1 ->
+                edita_link_grupo(CodGrupoAtom, CodDisciplinaAtom, CodLinkAtom, NewUrlAtom),
+                Result = 'Link editado com sucesso'
+            ; Result = 'Link não cadastrado')    
+        ; Result = 'Disciplina não cadastrada')
+    ; Result = 'Grupo não existe').

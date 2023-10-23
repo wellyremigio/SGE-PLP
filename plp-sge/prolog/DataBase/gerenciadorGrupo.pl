@@ -257,3 +257,51 @@ rem_link_grupo(Codigo, IdDisciplina, IdLink):-
     add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).
 
 
+edita_resumo_grupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo):-
+    get_grupo_by_codigo(CodGrupo , Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, CodDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Links, Datas),
+    seach_id(Resumos, CodResumo, Resumo, 'resumo'),
+    extract_info_resumo(Resumo, _, Titulo, Corpo, Comentarios),
+    NResumo = json([id=CodResumo, titulo=Titulo, corpo=NewCorpo, comentarios=Comentarios]),
+    remove_object(Resumos, Resumo, Resumo_Novo),
+    NResumos = [ NResumo | Resumo_Novo],
+    NDisciplina = json([id=CodDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NResumos, datas=Datas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(Codigo),
+    add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).
+
+edita_data_grupo(CodGrupo, CodDisciplina, CodData, NewDataInicio, NewDataFim):-
+    get_grupo_by_codigo(CodGrupo , Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, CodDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Datas, CodData, Data, 'data'),
+    extract_info_data(Data, _, Titulo, _, _, Comentarios),
+    NData = json([id=CodData, titulo=Titulo, dataInicio=NewDataInicio, dataFim=NewDataFim, comentarios=Comentarios]),
+    remove_object(Datas, Data, Data_Nova),
+    NDatas = [NData | Data_Nova],
+    NDisciplina = json([id=CodDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=NDatas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(Codigo),
+    add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).
+
+
+edita_link_grupo(CodGrupo, CodDisciplina, CodLink, NewUrl):-
+    get_grupo_by_codigo(CodGrupo , Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, CodDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Links, CodLink, Link, 'link'),
+    extract_info_link_util(Link, _, Titulo, _, Comentarios),
+    NLink = json([id=CodLink, titulo=Titulo, url=NewUrl, comentarios=Comentarios]),
+    remove_object(Links, Link, Link_Novo),
+    NLinks = [NLink | Link_Novo],
+    NDisciplina = json([id=CodDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=Datas, links=NLinks]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(Codigo),
+    add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).

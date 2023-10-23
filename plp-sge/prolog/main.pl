@@ -238,18 +238,6 @@ selecaoMenuMeusGrupos(2, Matricula):-
             ; write('Aluno não é adm do grupo'))
         ; write('Grupo não cadastrado')),
         menuMeusGrupos(Matricula).
-        prompt('Código do grupo: ', CodGrupo),
-        (verificaGrupo(CodGrupo) ->
-            (verifica_adm(CodGrupo, Matricula) -> 
-                (valida_aluno(MatriculaAluno) -> 
-                    ( verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
-                        removeAlunoGrupo(CodGrupo, MatriculaAluno),
-                        write('Aluno removido com sucesso')
-                    ;write('Aluno já esta no grupo') )
-                ; write('Aluno não cadastrado'))
-            ; write('Aluno não é adm do grupo'))
-        ; write('Grupo não cadastrado')),
-        menuMeusGrupos(Matricula).
 
 
 %Visualizar Alunos
@@ -334,8 +322,9 @@ menuMateriaisGrupo(Matricula) :-
     writeln('\n1. Ver materiais'),
     writeln('2. Adicionar materiais'),
     writeln('3. Remover materiais'),
-    writeln('4. Voltar'),
-    writeln('5. Sair'),
+    writeln('4. Edita materiais'),
+    writeln('5. Voltar'),
+    writeln('6. Sair'),
     prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
@@ -351,9 +340,11 @@ opselecionadaMateriaisGrupo(3, Matricula):-
     menuRemoverMateriaisGrupo(Matricula).
 
 opselecionadaMateriaisGrupo(4, Matricula):-
+    menuEditaMateriais(Matricula).
+opselecionadaMateriaisGrupo(5, Matricula):-
     menuMeusGrupos(Matricula).
 
-opselecionadaMateriaisGrupo(5, Matricula):-
+opselecionadaMateriaisGrupo(6, Matricula):-
     write('Saindo...'), 
     halt.
 
@@ -696,21 +687,21 @@ selecionaMenuConsultaAluno(1, Matricula) :-
     prompt('Código da disciplina: ', Codigo),
     prompt('ID do Resumo: ', Id),
     visualiza_resumo(Matricula, Codigo, Id, Result),
-    write(Result),
+    writeln(Result),
     menuConsultaAluno(Matricula).
 
 selecionaMenuConsultaAluno(2, Matricula):-
     prompt('Código da disciplina: ', Codigo),
     prompt('ID do Link: ', Id),
     visualiza_link(Matricula, Codigo, Id, Result),
-    write(Result),
+    writeln(Result),
     menuConsultaAluno(Matricula).
 
 selecionaMenuConsultaAluno(3, Matricula):-
     prompt('Código da disciplina: ', Codigo),
     prompt('ID da Data: ', Id),
     visualiza_data(Matricula, Codigo, Id, Result),
-    write(Result),
+    writeln(Result),
     menuConsultaAluno(Matricula).
 
 selecionaMenuConsultaAluno(4, Matricula):-
@@ -721,5 +712,44 @@ selecionaMenuConsultaAluno(5, Matricula):-
     halt.
 
 selecionaMenuConsultaAluno(_, Matricula):-
-    write('\nOpcão inválida!\n'), 
+    writeln('\nOpcão inválida!\n'), 
     menuConsultaAluno(Matricula).
+
+menuEditaMateriais(Matricula):-
+    writeln('\nQual material você deseja alterar:'),
+    writeln('1. Resumo'),
+    writeln('2. Data'),
+    writeln('3. Links'),
+    writeln('4. Voltar'),
+    prompt('->', Input),
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', CodDisciplina),
+    atom_number(Input, Opcao),
+    selecionaEditaMateriais(Opcao, Matricula, CodGrupo, CodDisciplina).
+
+
+selecionaEditaMateriais(1, Matricula, CodGrupo, CodDisciplina):-
+    prompt('Código do Resumo: ', CodResumo),
+    prompt('Novo Corpo: ', NewCorpo),
+    editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result),
+    writeln(Result),
+    menuEditaMateriais(Matricula).
+
+selecionaEditaMateriais(2, Matricula, CodGrupo, CodDisciplina):-
+    prompt('Código da Data: ', CodData),
+    prompt('Nova data incio: ', NewDataInit),
+    prompt('Nova data fim: ', NewDataFim),
+    editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result),
+    writeln(Result),
+    menuEditaMateriais(Matricula).
+
+selecionaEditaMateriais(3, Matricula, CodGrupo, CodDisciplina):-
+    prompt('Código do Link: ', CodLink),
+    prompt('Nova url: ', NewUrl),
+    editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result),
+    writeln(Result),
+    menuEditaMateriais(Matricula).
+
+selecionaEditaMateriais(_, Matricula, CodGrupo, CodDisciplina):-
+    writeln('\nOpcão inválida!\n'), 
+    menuEditaMateriais(Matricula).
