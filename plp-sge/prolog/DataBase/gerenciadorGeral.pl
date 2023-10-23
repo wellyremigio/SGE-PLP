@@ -21,8 +21,8 @@ extract_info_aluno(json([id=Id, nome=Nome, senha=Senha, disciplinas=Disciplinas]
 extract_info_disciplina(json([id=Id, nome=Nome, professor=Professor, periodo=Periodo, resumos=Resumos, datas=Datas, links=Links]), Id, Nome, Professor, Periodo, Resumos, Datas, Links).
 extract_info_grupo(json([id=Id, nome=Nome, alunos=Alunos, disciplinas=Disciplinas, adm=Adm]), Id, Nome, Alunos, Disciplinas, Adm).
 extract_info_resumo(json([id=Id, titulo=Titulo, corpo=Corpo, comentarios=Comentarios]), Id, Titulo, Corpo, Comentarios).
-extract_info_link_util(json([id=Id, titulo=Titulo, url=URL, comentariosLink=ComentariosLink]), Id, Titulo, URL, ComentariosLink).
-extract_info_data(json([id=Id, titulo=Titulo, dataInicio=DataInicio, dataFim=DataFim, comentariosData=ComentariosData]), Id, Titulo, DataInicio, DataFim, ComentariosData).
+extract_info_link_util(json([id=Id, titulo=Titulo, url=URL, comentarios=Comentarios]), Id, Titulo, URL, Comentarios).
+extract_info_data(json([id=Id, titulo=Titulo, dataInicio=DataInicio, dataFim=DataFim, comentarios=Comentarios]), Id, Titulo, DataInicio, DataFim, Comentarios).
 extract_info_comentario(json([id=Id, idAluno=IdAluno, texto=Texto]), Id, IdAluno,Texto).
 
 % Regra que generaliza a extração do ID das entidades do banco de dados já citadas

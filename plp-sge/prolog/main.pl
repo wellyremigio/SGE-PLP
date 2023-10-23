@@ -38,7 +38,7 @@ main:-
     write('1. Login\n'),
     write('2. Cadastrar\n'),
     write('3. Sair\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     opSelecionada(Opcao).
@@ -80,7 +80,7 @@ menuEscolhaLogin:-
     write('1. Fazer login \n'),
     write('2. Fazer cadastro\n'),
     write('3. Sair\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     verificaEscolha(Opcao).
@@ -122,7 +122,7 @@ menuInicial(Matricula):-
     write('4. Minhas disciplinas\n'),
     write('5. Procurar Grupo\n'),
     write('6. Sair\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     selecaoMenuInicial(Opcao, Matricula).
@@ -135,7 +135,7 @@ selecaoMenuInicial(1, Matricula):-
     cadastraGrupo(CodGrupo, NomeGrupo, Matricula, Result),
     (Result = 'ok' ->
         write('Grupo Cadastrado'),
-        menuInicial(Matricula)
+        menuMeusGrupos(Matricula)
     ;
         write('Já existe um grupo com esse ID. Cadastre um grupo novo!\n'),
         menuInicial(Matricula)
@@ -201,7 +201,7 @@ menuMeusGrupos(Matricula):-
     write('7. Acessar Materiais\n'),
     write('8. Ver grupos\n'),
     write('9. Voltar\n'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
     selecaoMenuMeusGrupos(Opcao, Matricula).
@@ -225,11 +225,19 @@ selecaoMenuMeusGrupos(1, Matricula):-
      %Remover aluno
 selecaoMenuMeusGrupos(2, Matricula):-
     prompt('Matrícula do aluno a ser removido: ', MatriculaAluno),
-    prompt('Código do grupo: ', CodGrupo),
-    verifica_adm(CodGrupo, Matricula, R),
-    (R = 1 -> remove_aluno_grupo(Matricula, MatriculaAluno, CodGrupo, Result), write(Result);
-    write('Não é Adm do grupo')),
-    menuMeusGrupos(Matricula).
+        prompt('Código do grupo: ', CodGrupo),
+        (verificaGrupo(CodGrupo) ->
+            (verifica_adm(CodGrupo, Matricula) -> 
+                (valida_aluno(MatriculaAluno) -> 
+                    ( verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
+                        removeAlunoGrupo(CodGrupo, MatriculaAluno),
+                        write('Aluno removido com sucesso')
+                    ;write('Aluno já esta no grupo') )
+                ; write('Aluno não cadastrado'))
+            ; write('Aluno não é adm do grupo'))
+        ; write('Grupo não cadastrado')),
+        menuMeusGrupos(Matricula).
+
 
 %Visualizar Alunos
 selecaoMenuMeusGrupos(3, Matricula):-
@@ -259,7 +267,12 @@ selecaoMenuMeusGrupos(5, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     (verificaGrupo(CodGrupo) ->
         listagemDisciplinaGrupo(CodGrupo, Result),
-        write(Result),
+        (
+            Result = '' ->
+                write('Nenhuma disciplina cadastrada');
+            true ->
+                write(Result)
+        ),
         menuMeusGrupos(Matricula)
     ;
         write('Grupo não encontrado'),
@@ -267,21 +280,25 @@ selecaoMenuMeusGrupos(5, Matricula):-
     ).
 
 
-
-
 %Remover Disciplina
+%verifica se o grupo existe
 selecaoMenuMeusGrupos(6, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina que você quer remover: ', IdDiscilina),
-    removeDisciplinaGrupo(CodGrupo, IdDiscilina, Result),
-    write(Result),
-    menuMeusGrupos(Matricula).
+    (verificaGrupo(CodGrupo) ->
+        
+        prompt('Código da disciplina que você quer remover: ', IdDiscilina),
+        removeDisciplinaGrupo(CodGrupo, IdDiscilina, Result),
+        write(Result),
+        menuMeusGrupos(Matricula)
+    ;
+        write('Grupo não cadastrado'),
+        menuMeusGrupos(Matricula)
+    ).
 
 %Acessar Materiais
 selecaoMenuMeusGrupos(7, Matricula):-
-    menuMateriaisGrupo (Matricula).
-    %menuMeusGrupos(Matricula).
-
+    menuMateriaisGrupo(Matricula).
+   
 %Ver grupos
 selecaoMenuMeusGrupos(8, Matricula):-
     write('\nEsses são os seus grupos: \n'),
@@ -297,6 +314,178 @@ selecaoMenuMeusGrupos(9, Matricula):-
 selecaoMenuMeusGrupos(_, Matricula):-
     write('Opção inválida'),
     menuMeusGrupos(Matricula).
+
+
+%Menu específico para o cadastro de materiais no grupo
+menuMateriaisGrupo(Matricula) :-
+    writeln('\n1. Ver materiais'),
+    writeln('2. Adicionar materiais'),
+    writeln('3. Remover materiais'),
+    writeln('4. Voltar'),
+    writeln('5. Sair'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    write('\n'),
+    opselecionadaMateriaisGrupo(Opcao, Matricula).
+
+opselecionadaMateriaisGrupo(1, Matricula):-
+    menuConsultaGrupo(Matricula).
+
+opselecionadaMateriaisGrupo(2, Matricula):-
+    menuCadastraMateriaisGrupo(Matricula).
+
+opselecionadaMateriaisGrupo(3, Matricula):-
+    menuRemoverMateriaisGrupo(Matricula).
+
+opselecionadaMateriaisGrupo(4, Matricula):-
+    menuMeusGrupos(Matricula).
+
+opselecionadaMateriaisGrupo(5, Matricula):-
+    write('Saindo...'), 
+    halt.
+
+opselecionadaMateriaisGrupo(_, Matricula):- 
+    write('\nOpcão inválida!\n'),   
+    menuMeusGrupos(Matricula).
+
+%Menu para consultar materiais
+menuConsultaGrupo(Matricula) :-
+    writeln('\nQual o tipo de material que deseja consultar?'),
+    writeln('1. Resumo'),
+    writeln('2. Link'),
+    writeln('3. Data'),
+    writeln('4. Voltar'),
+    writeln('5. Sair'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    selecionaMenuConsultaGrupo(Opcao, Matricula).
+
+selecionaMenuConsultaGrupo(1, Matricula) :-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do Resumo: ', Id),
+    visualiza_resumo_grupo(CodGrupo, IdDisciplina, Id, Result),
+    write(Result),
+    menuConsultaGrupo(Matricula).
+
+selecionaMenuConsultaGrupo(2, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do Link: ', Id),
+    visualiza_link_grupo(CodGrupo, IdDisciplina, Id, Result),
+    write(Result),
+    menuConsultaGrupo(Matricula).
+
+selecionaMenuConsultaGrupo(3, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID da Data: ', Id),
+    visualiza_data_grupo(CodGrupo, IdDisciplina, Id, Result),
+    write(Result),
+    menuConsultaGrupo(Matricula).
+
+selecionaMenuConsultaGrupo(4, Matricula):-
+    menuMateriaisGrupo(Matricula).
+
+selecionaMenuConsultaGrupo(5, Matricula):-
+    write('Saindo...'), 
+    halt.
+
+selecionaMenuConsultaGrupo(_, Matricula):-
+    write('\nOpcão inválida!\n'), 
+    menuConsultaGrupo(Matricula).
+
+
+%Menu para cadastrar materiais
+menuCadastraMateriaisGrupo(Matricula) :-
+    writeln('\nSelecione o tipo de material que você gostaria de cadastrar:\n'),
+    write('1. Resumo\n'),
+    write('2. Links\n'),
+    write('3. Datas\n'),
+    write('4. Voltar\n'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    write('\n'),
+    opselecionadaCadastraMateriaisGrupo(Opcao, Matricula).
+
+opselecionadaCadastraMateriaisGrupo(1, Matricula) :-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('Nome do resumo: ', Nome),
+    prompt('Conteúdo do resumo: ', Resumo),
+    add_resumo_disciplina_grupo(CodGrupo, IdDisciplina, Nome, Resumo, Result),
+    write(Result),
+    menuCadastraMateriaisGrupo(Matricula).
+
+opselecionadaCadastraMateriaisGrupo(2, Matricula) :-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('Titulo: ', Titulo),
+    prompt('Link: ', Link),
+    add_link_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, Link, Result),
+    write(Result),
+    menuCadastraMateriaisGrupo(Matricula).
+
+opselecionadaCadastraMateriaisGrupo(3, Matricula) :-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('Titulo: ', Titulo),
+    prompt('Data início: ', DataI),
+    prompt('Data fim: ', DataF),
+    add_data_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, DataI, DataF, Result),
+    write(Result),
+    menuCadastraMateriaisGrupo(Matricula).
+
+opselecionadaCadastraMateriaisGrupo(4, Matricula) :-
+    menuMateriaisGrupo(Matricula).
+
+opselecionadaCadastraMateriaisGrupo(_, Matricula):- 
+    write('\nOpcão inválida!\n'),
+    menuCadastraMateriaisGrupo(Matricula).
+
+
+%Menu para remover materiais
+menuRemoverMateriaisGrupo(Matricula) :-
+    writeln('\nSelecione o tipo de material que você gostaria de remover:'),
+    write('1. Resumo\n'),
+    write('2. Links\n'),
+    write('3. Datas\n'),
+    write('4. Voltar\n'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    selecionaMenuRemoveMateriaisGrupo(Opcao, Matricula).
+
+selecionaMenuRemoveMateriaisGrupo(1, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do Resumo: ', Id),
+    remove_resumo_grupo(CodGrupo, IdDisciplina, Id, Result),
+    write(Result),
+    menuRemoverMateriaisGrupo(Matricula).
+
+selecionaMenuRemoveMateriaisGrupo(2, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do Link: ', Id),
+    remove_link_grupo(CodGrupo, IdDisciplina, Id, Result),
+    write(Result),
+    menuRemoverMateriaisGrupo(Matricula).
+
+selecionaMenuRemoveMateriaisGrupo(3, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID da Data: ', Id),
+    remove_data_grupo(CodGrupo, IdDisciplina, Id, Result),
+    write(Result),
+    menuRemoverMateriaisGrupo(Matricula).
+    
+
+selecionaMenuRemoveMateriaisGrupo(4, Matricula):-
+    menuMateriaisGrupo(Matricula).
+
+selecionaMenuRemoveMateriaisGrupo(_, Matricula):-
+    write('\nOpcão inválida!\n'), 
+    menuRemoverMateriaisGrupo(Matricula).
 
 
 menuMinhasDisciplinas(Matricula) :-
@@ -333,8 +522,8 @@ opselecionadaDisciplinaAluno(3, Matricula) :-
     menuMinhasDisciplinas(Matricula).
     
 opselecionadaDisciplinaAluno(4, Matricula) :-
-    menuMateriaisAluno(Matricula),
-    menuMinhasDisciplinas(Matricula).
+    menuMateriaisAluno(Matricula).
+
     
 opselecionadaDisciplinaAluno(3, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -376,13 +565,19 @@ opselecionadaCadastraMateriaisAluno(1, Matricula) :-
 opselecionadaCadastraMateriaisAluno(2, Matricula) :-
     prompt('Código da disciplina: ', Codigo),
     prompt('Titulo: ', Titulo),
-    prompt('Link: ', Link).
+    prompt('Link: ', Link),
+    add_link_disciplina_aluno(Matricula, Codigo, Titulo, Link, Result),
+    write(Result),
+    menuCadastraMateriaisAluno(Matricula).
 
 opselecionadaCadastraMateriaisAluno(3, Matricula) :-
     prompt('Código da disciplina: ', Codigo),
     prompt('Titulo: ', Titulo),
     prompt('Data início: ', DataI),
-    prompt('Data fim: ', DataF).
+    prompt('Data fim: ', DataF),
+    add_data_disciplina_aluno(Matricula, Codigo, Titulo, DataI, DataF, Result),
+    write(Result),
+    menuCadastraMateriaisAluno(Matricula).
 
 opselecionadaCadastraMateriaisAluno(4, Matricula) :-
     menuMinhasDisciplinas(Matricula).
@@ -403,13 +598,13 @@ menuMateriaisAluno(Matricula) :-
     opselecionadaMateriaisAluno(Opcao, Matricula).
 
 opselecionadaMateriaisAluno(1, Matricula):-
-    menuMateriaisAluno(Matricula).
+    menuConsultaAluno(Matricula).
 
 opselecionadaMateriaisAluno(2, Matricula):-
     menuCadastraMateriaisAluno(Matricula).
 
-opselecionadaMateriaisAluno(3 Matricula):-
-    menuMateriaisAluno(Matricula).
+opselecionadaMateriaisAluno(3, Matricula):-
+    menuRemoverMateriais(Matricula).
 
 opselecionadaMateriaisAluno(4, Matricula):-
     menuMinhasDisciplinas(Matricula).
@@ -421,3 +616,85 @@ opselecionadaMateriaisAluno(5, Matricula):-
 opselecionadaMateriaisAluno(_, Matricula):- 
     write('\nOpcão inválida!\n'),   
     menuMateriaisAluno(Matricula).
+
+menuRemoverMateriais(Matricula) :-
+    writeln('\nSelecione o tipo de material que você gostaria de remover:'),
+    write('1. Resumo\n'),
+    write('2. Links\n'),
+    write('3. Datas\n'),
+    write('4. Voltar\n'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    selecionaMenuRemoveMateriaisAluno(Opcao, Matricula).
+
+selecionaMenuRemoveMateriaisAluno(1, Matricula):-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID do Resumo: ', Id),
+    remove_resumo_aluno(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuRemoverMateriais(Matricula).
+
+selecionaMenuRemoveMateriaisAluno(2, Matricula):-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID do Link: ', Id),
+    remove_link_aluno(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuRemoverMateriais(Matricula).
+
+selecionaMenuRemoveMateriaisAluno(3, Matricula):-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID da Data: ', Id),
+    remove_data_aluno(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuRemoverMateriais(Matricula).
+    
+
+selecionaMenuRemoveMateriaisAluno(4, Matricula):-
+    menuMateriaisAluno(Matricula).
+
+selecionaMenuRemoveMateriaisAluno(_, Matricula):-
+    write('\nOpcão inválida!\n'), 
+    menuRemoverMateriais(Matricula).
+
+menuConsultaAluno(Matricula) :-
+    writeln('\nQual o tipo de material que deseja consultar?'),
+    writeln('1. Resumo'),
+    writeln('2. Link'),
+    writeln('3. Data'),
+    writeln('4. Voltar'),
+    writeln('5. Sair'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    selecionaMenuConsultaAluno(Opcao, Matricula).
+
+selecionaMenuConsultaAluno(1, Matricula) :-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID do Resumo: ', Id),
+    visualiza_resumo(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuConsultaAluno(Matricula).
+
+selecionaMenuConsultaAluno(2, Matricula):-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID do Link: ', Id),
+    visualiza_link(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuConsultaAluno(Matricula).
+
+selecionaMenuConsultaAluno(3, Matricula):-
+    prompt('Código da disciplina: ', Codigo),
+    prompt('ID da Data: ', Id),
+    visualiza_data(Matricula, Codigo, Id, Result),
+    write(Result),
+    menuConsultaAluno(Matricula).
+
+selecionaMenuConsultaAluno(4, Matricula):-
+    menuMateriaisAluno(Matricula).
+
+selecionaMenuConsultaAluno(5, Matricula):-
+    write('Saindo...'), 
+    halt.
+
+selecionaMenuConsultaAluno(_, Matricula):-
+    write('\nOpcão inválida!\n'), 
+    menuConsultaAluno(Matricula).

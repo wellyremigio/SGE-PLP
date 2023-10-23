@@ -74,9 +74,126 @@ add_resumo_disciplina_aluno(Matricula, IdDisciplina, Nome, Resumo, Result):-
     ).
 
 
+add_link_disciplina_aluno(Matricula, IdDisciplina, Titulo, Link, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(TituloAtom, Titulo),
+    atom_string(LinkAtom, Link),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom)->
+        random_id(IdL),
+        adiciona_link_aluno(MatriculaAtom, IdDisciplinaAtom, IdL, TituloAtom, LinkAtom),
+        atomic_list_concat(['\nLink cadastrado! ID: ', IdL, '\n'], Result)
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+add_data_disciplina_aluno(Matricula, IdDisciplina, Titulo, DataInicio, DataFim, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(TituloAtom, Titulo),
+    atom_string(DataInicioAtom, DataInicio),
+    atom_string(DataFimAtom, DataFim),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom)->
+        random_id(IdD),
+        adiciona_data_aluno(MatriculaAtom, IdDisciplinaAtom, IdD, TituloAtom, DataInicioAtom, DataFimAtom),
+        atomic_list_concat(['\nData cadastrada! ID: ', IdD, '\n'], Result)
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+remove_resumo_aluno(Matricula, IdDisciplina, IdResumo, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdResumoAtom, IdResumo),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom)->
+        (getResumoAluno(IdResumoAtom,MatriculaAtom,IdDisciplinaAtom,R), R \= -1 ->
+            rem_resumo_aluno(MatriculaAtom, IdDisciplinaAtom, IdResumoAtom),
+            Result = '\nResumo removido com sucesso!\n'
+        ;
+            Result = '\nResumo não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+remove_data_aluno(Matricula, IdDisciplina, IdData, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdDataAtom, IdData),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom)->
+        (getDataAluno(IdDataAtom,MatriculaAtom,IdDisciplinaAtom,R), R \= -1 ->
+            rem_data_aluno(MatriculaAtom, IdDisciplinaAtom, IdDataAtom),
+            Result = '\nData removida com sucesso!\n'
+        ;
+            Result = '\nData não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+remove_link_aluno(Matricula, IdDisciplina, IdLink, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdLinkAtom, IdLink),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom)->
+        (getLinkAluno(IdLinkAtom,MatriculaAtom,IdDisciplinaAtom,R), R \= -1 ->
+            rem_link_aluno(MatriculaAtom, IdDisciplinaAtom, IdLinkAtom),
+            Result = '\nLink removido com sucesso!\n'
+        ;
+            Result = '\nLink não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+visualiza_resumo(Matricula, IdDisciplina, IdResumo, Result) :-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdResumoAtom, IdResumo),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom) ->
+        (getResumoAluno(IdResumoAtom, MatriculaAtom, IdDisciplinaAtom, R), R \= -1 ->
+            extract_info_resumo(R, _, Titulo, Corpo, _),
+            concatena_strings(['\nID:', IdResumo, '\nTitulo: ', Titulo, '\nConteudo: ', Corpo, '\n'], Result)
+        ;
+            Result = '\nResumo não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+visualiza_data(Matricula, IdDisciplina, IdData, Result) :-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdDataAtom, IdData),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom) ->
+        (getDataAluno(IdDataAtom, MatriculaAtom, IdDisciplinaAtom, R), R \= -1 ->
+            extract_info_data(R, _, Titulo, DataInicio, DataFim, _),
+            concatena_strings(['\nID:', IdData, '\nTitulo: ', Titulo, '\nData Início: ', DataInicio, '\nData Início: ', DataFim, '\n'], Result)
+        ;
+            Result = '\nData não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+visualiza_link(Matricula, IdDisciplina, IdLink, Result) :-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdLinkAtom, IdLink),
+    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom) ->
+        (getLinkAluno(IdLinkAtom, MatriculaAtom, IdDisciplinaAtom, R), R \= -1 ->
+            extract_info_link_util(R, _, Titulo, URL, _),
+            concatena_strings(['\nID:', IdLink, '\nTitulo: ', Titulo, '\nURL: ', URL,'\n'], Result)
+        ;
+            Result = '\nLink não existe!\n'
+        )
+    ;
+        Result = '\nDisciplina não existe!\n'
+    ).
+
+
 % Regra que gera um ID aleatório
 random_id(ID) :-
     random_between(100000000, 999999999, RandomNumber),
     number_codes(RandomNumber, RandomNumberCodes),
     string_codes(ID, RandomNumberCodes).
-
