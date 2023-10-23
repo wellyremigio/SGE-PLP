@@ -95,6 +95,22 @@ getResumoAluno(IdResumo,Matricula,IdDisciplina,Result):-
     seach_id(Resumos, IdResumo, Resumo,'resumo'),
     Result = Resumo.
 
+getLinkAluno(IdLink,Matricula,IdDisciplina,Result):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, _, _, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, _, _, _, _, _, Links),
+    seach_id(Links, IdLink, Link,'link'),
+    Result = Link.
+
+getDataAluno(IdData,Matricula,IdDisciplina,Result):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, _, _, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, _, _, _, _, Datas, _),
+    seach_id(Datas, IdData, Data,'data'),
+    Result = Data.
+
 adiciona_resumo_aluno(Matricula, IdDisciplina, IdResumo, TituloR, ConteudoR):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
@@ -102,10 +118,75 @@ adiciona_resumo_aluno(Matricula, IdDisciplina, IdResumo, TituloR, ConteudoR):-
     extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Links, Datas),
     NewResumo = json([id=IdResumo, titulo=TituloR, corpo=ConteudoR, comentarios=[]]),
     NewResumos = [NewResumo | Resumos],
-    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NewResumos, datas=Links, links=Datas]),
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NewResumos, datas=Datas, links=Links]),
     remove_object(Disciplinas, Disciplina, NewDisciplinas),
     NDisciplinas = [NDisciplina | NewDisciplinas],
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NDisciplinas).
 
     
+adiciona_link_aluno(Matricula, IdDisciplina, IdLink, TituloL, Url):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    NewLink = json([id=IdLink, titulo=TituloL, url=Url, comentarios=[]]),
+    NewLinks = [NewLink | Links],
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=Datas, links=NewLinks]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NDisciplinas).
+
+
+adiciona_data_aluno(Matricula, IdDisciplina, IdData, TituloD, DataI, DataF):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    NewData = json([id=IdData, titulo=TituloD, dataInicio=DataI, dataFim=DataF, comentarios=[]]),
+    NewDatas = [NewData | Datas],
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=NewDatas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NDisciplinas).
+
+rem_resumo_aluno(Matricula, IdDisciplina, IdResumo):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Resumos, IdResumo, Elemento, 'resumo'),
+    remove_object(Resumos, Elemento, NewResumos),
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NewResumos, datas=Datas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NDisciplinas).
+
+rem_data_aluno(Matricula, IdDisciplina, IdData):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Datas, IdData, Elemento, 'data'),
+    remove_object(Datas, Elemento, NewDatas),
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=NewDatas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NDisciplinas).
+
+rem_link_aluno(Matricula, IdDisciplina, IdLink):-
+    get_aluno_by_matricula(Matricula, Aluno),
+    extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Links, IdLink, Elemento, 'link'),
+    remove_object(Links, Elemento, NewLinks),
+    NDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=Datas, links=NewLinks]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_aluno_by_matricula(Matricula),
+    add_aluno(Matricula, Nome, Senha, NDisciplinas).
