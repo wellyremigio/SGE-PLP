@@ -1,5 +1,4 @@
 :- use_module(library(dcg/basics)).
-
 % Regra que retorna a lista de disciplinas.
 listaDisciplinas(Matricula, Resposta) :- 
     get_aluno_by_matricula(Matricula, Aluno),
@@ -62,3 +61,34 @@ concatena_strings_loop([], Acumulador, Acumulador).
 concatena_strings_loop([String | Resto], Acumulador, Resultado) :-
     atom_concat(Acumulador, String, NovoAcumulador),
     concatena_strings_loop(Resto, NovoAcumulador, Resultado).
+
+lista_comentarios_resumo(Resumo,Result):-
+    extract_info_resumo(Resumo, _, _, _, Comentarios),
+    (Comentarios = [] ->
+        Result = 'Sem comentários!'
+    ;
+        organizaListagemComentario(Comentarios,Result)
+    ).
+
+lista_comentarios_data(Data,Result):-
+    extract_info_data(Data, _, _, _, _, Comentarios),
+    (Comentarios = [] ->
+        Result = 'Sem comentários!'
+    ;
+        organizaListagemComentario(Comentarios,Result)
+    ).
+
+lista_comentarios_link(Link,Result):-
+    extract_info_link_util(Link, _, _,_, Comentarios),
+    (Comentarios = [] ->
+        Result = 'Sem comentários!'
+    ;
+        organizaListagemComentario(Comentarios,Result)
+    ).
+
+organizaListagemComentario([], '').
+organizaListagemComentario([H|T], Resposta) :- 
+    organizaListagemComentario(T, Resposta1),
+    extract_info_comentario(H, Id, IdAluno, Comentario),
+    concatena_strings(['\nID comentário:' ,Id, '\nId Aluno: ', IdAluno, '\nComentário: ',Comentario,'\n'], ComentariosConcatenados),
+    string_concat(ComentariosConcatenados, Resposta1, Resposta).

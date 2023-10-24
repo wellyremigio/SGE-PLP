@@ -23,7 +23,7 @@ extract_info_grupo(json([id=Id, nome=Nome, alunos=Alunos, disciplinas=Disciplina
 extract_info_resumo(json([id=Id, titulo=Titulo, corpo=Corpo, comentarios=Comentarios]), Id, Titulo, Corpo, Comentarios).
 extract_info_link_util(json([id=Id, titulo=Titulo, url=URL, comentarios=Comentarios]), Id, Titulo, URL, Comentarios).
 extract_info_data(json([id=Id, titulo=Titulo, dataInicio=DataInicio, dataFim=DataFim, comentarios=Comentarios]), Id, Titulo, DataInicio, DataFim, Comentarios).
-extract_info_comentario(json([id=Id, idAluno=IdAluno, texto=Texto]), Id, IdAluno,Texto).
+extract_info_comentario(json([id=Id, idAluno=IdAluno, comentario=Comentario]), Id, IdAluno,Comentario).
 
 % Regra que generaliza a extração do ID das entidades do banco de dados já citadas
 % (Essa regra é importante para generalizar o uso da regra de busca por ID)

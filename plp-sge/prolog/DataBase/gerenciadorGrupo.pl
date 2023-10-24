@@ -257,3 +257,62 @@ rem_link_grupo(Codigo, IdDisciplina, IdLink):-
     add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).
 
 
+adiciona_comentario_grupo_resumo(Matricula, CodGrupo, IdDisciplina, IdResumo, IdComentario, Conteudo):-
+    get_grupo_by_codigo(CodGrupo, Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Resumos, IdResumo, Elemento, 'resumo'),
+    extract_info_resumo(Elemento, _, Titulo, Corpo, Comentarios),
+    NewComentario = json([id=IdComentario, idAluno=Matricula, comentario=Conteudo]),
+    NewComentarios = [NewComentario | Comentarios],
+    remove_object(Resumos, Elemento, NewResumos),
+    NewResumo = json([id=IdResumo, titulo=Titulo, corpo=Corpo, comentarios=NewComentarios]),
+    NResumos = [NewResumo | NewResumos],
+    NewDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NResumos, datas=Datas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NewDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(CodGrupo),
+    add_grupo(CodGrupo, Nome, Alunos, NDisciplinas, Adm).
+
+adiciona_comentario_grupo_data(Matricula, CodGrupo, IdDisciplina, IdData, IdComentario, Conteudo):-
+    get_grupo_by_codigo(CodGrupo, Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Datas, IdData, Elemento, 'data'),
+    extract_info_data(Elemento, _, Titulo, DataInicio, DataFim, Comentarios),
+    NewComentario = json([id=IdComentario, idAluno=Matricula, comentario=Conteudo]),
+    NewComentarios = [NewComentario | Comentarios],
+    remove_object(Datas, Elemento, NewDatas),
+    NewData = json([id=IdData, titulo=Titulo, dataInicio=DataInicio, dataFim=DataFim, comentarios=NewComentarios]),
+    NDatas = [NewData | NewDatas],
+    NewDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=NDatas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NewDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(CodGrupo),
+    add_grupo(CodGrupo, Nome, Alunos, NDisciplinas, Adm).
+
+adiciona_comentario_grupo_link(Matricula, CodGrupo, IdDisciplina, IdLink, IdComentario, Conteudo):-
+    get_grupo_by_codigo(CodGrupo, Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Links, IdLink, Elemento, 'link'),
+    extract_info_link_util(Elemento, _, Titulo, URL, Comentarios),
+    NewComentario = json([id=IdComentario, idAluno=Matricula, comentario=Conteudo]),
+    NewComentarios = [NewComentario | Comentarios],
+    remove_object(Links, Elemento, NewLinks),
+    NewLink = json([id=IdLink, titulo=Titulo, url=URL, comentarios=NewComentarios]),
+    NLinks = [NewLink| NewLinks],
+    NewDisciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=Datas, links=NLinks]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NewDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(CodGrupo),
+    add_grupo(CodGrupo, Nome, Alunos, NDisciplinas, Adm).
+
+aluno_estah_no_grupo(CodigoGrupo, Matricula):-
+    get_grupo_by_codigo(CodGrupo, Grupo),
+
+
+

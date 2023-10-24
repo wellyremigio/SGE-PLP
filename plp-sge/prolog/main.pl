@@ -238,19 +238,6 @@ selecaoMenuMeusGrupos(2, Matricula):-
             ; write('Aluno não é adm do grupo'))
         ; write('Grupo não cadastrado')),
         menuMeusGrupos(Matricula).
-        prompt('Código do grupo: ', CodGrupo),
-        (verificaGrupo(CodGrupo) ->
-            (verifica_adm(CodGrupo, Matricula) -> 
-                (valida_aluno(MatriculaAluno) -> 
-                    ( verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
-                        removeAlunoGrupo(CodGrupo, MatriculaAluno),
-                        write('Aluno removido com sucesso')
-                    ;write('Aluno já esta no grupo') )
-                ; write('Aluno não cadastrado'))
-            ; write('Aluno não é adm do grupo'))
-        ; write('Grupo não cadastrado')),
-        menuMeusGrupos(Matricula).
-
 
 %Visualizar Alunos
 selecaoMenuMeusGrupos(3, Matricula):-
@@ -334,8 +321,11 @@ menuMateriaisGrupo(Matricula) :-
     writeln('\n1. Ver materiais'),
     writeln('2. Adicionar materiais'),
     writeln('3. Remover materiais'),
-    writeln('4. Voltar'),
-    writeln('5. Sair'),
+    writeln('4. Editar materiais'),
+    writeln('5. Comentar no material'),
+    writeln('6. Ver Comentarios do material'),
+    writeln('7. Voltar'),
+    writeln('8. Sair'),
     prompt('----> ', Input),
     atom_number(Input, Opcao),
     write('\n'),
@@ -354,6 +344,15 @@ opselecionadaMateriaisGrupo(4, Matricula):-
     menuMeusGrupos(Matricula).
 
 opselecionadaMateriaisGrupo(5, Matricula):-
+    menuComentarMaterial(Matricula).
+
+opselecionadaMateriaisGrupo(6, Matricula):-
+    menuVerComentarioMaterial(Matricula).
+
+opselecionadaMateriaisGrupo(7, Matricula):-
+    menuMeusGrupos(Matricula).
+
+opselecionadaMateriaisGrupo(8, Matricula):-
     write('Saindo...'), 
     halt.
 
@@ -537,19 +536,9 @@ opselecionadaDisciplinaAluno(3, Matricula) :-
 opselecionadaDisciplinaAluno(4, Matricula) :-
     menuMateriaisAluno(Matricula).
 
-    menuMateriaisAluno(Matricula).
-
-    
-opselecionadaDisciplinaAluno(3, Matricula) :-
-    menuMinhasDisciplinas(Matricula).
-    
-opselecionadaDisciplinaAluno(4, Matricula) :-
-    menuMinhasDisciplinas(Matricula).
-    
 opselecionadaDisciplinaAluno(5, Matricula) :-
     menuInicial(Matricula).
-    
-    
+       
 opselecionadaDisciplinaAluno(6, Matricula) :-
     write('Saindo...'), 
     halt.
@@ -723,3 +712,111 @@ selecionaMenuConsultaAluno(5, Matricula):-
 selecionaMenuConsultaAluno(_, Matricula):-
     write('\nOpcão inválida!\n'), 
     menuConsultaAluno(Matricula).
+
+
+menuComentarMaterial(Matricula) :-
+    writeln('\nVocê deseja comentar qual material?'),
+    writeln('1. Resumo'),
+    writeln('2. Link'),
+    writeln('3. Data'),
+    writeln('4. Voltar'),
+    writeln('5. Sair'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    selecionaMaterialComentario(Opcao, Matricula).
+
+selecionaMaterialComentario(1, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do resumo: ', Id),
+    prompt('Comentario a ser enviado: ', Comentario),
+    add_comentario_resumo(Matricula, CodGrupo, IdDisciplina, Id,Comentario, Result),
+    write(Result),
+    menuComentarMaterial(Matricula).
+
+selecionaMaterialComentario(2, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do link: ', Id),
+    prompt('Comentario a ser enviado: ', Comentario),
+    add_comentario_link(Matricula, CodGrupo, IdDisciplina, Id, Comentario, Result),
+    write(Result),
+    menuComentarMaterial(Matricula).
+
+
+selecionaMaterialComentario(3, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID da data: ', Id),
+    prompt('Comentario a ser enviado: ', Comentario),
+    add_comentario_data(Matricula, CodGrupo, IdDisciplina, Id, Comentario, Result),
+    write(Result),
+    menuComentarMaterial(Matricula).
+
+selecionaMaterialComentario(4, Matricula):-
+    menuMateriaisGrupo(Matricula).
+
+selecionaMaterialComentario(5, Matricula):-
+    write('Saindo...'), 
+    halt.
+
+selecionaMaterialComentario(_, Matricula):-
+    write('\nOpcão inválida!\n'),
+    menuComentarMaterial(Matricula).
+
+
+menuVerComentarioMaterial(Matricula) :-
+    writeln('\nVocê deseja ver os comentários de qual material?'),
+    writeln('1. Resumo'),
+    writeln('2. Link'),
+    writeln('3. Data'),
+    writeln('4. Voltar'),
+    writeln('5. Sair'),
+    prompt('----> ', Input),
+    atom_number(Input, Opcao),
+    selecionaVerComentarioMaterial(Opcao,Matricula).
+
+
+selecionaVerComentarioMaterial(1, Matricula) :-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do resumo: ', Id),
+    comentarios_resumo(Matricula, CodGrupo,IdDisciplina, Id, Result),
+    write(Result),
+    menuVerComentarioMaterial(Matricula).
+
+selecionaVerComentarioMaterial(2, Matricula) :-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID do link: ', Id),
+    comentarios_link(Matricula, CodGrupo,IdDisciplina, Id, Result),
+    write(Result),
+    menuVerComentarioMaterial(Matricula).
+
+selecionaVerComentarioMaterial(3, Matricula) :-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', IdDisciplina),
+    prompt('ID da data: ', Id),
+    comentarios_data(Matricula, CodGrupo,IdDisciplina, Id, Result),
+    write(Result),
+    menuVerComentarioMaterial(Matricula).
+
+selecionaVerComentarioMaterial(4, Matricula) :-
+    menuMateriaisGrupo(Matricula).
+
+
+selecionaVerComentarioMaterial(5, Matricula) :-
+    write('Saindo...'), 
+    halt.
+
+selecionaVerComentarioMaterial(_, Matricula) :-
+    write('\nOpção inválida.\n'), 
+    menuVerComentarioMaterial(Matricula).
+
+
+
+
+
+
+
+

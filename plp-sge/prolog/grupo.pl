@@ -235,9 +235,158 @@ visualiza_data_grupo(CodGrupo, IdDisciplina, IdData, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
+add_comentario_resumo(Matricula, CodGrupo, IdDisciplina, IdResumo, Conteudo, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdResumoAtom, IdResumo),
+    atom_string(ConteudoAtom, Conteudo),
+    (valida_grupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom) ->
+            (getResumoGrupo(IdResumoAtom, CodGrupoAtom, IdDisciplinaAtom, R), R \= -1 ->
+                (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
+                    random_id(IDC),
+                    adiciona_comentario_grupo_resumo(MatriculaAtom, CodGrupoAtom, IdDisciplinaAtom, IdResumoAtom, IDC, ConteudoAtom),
+                    atomic_list_concat(['\nComentário cadastrado! ID: ', IDC, '\n'], Result)
+                ;
+                    Result = 'Você não está nesse grupo!'
+                )
+            ;
+                Result = 'Resumo não cadastrado!'
+            )
+        ;
+            Result = 'Disciplina não cadastrada!'
+        )
+    ;
+        Result = 'Grupo não Encontrado!'
+    ).
+
+
+add_comentario_data(Matricula, CodGrupo, IdDisciplina, IdData, Conteudo, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdDataAtom, IdData),
+    atom_string(ConteudoAtom, Conteudo),
+    (valida_grupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom) ->
+            (getDataGrupo(IdDataAtom, CodGrupoAtom, IdDisciplinaAtom, R), R \= -1 ->
+                (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
+                    random_id(IDC),
+                    adiciona_comentario_grupo_data(MatriculaAtom, CodGrupoAtom, IdDisciplinaAtom, IdDataAtom, IDC, ConteudoAtom),
+                    atomic_list_concat(['\nComentário cadastrado! ID: ', IDC, '\n'], Result)
+                ;
+                    Result = 'Você não está nesse grupo!'
+                )
+            ;
+                Result = 'Data não cadastrada!'
+            )
+        ;
+            Result = 'Disciplina não cadastrada!'
+        )
+    ;
+        Result = 'Grupo não Encontrado!'
+    ).
+    
+add_comentario_link(Matricula, CodGrupo, IdDisciplina, IdLink, Conteudo, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdLinkAtom, IdLink),
+    atom_string(ConteudoAtom, Conteudo),
+    (valida_grupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom) ->
+            (getLinkGrupo(IdLinkAtom, CodGrupoAtom, IdDisciplinaAtom, R), R \= -1 ->
+                (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) -> 
+                    random_id(IDC),
+                    adiciona_comentario_grupo_link(MatriculaAtom, CodGrupoAtom, IdDisciplinaAtom, IdLinkAtom, IDC, ConteudoAtom),
+                    atomic_list_concat(['\nComentário cadastrado! ID: ', IDC, '\n'], Result)
+                ;
+                    Result = 'Você não está nesse grupo!'
+                )
+            ;
+                Result = 'Link não cadastrado!'
+            )
+        ;
+            Result = 'Disciplina não cadastrada!'
+        )
+    ;
+        Result = 'Grupo não Encontrado!'
+    ).
+
+comentarios_data(Matricula, CodGrupo,IdDisciplina, IdData, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdDataAtom, IdData),
+    (valida_grupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom) ->
+            (getDataGrupo(IdDataAtom, CodGrupoAtom, IdDisciplinaAtom, R), R \= -1 ->
+                (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
+                    lista_comentarios_data(R,Result)
+                ;
+                    Result = 'Você não está nesse grupo!'
+                )
+            ;
+                Result = 'Data não cadastrada!'
+            )
+        ;
+            Result = 'Disciplina não cadastrada!'
+        )
+    ;
+        Result = 'Grupo não Encontrado!'
+    ).
+
+comentarios_resumo(Matricula, CodGrupo,IdDisciplina, IdResumo, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdResumoAtom, IdResumo),
+    (valida_grupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom) ->
+            (getResumoGrupo(IdResumoAtom, CodGrupoAtom, IdDisciplinaAtom, R), R \= -1 ->
+                (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
+                    lista_comentarios_resumo(R,Result)
+                ;
+                    Result = 'Você não está nesse grupo!'
+                )
+            ;
+                Result = 'Resumo não cadastrado!'
+            )
+        ;
+            Result = 'Disciplina não cadastrada!'
+        )
+    ;
+        Result = 'Grupo não Encontrado!'
+    ).
+
+comentarios_link(Matricula, CodGrupo,IdDisciplina, IdLink, Result):-
+    atom_string(MatriculaAtom, Matricula),
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(IdDisciplinaAtom, IdDisciplina),
+    atom_string(IdLinkAtom, IdLink),
+    (valida_grupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom) ->
+            (getLinkGrupo(IdLinkAtom, CodGrupoAtom, IdDisciplinaAtom, R), R \= -1 ->
+                (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
+                    lista_comentarios_link(R,Result)
+                ;
+                    Result = 'Você não está nesse grupo!'
+                )
+            ;
+                Result = 'Link não cadastrado!'
+            )
+        ;
+            Result = 'Disciplina não cadastrada!'
+        )
+    ;
+        Result = 'Grupo não Encontrado!'
+    ).
+
 
 % Regra que gera um ID aleatório
 random_id(ID) :-
     random_between(100000000, 999999999, RandomNumber),
     number_codes(RandomNumber, RandomNumberCodes),
     string_codes(ID, RandomNumberCodes).
+
