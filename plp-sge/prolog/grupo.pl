@@ -1,6 +1,3 @@
-:- enconding(utf8).
-:- set_prolog_flag(encoding, utf8).
-
 %Cadastra um grupo
 cadastraGrupo(CodGrupo, NomeGrupo, Adm, Result) :-
     atom_string(CodGrupoAtom, CodGrupo),
@@ -249,16 +246,16 @@ add_comentario_resumo(Matricula, CodGrupo, IdDisciplina, IdResumo, Conteudo, Res
                     adiciona_comentario_grupo_resumo(MatriculaAtom, CodGrupoAtom, IdDisciplinaAtom, IdResumoAtom, IDC, ConteudoAtom),
                     atomic_list_concat(['\nComentário cadastrado! ID: ', IDC, '\n'], Result)
                 ;
-                    Result = 'Você não está nesse grupo!'
+                    Result = '\nVocê não está nesse grupo!\n'
                 )
             ;
-                Result = 'Resumo não cadastrado!'
+                Result = '\nResumo não cadastrado!\n'
             )
         ;
-            Result = 'Disciplina não cadastrada!'
+            Result = '\nDisciplina não cadastrada!\n'
         )
     ;
-        Result = 'Grupo não Encontrado!'
+        Result = '\nGrupo não Encontrado!\n'
     ).
 
 
@@ -276,16 +273,16 @@ add_comentario_data(Matricula, CodGrupo, IdDisciplina, IdData, Conteudo, Result)
                     adiciona_comentario_grupo_data(MatriculaAtom, CodGrupoAtom, IdDisciplinaAtom, IdDataAtom, IDC, ConteudoAtom),
                     atomic_list_concat(['\nComentário cadastrado! ID: ', IDC, '\n'], Result)
                 ;
-                    Result = 'Você não está nesse grupo!'
+                    Result = '\nVocê não está nesse grupo!\n'
                 )
             ;
-                Result = 'Data não cadastrada!'
+                Result = '\nData não cadastrada!\n'
             )
         ;
-            Result = 'Disciplina não cadastrada!'
+            Result = '\nDisciplina não cadastrada!\n'
         )
     ;
-        Result = 'Grupo não Encontrado!'
+        Result = '\nGrupo não Encontrado!\n'
     ).
     
 add_comentario_link(Matricula, CodGrupo, IdDisciplina, IdLink, Conteudo, Result):-
@@ -302,16 +299,16 @@ add_comentario_link(Matricula, CodGrupo, IdDisciplina, IdLink, Conteudo, Result)
                     adiciona_comentario_grupo_link(MatriculaAtom, CodGrupoAtom, IdDisciplinaAtom, IdLinkAtom, IDC, ConteudoAtom),
                     atomic_list_concat(['\nComentário cadastrado! ID: ', IDC, '\n'], Result)
                 ;
-                    Result = 'Você não está nesse grupo!'
+                    Result = '\nVocê não está nesse grupo!\n'
                 )
             ;
-                Result = 'Link não cadastrado!'
+                Result = '\nLink não cadastrado!\n'
             )
         ;
-            Result = 'Disciplina não cadastrada!'
+            Result = '\nDisciplina não cadastrada!\n'
         )
     ;
-        Result = 'Grupo não Encontrado!'
+        Result = '\nGrupo não Encontrado!\n'
     ).
 
 comentarios_data(Matricula, CodGrupo,IdDisciplina, IdData, Result):-
@@ -325,16 +322,16 @@ comentarios_data(Matricula, CodGrupo,IdDisciplina, IdData, Result):-
                 (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
                     lista_comentarios_data(R,Result)
                 ;
-                    Result = 'Você não está nesse grupo!'
+                    Result = '\nVocê não está nesse grupo!\n'
                 )
             ;
-                Result = 'Data não cadastrada!'
+                Result = '\nData não cadastrada!\n'
             )
         ;
-            Result = 'Disciplina não cadastrada!'
+            Result = '\nDisciplina não cadastrada!\n'
         )
     ;
-        Result = 'Grupo não Encontrado!'
+        Result = '\nGrupo não Encontrado!\n'
     ).
 
 comentarios_resumo(Matricula, CodGrupo,IdDisciplina, IdResumo, Result):-
@@ -348,16 +345,16 @@ comentarios_resumo(Matricula, CodGrupo,IdDisciplina, IdResumo, Result):-
                 (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
                     lista_comentarios_resumo(R,Result)
                 ;
-                    Result = 'Você não está nesse grupo!'
+                    Result = '\nVocê não está nesse grupo!\n'
                 )
             ;
-                Result = 'Resumo não cadastrado!'
+                Result = '\nResumo não cadastrado!\n'
             )
         ;
-            Result = 'Disciplina não cadastrada!'
+            Result = '\nDisciplina não cadastrada!\n'
         )
     ;
-        Result = 'Grupo não Encontrado!'
+        Result = '\nGrupo não Encontrado!\n'
     ).
 
 comentarios_link(Matricula, CodGrupo,IdDisciplina, IdLink, Result):-
@@ -371,16 +368,16 @@ comentarios_link(Matricula, CodGrupo,IdDisciplina, IdLink, Result):-
                 (valida_aluno_grupo(CodGrupoAtom, MatriculaAtom) ->
                     lista_comentarios_link(R,Result)
                 ;
-                    Result = 'Você não está nesse grupo!'
+                    Result = '\nVocê não está nesse grupo!\n'
                 )
             ;
-                Result = 'Link não cadastrado!'
+                Result = '\nLink não cadastrado\n'
             )
         ;
-            Result = 'Disciplina não cadastrada!'
+            Result = '\nDisciplina não cadastrada!\n'
         )
     ;
-        Result = 'Grupo não Encontrado!'
+        Result = '\nGrupo não Encontrado!\n'
     ).
 
 
@@ -390,3 +387,46 @@ random_id(ID) :-
     number_codes(RandomNumber, RandomNumberCodes),
     string_codes(ID, RandomNumberCodes).
 
+
+editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(CodDisciplinaAtom, CodDisciplina),
+    atom_string(CodResumoAtom, CodResumo),
+    atom_string(NewCorpoAtom, NewCorpo),
+    (verificaGrupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
+            (getResumoGrupo(CodResumoAtom, CodGrupoAtom, CodDisciplinaAtom, R), R \= -1 ->
+                edita_resumo_grupo(CodGrupoAtom, CodDisciplinaAtom, CodResumoAtom, NewCorpoAtom),
+                Result = 'Resumo editado com sucesso'
+            ; Result = 'Resumo não cadastrado')    
+        ; Result = 'Disciplina não cadastrada')
+    ; Result = 'Grupo não existe').
+
+editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(CodDisciplinaAtom, CodDisciplina),
+    atom_string(CodDataAtom, CodData),
+    atom_string(NewDataInitAtom, NewDataInit),
+    atom_string(NewDataFimAtom, NewDataFim),
+    (verificaGrupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
+            (getDataGrupo(CodDataAtom, CodGrupoAtom, CodDisciplinaAtom,R), R \= -1 ->
+                edita_data_grupo(CodGrupoAtom, CodDisciplinaAtom, CodDataAtom, NewDataInitAtom, NewDataFimAtom),
+                Result = 'Data editada com sucesso'
+            ; Result = 'Data não cadastrada')    
+        ; Result = 'Disciplina não cadastrada')
+    ; Result = 'Grupo não existe').
+
+editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result):-
+    atom_string(CodGrupoAtom, CodGrupo),
+    atom_string(CodDisciplinaAtom, CodDisciplina),
+    atom_string(CodLinkAtom, CodLink),
+    atom_string(NewUrlAtom, NewUrl),
+    (verificaGrupo(CodGrupoAtom) ->
+        (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
+            (getLinkGrupo(CodLinkAtom, CodGrupoAtom, CodDisciplinaAtom, R), R \= -1 ->
+                edita_link_grupo(CodGrupoAtom, CodDisciplinaAtom, CodLinkAtom, NewUrlAtom),
+                Result = 'Link editado com sucesso'
+            ; Result = 'Link não cadastrado')    
+        ; Result = 'Disciplina não cadastrada')
+    ; Result = 'Grupo não existe').

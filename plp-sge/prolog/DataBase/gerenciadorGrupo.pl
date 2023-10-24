@@ -1,26 +1,6 @@
-:- encoding(utf8).
-:- set_prolog_flag(encoding, utf8).
 grupos_path('DataBase/Grupo.json').
-
 get_grupos(Data):- grupos_path(Path), load_json_file(Path, Data).
 
-save_object(File, Element) :- 
-    load_json_file(File, Data),
-    New_Data = [Element | Data],
-    save_json_file(File, New_Data).
-
-load_json_file(File, Data) :-
-    open(File, read, Stream),
-    json_read(Stream, Data),
-    close(Stream).
-
-% Regra geral salvar no banco de dados uma estrutura JSON recebida como parâmetro
-save_json_file(File, Data) :-
-    open(File, write, Stream),
-    json_write(Stream, Data),
-    close(Stream).
-
-%Regra que adiciona um grupo ao banco de dados
 %Os alunos e as disciplinas iniciam vazio por padrao
 add_grupo(Codigo, Nome, Adm):- 
     add_grupo(Codigo, Nome, [],[], Adm).
@@ -89,16 +69,6 @@ verifica_adm(Codigo, Matricula):-
     atom_string(MatriculaAtom, Matricula),
     get_adm_grupo(CodigoAtom,Adm),
     Adm = MatriculaAtom.
-
-verifica_aluno_grupo(CodigoGrupo, Matricula):-
-    atom_string(CodigoAtom, CodigoGrupo),
-    atom_string(MatriculaAtom, Matricula),
-    valida_aluno_grupo(CodigoAtom, MatriculaAtom).
-
-%Regra para validar se o Codigo já esta em um grupo
-valida_grupo(Codigo):- 
-    get_grupo_by_codigo(Codigo, Grupo),
-    Grupo \= -1.
 
 %Regra para adicionar um aluno na lista de alunos
 adiciona_aluno_grupo(CodigoG, Matricula):-
@@ -311,8 +281,51 @@ adiciona_comentario_grupo_link(Matricula, CodGrupo, IdDisciplina, IdLink, IdCome
     remove_grupo_by_codigo(CodGrupo),
     add_grupo(CodGrupo, Nome, Alunos, NDisciplinas, Adm).
 
-aluno_estah_no_grupo(CodigoGrupo, Matricula):-
-    get_grupo_by_codigo(CodGrupo, Grupo),
+edita_resumo_grupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo):-
+    get_grupo_by_codigo(CodGrupo , Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, CodDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Links, Datas),
+    seach_id(Resumos, CodResumo, Resumo, 'resumo'),
+    extract_info_resumo(Resumo, _, Titulo, Corpo, Comentarios),
+    NResumo = json([id=CodResumo, titulo=Titulo, corpo=NewCorpo, comentarios=Comentarios]),
+    remove_object(Resumos, Resumo, Resumo_Novo),
+    NResumos = [ NResumo | Resumo_Novo],
+    NDisciplina = json([id=CodDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=NResumos, datas=Datas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(Codigo),
+    add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).
+
+edita_data_grupo(CodGrupo, CodDisciplina, CodData, NewDataInicio, NewDataFim):-
+    get_grupo_by_codigo(CodGrupo , Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, CodDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Datas, CodData, Data, 'data'),
+    extract_info_data(Data, _, Titulo, _, _, Comentarios),
+    NData = json([id=CodData, titulo=Titulo, dataInicio=NewDataInicio, dataFim=NewDataFim, comentarios=Comentarios]),
+    remove_object(Datas, Data, Data_Nova),
+    NDatas = [NData | Data_Nova],
+    NDisciplina = json([id=CodDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=NDatas, links=Links]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(Codigo),
+    add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).
 
 
-
+edita_link_grupo(CodGrupo, CodDisciplina, CodLink, NewUrl):-
+    get_grupo_by_codigo(CodGrupo , Grupo),
+    extract_info_grupo(Grupo, _, Nome, Alunos, Disciplinas, Adm),
+    seach_id(Disciplinas, CodDisciplina, Disciplina, 'disciplina'),
+    extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Datas, Links),
+    seach_id(Links, CodLink, Link, 'link'),
+    extract_info_link_util(Link, _, Titulo, _, Comentarios),
+    NLink = json([id=CodLink, titulo=Titulo, url=NewUrl, comentarios=Comentarios]),
+    remove_object(Links, Link, Link_Novo),
+    NLinks = [NLink | Link_Novo],
+    NDisciplina = json([id=CodDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=Resumos, datas=Datas, links=NLinks]),
+    remove_object(Disciplinas, Disciplina, NewDisciplinas),
+    NDisciplinas = [NDisciplina | NewDisciplinas],
+    remove_grupo_by_codigo(Codigo),
+    add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).

@@ -65,7 +65,7 @@ concatena_strings_loop([String | Resto], Acumulador, Resultado) :-
 lista_comentarios_resumo(Resumo,Result):-
     extract_info_resumo(Resumo, _, _, _, Comentarios),
     (Comentarios = [] ->
-        Result = 'Sem comentários!'
+        Result = '\nSem comentários!\n'
     ;
         organizaListagemComentario(Comentarios,Result)
     ).
@@ -73,7 +73,7 @@ lista_comentarios_resumo(Resumo,Result):-
 lista_comentarios_data(Data,Result):-
     extract_info_data(Data, _, _, _, _, Comentarios),
     (Comentarios = [] ->
-        Result = 'Sem comentários!'
+        Result = '\nSem comentários!\n'
     ;
         organizaListagemComentario(Comentarios,Result)
     ).
@@ -81,7 +81,7 @@ lista_comentarios_data(Data,Result):-
 lista_comentarios_link(Link,Result):-
     extract_info_link_util(Link, _, _,_, Comentarios),
     (Comentarios = [] ->
-        Result = 'Sem comentários!'
+        Result = '\nSem comentários!\n'
     ;
         organizaListagemComentario(Comentarios,Result)
     ).

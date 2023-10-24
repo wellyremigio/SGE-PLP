@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "id":"4",
+    "nome":"2",
+    "alunos": [
+      {"id":"1", "nome":"1", "senha":"1", "disciplinas": []},
+      {"id":"2", "nome":"2", "senha":"2", "disciplinas": []}
+    ],
+    "disciplinas": [
+      {
+	"id":"2",
+	"nome":"2",
+	"professor":"2",
+	"periodo":"2",
+	"resumos": [
+	  {
+	    "id":"344364431",
+	    "titulo":"loaccc",
+	    "corpo":"vai agora",
+	    "comentarios": []
+	  }
+	],
+	"datas": [
+	  {
+	    "id":"537496732",
+	    "titulo":"AGORA VAI",
+	    "url":"vaiiii",
+	    "comentarios": []
+	  }
+	],
+	"links": [
+	  {
+	    "id":"640010187",
+	    "titulo":"bora la",
+	    "dataInicio":"12301203",
+	    "dataFim":"1321231231",
+	    "comentarios": []
+	  }
+	]
+      }
+    ],
+    "adm":"2"
+  },
+  {
+    "id":"2",
+    "nome":"2",
+    "alunos": [
+      {"id":"1", "nome":"1", "senha":"1", "disciplinas": []},
+      {"id":"2", "nome":"2", "senha":"2", "disciplinas": []}
+    ],
+    "disciplinas": [
+      {
+	"id":"2",
+	"nome":"2",
+	"professor":"2",
+	"periodo":"2",
+	"resumos": [
+	  {
+	    "id":"344364431",
+	    "titulo":"loaccc",
+	    "corpo":"agora foiii",
+	    "comentarios": []
+	  }
+	],
+	"datas": [
+	  {
+	    "id":"640010187",
+	    "titulo":"bora la",
+	    "dataInicio":"12301203",
+	    "dataFim":"1321231231",
+	    "comentarios": []
+	  }
+	],
+	"links": [
+	  {
+	    "id":"537496732",
+	    "titulo":"AGORA VAI",
+	    "url":"vaiiii",
+	    "comentarios": []
+	  }
+	]
+      }
+    ],
+    "adm":"2"
+  }
+]

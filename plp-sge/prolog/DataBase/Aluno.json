@@ -1,1 +1,4 @@
-[]
+[
+  {"id":"2", "nome":"2", "senha":"2", "disciplinas": []},
+  {"id":"1", "nome":"1", "senha":"1", "disciplinas": []}
+]
