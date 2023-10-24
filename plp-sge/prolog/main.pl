@@ -196,7 +196,7 @@ menuMeusGrupos(Matricula):-
     write('5. Visualizar Disciplina\n'),
     write('6. Remover Disciplina\n'),
     write('7. Acessar Materiais\n'),
-    write('8. Ver grupos\n'),
+    write('8. Ver meus grupos\n'),
     write('9. Voltar\n'),
     prompt('----> ', Input),
     atom_number(Input, Opcao),
@@ -296,9 +296,9 @@ selecaoMenuMeusGrupos(7, Matricula):-
     menuMateriaisGrupo(Matricula).
    
 %Ver grupos
-selecaoMenuMeusGrupos(8, Matricula):-
+selecaoMenuMeusGrupos(8, Matricula) :-
     write('\nEsses são os seus grupos: \n'),
-    listagemGrupos(Matricula, Result),
+    listagemMeusGrupos(Matricula, Result),
     write(Result),
     menuMeusGrupos(Matricula).
 
@@ -851,7 +851,7 @@ menuEditaMateriais(Matricula):-
     writeln('2. Data'),
     writeln('3. Links'),
     writeln('4. Voltar'),
-    prompt('->', Input),
+    prompt('----> ', Input),
     prompt('Código do grupo: ', CodGrupo),
     prompt('Código da disciplina: ', CodDisciplina),
     atom_number(Input, Opcao),
@@ -879,6 +879,9 @@ selecionaEditaMateriais(3, Matricula, CodGrupo, CodDisciplina):-
     editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result),
     writeln(Result),
     menuEditaMateriais(Matricula).
+
+selecionaEditaMateriais(4, Matricula, _, _):-
+    menuMateriaisGrupo(Matricula).
 
 selecionaEditaMateriais(_, Matricula, CodGrupo, CodDisciplina):-
     writeln('\nOpcão inválida!\n'), 

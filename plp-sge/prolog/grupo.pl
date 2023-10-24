@@ -430,3 +430,12 @@ editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result):-
             ; Result = 'Link não cadastrado')    
         ; Result = 'Disciplina não cadastrada')
     ; Result = 'Grupo não existe').
+
+listagemMeusGrupos(Matricula, Result) :-
+    get_grupos(Data),
+    get_grupo(Matricula, Data, Grupos),
+    (Grupos = [] ->
+        Result = 'Aluno não está cadastrado em nenhum grupo'
+    ;
+        organizaListagemGrupo(Grupos, Result)
+    ).

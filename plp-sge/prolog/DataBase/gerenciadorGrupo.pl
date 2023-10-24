@@ -30,6 +30,8 @@ get_grupo_alunos(Codigo, Alunos):-
     get_grupo_by_codigo(Codigo, Grupo),
     extract_info_grupo(Grupo, _, _, Alunos, _, _).
 
+
+
 %Regra para retornar o adm de um grupo
 get_adm_grupo(Codigo, Adm):-
     atom_string(CodigoAtom, Codigo),
@@ -42,10 +44,6 @@ verifica_adm(Codigo, Matricula):-
     get_adm_grupo(CodigoAtom,Adm),
     Adm = MatriculaAtom.
 
-verifica_aluno_grupo(CodigoGrupo, Matricula):-
-    atom_string(CodigoAtom, CodigoGrupo),
-    atom_string(MatriculaAtom, Matricula),
-    valida_aluno_grupo(CodigoAtom, MatriculaAtom).
 
 valida_aluno_grupo(CodigoGrupo, Matricula):-
     get_grupo_by_codigo(CodigoGrupo, Grupo),
@@ -329,3 +327,31 @@ edita_link_grupo(CodGrupo, CodDisciplina, CodLink, NewUrl):-
     NDisciplinas = [NDisciplina | NewDisciplinas],
     remove_grupo_by_codigo(Codigo),
     add_grupo(Codigo, Nome, Alunos, NDisciplinas, Adm).
+
+
+%Verifica se um aluno está em um grupo
+verifica_aluno_grupo(CodigoGrupo, Matricula):-
+    atom_string(CodigoAtom, CodigoGrupo),
+    atom_string(MatriculaAtom, Matricula),
+    valida_aluno_grupo(CodigoAtom, MatriculaAtom).
+
+
+
+get_grupo(Matricula, Grupos, GruposConcatenados) :-
+    get_grupos_concatenados(Matricula, Grupos, [], GruposConcatenados).
+
+
+get_grupos_concatenados(_, [], Result, Result).
+get_grupos_concatenados(Matricula, [GrupoAtual | Rest], PartialResult, GruposConcatenados) :-
+    (get_group_ids(Matricula, GrupoAtual) ->
+        append(PartialResult, [GrupoAtual], NewPartialResult)
+    ;
+        NewPartialResult = PartialResult
+    ),
+    get_grupos_concatenados(Matricula, Rest, NewPartialResult, GruposConcatenados).
+
+
+%Retorna o id do grupo que o aluno tá
+get_group_ids(Matricula, Grupo) :-
+    extract_info_grupo(Grupo, Id, _, Alunos, _, _),
+    verifica_aluno_grupo(Id, Matricula).
