@@ -1,19 +1,20 @@
+% Inicialização do programa ao rodar 'main.pl'
 :- initialization (main).
 
-%Comando pra rodar 
+% Comando para rodar o Prolog no modo console:
 % swipl -s main.pl
 
-% Inclusão da base de dados
+% Inclusão da base de dados.
 :- consult('DataBase/gerenciadorGeral.pl').
 :- consult('DataBase/gerenciadorAluno.pl').
 :- consult('DataBase/gerenciadorGrupo.pl').
 
+% Inclusão de constantes e módulos auxiliares.
 :- consult('constantes.pl').
-
 :- include('aluno.pl').
 :- include('grupo.pl').
 
-% Inclusão dos utilitários
+% Inclusão de utilitários, configuração de codificação de caracteres e módulos externos.
 :- consult('utils.pl').
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
@@ -21,13 +22,14 @@
 :- use_module(library(date)).
 :- use_module(library(random)).
 
-%Recebe os dados do usuário
+% Regra para receber entrada do usuário.
 prompt(Message, String):-
     write(Message),
     flush_output,
     read_line_to_codes(user_input, Codes),
     string_codes(String, Codes).
 
+% Regra principal do programa.
 main:-
     writeln( '\n =========== Olá! Seja bem vindo ao SGE: Sistema de Gerenciamento de Estudos :D ===========\n'),
     write('\n Escolha uma opção para começar a navegar no sistema: \n'),
@@ -39,6 +41,7 @@ main:-
     write('\n'),
     opSelecionada(Opcao).
 
+% Regra para executar a ação selecionada com base na entrada do usuário.
 opSelecionada(1):-
     menuLogin,
     main.
@@ -55,7 +58,7 @@ opSelecionada(_):-
     write('Ops! Entrada Invalida...\n'),
     main.
 
-%Menu responsável por fazer o login
+% Menu responsável por fazer o login do usuário.
 menuLogin:-
     prompt('Matrícula: ', Matricula),
     (verificaLogin(Matricula) ->
@@ -70,7 +73,7 @@ menuLogin:-
         menuEscolhaLogin
     ).
 
-
+% Menu para escolher opções de login, cadastro ou saída.
 menuEscolhaLogin:-
     write('\nEscolha uma opção para seguir\n'),
     write('1. Fazer login \n'),
@@ -81,6 +84,7 @@ menuEscolhaLogin:-
     write('\n'),
     verificaEscolha(Opcao).
 
+% Regra para verificar a escolha do menuEscolhaLogin
 verificaEscolha(1):-
     menuLogin.
 
@@ -123,7 +127,7 @@ menuInicial(Matricula):-
     write('\n'),
     selecaoMenuInicial(Opcao, Matricula).
 
-%Criar grupo
+% Criar grupo
 selecaoMenuInicial(1, Matricula):-
     writeln('\n==Cadastrando Grupo==\n'),
     prompt('Código do grupo: ', CodGrupo),
@@ -138,7 +142,7 @@ selecaoMenuInicial(1, Matricula):-
         menuInicial(Matricula)
     ). 
 
-%Remover grupo
+% Remover grupo
 selecaoMenuInicial(2, Matricula):-
     writeln('\n==Removendo Grupo==\n'),
     prompt('Código do grupo: ', CodGrupo),
@@ -157,16 +161,16 @@ selecaoMenuInicial(2, Matricula):-
     ).
 
 
-%Acessando grupos
+% Acessando grupos.
 selecaoMenuInicial(3, Matricula):-
     menuMeusGrupos(Matricula).
 
-%Acessando as disciplinas
+% Acessando as disciplinas.
 selecaoMenuInicial(4, Matricula):-
     menuMinhasDisciplinas(Matricula).
 
 
-%Listagem dos grupos 
+% Listagem dos grupos.
 selecaoMenuInicial(5, Matricula):-
     listagemGrupos(Result),
     (Result = 'Não existem grupos cadastrados' ->
@@ -176,17 +180,18 @@ selecaoMenuInicial(5, Matricula):-
         menuInicial(Matricula)
     ).
 
-%Voltando para o menu
+% Voltando para o menu
 selecaoMenuInicial(6, _):-
     write('Saindo...\n'),
     halt.
 
+% Tratamento de opção inválida no menu inicial.
 selecaoMenuInicial(_, Matricula):-
     write('Opção inválida'),
     menuInicial(Matricula).
 
 
-%Menu específico para as funções dos grupos.
+% Menu específico para as funções dos grupos.
 menuMeusGrupos(Matricula):-
     writeln('\nEscolha o que você quer fazer\n'),
     write('1. Adicionar Aluno\n'),
@@ -203,7 +208,7 @@ menuMeusGrupos(Matricula):-
     write('\n'),
     selecaoMenuMeusGrupos(Opcao, Matricula).
 
-    %Adicionar aluno
+% Adicionar aluno a um grupo.
 selecaoMenuMeusGrupos(1, Matricula):-
         prompt('Matrícula do aluno a ser adicionado: ', MatriculaAluno),
         prompt('Código do grupo: ', CodGrupo),
@@ -219,7 +224,7 @@ selecaoMenuMeusGrupos(1, Matricula):-
         ; write('Grupo não cadastrado')),
         menuMeusGrupos(Matricula).
 
-     %Remover aluno
+% Remover aluno de um grupo
 selecaoMenuMeusGrupos(2, Matricula):-
     prompt('Matrícula do aluno a ser removido: ', MatriculaAluno),
         prompt('Código do grupo: ', CodGrupo),
@@ -235,7 +240,7 @@ selecaoMenuMeusGrupos(2, Matricula):-
         ; write('Grupo não cadastrado')),
         menuMeusGrupos(Matricula).
         
-%Visualizar Alunos
+% Visualizar alunos do grupo
 selecaoMenuMeusGrupos(3, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     (verificaGrupo(CodGrupo) ->
@@ -247,7 +252,7 @@ selecaoMenuMeusGrupos(3, Matricula):-
         menuMeusGrupos(Matricula)
     ).
 
-%Adicionar Disciplina
+% Adicionar disciplina ao grupo
 selecaoMenuMeusGrupos(4, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     prompt('Código da disciplina que você quer adicionar: ', IdDisciplina),
@@ -258,7 +263,7 @@ selecaoMenuMeusGrupos(4, Matricula):-
     write(Result),
     menuMeusGrupos(Matricula).
 
-%Visualizar Disciplina
+% Visualizar disciplinas do grupo
 selecaoMenuMeusGrupos(5, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     (verificaGrupo(CodGrupo) ->
@@ -275,9 +280,7 @@ selecaoMenuMeusGrupos(5, Matricula):-
         menuMeusGrupos(Matricula)
     ).
 
-
-%Remover Disciplina
-%verifica se o grupo existe
+% Remover disciplina do grupo. Verifica se o grupo foi cadastrado
 selecaoMenuMeusGrupos(6, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     (verificaGrupo(CodGrupo) ->
@@ -291,28 +294,27 @@ selecaoMenuMeusGrupos(6, Matricula):-
         menuMeusGrupos(Matricula)
     ).
 
-%Acessar Materiais
+% Acessar materiais do grupo
 selecaoMenuMeusGrupos(7, Matricula):-
     menuMateriaisGrupo(Matricula).
    
-%Ver grupos
+% Ver grupos do usuário
 selecaoMenuMeusGrupos(8, Matricula) :-
     write('\nEsses são os seus grupos: \n'),
     listagemMeusGrupos(Matricula, Result),
     write(Result),
     menuMeusGrupos(Matricula).
 
-%Voltar para o menu inicial
+% Voltar para o menu inicial
 selecaoMenuMeusGrupos(9, Matricula):-
     menuInicial(Matricula).
 
-%Entrada inválida
+% Tratamento de entrada inválida
 selecaoMenuMeusGrupos(_, Matricula):-
     write('Opção inválida'),
     menuMeusGrupos(Matricula).
 
-
-%Menu específico para o cadastro de materiais no grupo
+% Menu específico para o cadastro e consulta de materiais em um grupo
 menuMateriaisGrupo(Matricula) :-
     writeln('\n1. Ver materiais'),
     writeln('2. Adicionar materiais'),
@@ -327,36 +329,45 @@ menuMateriaisGrupo(Matricula) :-
     write('\n'),
     opselecionadaMateriaisGrupo(Opcao, Matricula).
 
+% Lida com a opção "Ver materiais" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(1, Matricula):-
     menuConsultaGrupo(Matricula).
 
+% Lida com a opção "Adicionar materiais" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(2, Matricula):-
     menuCadastraMateriaisGrupo(Matricula).
 
+% Lida com a opção "Remover materiais" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(3, Matricula):-
     menuRemoverMateriaisGrupo(Matricula).
 
+% Lida com a opção "Editar materiais" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(4, Matricula):-
     menuEditaMateriais(Matricula).
-    
+
+% Lida com a opção "Comentar no material" no menu de materiais do grupo   
 opselecionadaMateriaisGrupo(5, Matricula):-
     selecionaMaterialComentario(3, Matricula).
 
+% Lida com a opção "Ver Comentários do material" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(6, Matricula):-
     menuVerComentarioMaterial(Matricula).
 
+% Lida com a opção "Voltar" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(7, Matricula):-
     menuMeusGrupos(Matricula).
 
+% Lida com a opção "Sair" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(8, Matricula):-
     write('Saindo...'), 
     halt.
 
+% Lida com entrada inválida no menu de materiais do grupo
 opselecionadaMateriaisGrupo(_, Matricula):- 
     write('\nOpcão inválida!\n'),   
     menuMeusGrupos(Matricula).
 
-%Menu para consultar materiais
+% Menu para consultar materiais
 menuConsultaGrupo(Matricula) :-
     writeln('\nQual o tipo de material que deseja consultar?'),
     writeln('1. Resumo'),
@@ -368,6 +379,7 @@ menuConsultaGrupo(Matricula) :-
     atom_number(Input, Opcao),
     selecionaMenuConsultaGrupo(Opcao, Matricula).
 
+% Lida com a opção de consulta de materiais selecionada pelo usuário
 selecionaMenuConsultaGrupo(1, Matricula) :-
     prompt('Código do grupo: ', CodGrupo),
     (verificaGrupo(CodGrupo) ->
