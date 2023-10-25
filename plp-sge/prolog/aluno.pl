@@ -191,7 +191,6 @@ visualiza_link(Matricula, IdDisciplina, IdLink, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
-
 % Regra que gera um ID aleatório
 random_id(ID) :-
     random_between(100000000, 999999999, RandomNumber),
