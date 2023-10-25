@@ -1,47 +1,53 @@
+% Caminho do arquivo JSON contendo os dados dos alunos.
 alunos_path('DataBase/Aluno.json').
+
+% Obtém todos os dados dos alunos a partir do arquivo JSON.
 get_aluno(Data):- alunos_path(Path), load_json_file(Path, Data).
 
-%Regra que adiciona um aluno ao banco de dados
+% Adiciona um aluno ao banco de dados com disciplinas vazias.
 add_aluno(Matricula, Nome , Senha):-
     add_aluno(Matricula, Nome, Senha, []).
 
+% Adiciona um aluno ao banco de dados com disciplinas especificadas.
 add_aluno(Matricula, Nome , Senha, Disciplinas):-
     Aluno = json([id=Matricula, nome=Nome, senha=Senha, disciplinas=Disciplinas]),
     alunos_path(Path),
     save_object(Path, Aluno).
 
-%Regra ppara pegar um aluno pela matricula
+% Obtém um aluno pelo número de matrícula.
 get_aluno_by_matricula(Matricula, Aluno):-
     alunos_path(Path),
     get_object_by_id(Path, Matricula, Aluno, 'aluno').
 
-%Regra para remover um aluno pela matricula
+% Remove um aluno pelo número de matrícula.
 remove_aluno_by_matricula(Matricula):-
     alunos_path(Path),
     remove_object_by_id(Path, Matricula, 'aluno').
 
-%Regra para pegar as disciplinas de um aluno
+% Obtém as disciplinas de um aluno a partir do número de matrícula.
 get_aluno_disciplina(Matricula, Disciplinas):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, _, Disciplinas).
 
-%Regra para pegar a senha de um aluno
+% Obtém a senha de um aluno a partir do número de matrícula.
 get_aluno_senha(Matricula, Senha):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, Senha, _).
 
-
+% Verifica se um aluno com a matrícula especificada existe no banco de dados.
 valida_aluno(Matricula):- 
     atom_string(MatriculaAtom, Matricula),
     get_aluno_by_matricula(MatriculaAtom, Aluno),
     Aluno \= -1.
 
+% Verifica se um aluno está matriculado em uma disciplina pelo número de matrícula e ID da disciplina.
 valida_disciplina(Matricula, IdDisciplina):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
     seach_id(Disciplinas, IdDisciplina, Disciplina, 'disciplina'),
     Disciplina \= -1.
 
+% Adiciona uma disciplina a um aluno especificado pelo número de matrícula.
 add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo):-
     \+ valida_disciplina(Matricula, IdDisciplina),
     Disciplina = json([id=IdDisciplina, nome=NomeDisciplina, professor=Professor, periodo=Periodo, resumos=[], datas=[], links=[]]),
@@ -51,6 +57,7 @@ add_disciplina_aluno(Matricula, IdDisciplina, NomeDisciplina, Professor, Periodo
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NewDisciplinas).
 
+% Remove uma disciplina de um aluno pelo número de matrícula e ID da disciplina.
 remove_disciplina_aluno(Matricula, IdDisciplina):-
     valida_disciplina(Matricula, IdDisciplina),
     get_aluno_by_matricula(Matricula, Aluno),
@@ -60,12 +67,14 @@ remove_disciplina_aluno(Matricula, IdDisciplina):-
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NewDisciplinas).
 
+% Verifica se um aluno possui disciplinas.
 has_disciplines(Matricula) :-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
     length(Disciplinas, N),
     N > 0.
 
+% Obtém um resumo de um aluno pelo ID do resumo, matrícula e ID da disciplina.
 getResumoAluno(IdResumo,Matricula,IdDisciplina,Result):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
@@ -74,6 +83,7 @@ getResumoAluno(IdResumo,Matricula,IdDisciplina,Result):-
     seach_id(Resumos, IdResumo, Resumo,'resumo'),
     Result = Resumo.
 
+% Obtém um link de um aluno pelo ID do link, matrícula e ID da disciplina.
 getLinkAluno(IdLink,Matricula,IdDisciplina,Result):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
@@ -82,6 +92,7 @@ getLinkAluno(IdLink,Matricula,IdDisciplina,Result):-
     seach_id(Links, IdLink, Link,'link'),
     Result = Link.
 
+% Obtém uma data de um aluno pelo ID da data, matrícula e ID da disciplina.
 getDataAluno(IdData,Matricula,IdDisciplina,Result):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, _, _, Disciplinas),
@@ -90,6 +101,7 @@ getDataAluno(IdData,Matricula,IdDisciplina,Result):-
     seach_id(Datas, IdData, Data,'data'),
     Result = Data.
 
+% Adiciona um resumo ao aluno em uma disciplina específica.
 adiciona_resumo_aluno(Matricula, IdDisciplina, IdResumo, TituloR, ConteudoR):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
@@ -103,7 +115,7 @@ adiciona_resumo_aluno(Matricula, IdDisciplina, IdResumo, TituloR, ConteudoR):-
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NDisciplinas).
 
-    
+% Adiciona um link ao aluno em uma disciplina específica.   
 adiciona_link_aluno(Matricula, IdDisciplina, IdLink, TituloL, Url):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
@@ -117,7 +129,7 @@ adiciona_link_aluno(Matricula, IdDisciplina, IdLink, TituloL, Url):-
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NDisciplinas).
 
-
+% Adiciona uma data ao aluno em uma disciplina específica.
 adiciona_data_aluno(Matricula, IdDisciplina, IdData, TituloD, DataI, DataF):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
@@ -131,6 +143,7 @@ adiciona_data_aluno(Matricula, IdDisciplina, IdData, TituloD, DataI, DataF):-
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NDisciplinas).
 
+% Remove um resumo de um aluno em uma disciplina específica.
 rem_resumo_aluno(Matricula, IdDisciplina, IdResumo):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
@@ -144,6 +157,7 @@ rem_resumo_aluno(Matricula, IdDisciplina, IdResumo):-
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NDisciplinas).
 
+% Remove uma data de um aluno em uma disciplina específica.
 rem_data_aluno(Matricula, IdDisciplina, IdData):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
@@ -157,6 +171,7 @@ rem_data_aluno(Matricula, IdDisciplina, IdData):-
     remove_aluno_by_matricula(Matricula),
     add_aluno(Matricula, Nome, Senha, NDisciplinas).
 
+% Remove um link de um aluno em uma disciplina específica.
 rem_link_aluno(Matricula, IdDisciplina, IdLink):-
     get_aluno_by_matricula(Matricula, Aluno),
     extract_info_aluno(Aluno, _, Nome, Senha, Disciplinas),
