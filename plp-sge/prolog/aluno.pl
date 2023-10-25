@@ -1,6 +1,7 @@
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
 
+% Cadastra um aluno com Matricula, Nome e Senha.
 cadastraAluno(Matricula, Nome, Senha, Result) :-
     atom_string(MatriculaAtom, Matricula),
     (\+ valida_aluno(MatriculaAtom) ->
@@ -10,16 +11,19 @@ cadastraAluno(Matricula, Nome, Senha, Result) :-
         Result = 'falha'
     ).
 
+% Verifica se o aluno com a Matricula fornecida existe.
 verificaLogin(Matricula):-
     atom_string(MatriculaAtom, Matricula),
     valida_aluno(MatriculaAtom).
 
+% Verifica se a senha fornecida corresponde à senha do aluno com a Matricula dada.
 verificaSenhaAluno(Matricula, Senha) :-
     atom_string(MatriculaAtom, Matricula),
     get_aluno_senha(MatriculaAtom, SenhaAtual),
     atom_string(SenhaAtom, Senha),
     SenhaAtom = SenhaAtual.
-   
+
+% Cadastra uma disciplina com Matricula do aluno, IdDisciplina, Nome, Professor e Período.   
 cadastra_disciplina_aluno(Matricula, IdDisciplina, Nome, Professor, Periodo, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -29,9 +33,9 @@ cadastra_disciplina_aluno(Matricula, IdDisciplina, Nome, Professor, Periodo, Res
     add_disciplina_aluno(MatriculaAtom, IdDisciplinaAtom, NomeAtom, ProfessorAtom, PeriodoAtom),
     atomic_list_concat(['\nDisciplina cadastrada! Código: ', IdDisciplinaAtom, '\n'], Result).
 
-
 cadastra_disciplina_aluno(_, _, _, _, _, '\nDisciplina não cadastrada!\n').
 
+% Remove uma disciplina do aluno com Matricula e IdDisciplina.
 rm_disciplina_aluno(Matricula, IdDisciplina, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -40,6 +44,7 @@ rm_disciplina_aluno(Matricula, IdDisciplina, Result):-
 
 rm_disciplina_aluno(_, _, '\nDisciplina não encontrada!\n').
 
+% Exibe as disciplinas do aluno com Matricula.
 exibe_disciplinas(Matricula,Result):-
     atom_string(MatriculaAtom, Matricula),
     has_disciplines(MatriculaAtom),
@@ -47,6 +52,7 @@ exibe_disciplinas(Matricula,Result):-
 
 exibe_disciplinas(_,'\nNão Possui Disciplinas Cadastradas!\n').
 
+% Adiciona um resumo de disciplina com Matricula, IdDisciplina, Nome e Resumo.
 add_resumo_disciplina_aluno(Matricula, IdDisciplina, Nome, Resumo, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -60,20 +66,7 @@ add_resumo_disciplina_aluno(Matricula, IdDisciplina, Nome, Resumo, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
-add_resumo_disciplina_aluno(Matricula, IdDisciplina, Nome, Resumo, Result):-
-    atom_string(MatriculaAtom, Matricula),
-    atom_string(IdDisciplinaAtom, IdDisciplina),
-    atom_string(NomeAtom, Nome),
-    atom_string(ResumoAtom, Resumo),
-    (valida_disciplina(MatriculaAtom, IdDisciplinaAtom)->
-        random_id(IdR),
-        adiciona_resumo_aluno(MatriculaAtom, IdDisciplinaAtom, IdR, NomeAtom, ResumoAtom),
-        atomic_list_concat(['\nResumo cadastrado! ID: ', IdR, '\n'], Result)
-    ;
-        Result = '\nDisciplina não existe!\n'
-    ).
-
-
+% Adiciona um link de disciplina com Matricula, IdDisciplina, Titulo e Link
 add_link_disciplina_aluno(Matricula, IdDisciplina, Titulo, Link, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -87,6 +80,7 @@ add_link_disciplina_aluno(Matricula, IdDisciplina, Titulo, Link, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Adiciona uma data de disciplina com Matricula, IdDisciplina, Titulo, Data de Início e Data de Fim.
 add_data_disciplina_aluno(Matricula, IdDisciplina, Titulo, DataInicio, DataFim, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -101,6 +95,7 @@ add_data_disciplina_aluno(Matricula, IdDisciplina, Titulo, DataInicio, DataFim, 
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Remove um resumo do aluno em uma disciplina
 remove_resumo_aluno(Matricula, IdDisciplina, IdResumo, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -116,6 +111,7 @@ remove_resumo_aluno(Matricula, IdDisciplina, IdResumo, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Remove uma data de um aluno em uma disciplina
 remove_data_aluno(Matricula, IdDisciplina, IdData, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -131,6 +127,7 @@ remove_data_aluno(Matricula, IdDisciplina, IdData, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Remove um link de um aluno em uma disciplina
 remove_link_aluno(Matricula, IdDisciplina, IdLink, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -146,6 +143,7 @@ remove_link_aluno(Matricula, IdDisciplina, IdLink, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Visualiza um resumo do aluno em uma disciplina
 visualiza_resumo(Matricula, IdDisciplina, IdResumo, Result) :-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -161,6 +159,7 @@ visualiza_resumo(Matricula, IdDisciplina, IdResumo, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Visualiza uma data de um aluno em uma disciplina
 visualiza_data(Matricula, IdDisciplina, IdData, Result) :-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -176,6 +175,7 @@ visualiza_data(Matricula, IdDisciplina, IdData, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Visualiza um link de um aluno em uma disciplina
 visualiza_link(Matricula, IdDisciplina, IdLink, Result) :-
     atom_string(MatriculaAtom, Matricula),
     atom_string(IdDisciplinaAtom, IdDisciplina),
