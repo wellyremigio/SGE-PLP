@@ -10,7 +10,7 @@ add_grupo(Codigo, Nome, Alunos, Disciplinas, Adm):-
     grupos_path(Path),
     save_object(Path, Grupo).
     
-%Regra para pegar um Grupo pelo código
+
 get_grupo_by_codigo(Codigo, Grupo):- 
     grupos_path(Path),
     get_object_by_id(Path, Codigo, Grupo, 'grupo').
