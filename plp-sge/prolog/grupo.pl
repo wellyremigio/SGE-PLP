@@ -1,4 +1,4 @@
-%Cadastra um grupo
+% Cadastra um grupo
 cadastraGrupo(CodGrupo, NomeGrupo, Adm, Result) :-
     atom_string(CodGrupoAtom, CodGrupo),
     (\+ valida_grupo(CodGrupoAtom) ->
@@ -8,31 +8,31 @@ cadastraGrupo(CodGrupo, NomeGrupo, Adm, Result) :-
         Result = 'falha'
     ).
 
-%Verifica se um grupo está cadastrado
+% Verifica se um grupo está cadastrado
 verificaGrupo(CodGrupo):-
     atom_string(CodGrupoAtom, CodGrupo),
     valida_grupo(CodGrupoAtom).
 
-%Verifica se um aluno é administrador do grupo
+% Verifica se um aluno é administrador do grupo
 verificaAdm(Codigo, Matricula, Result):-
     atom_string(CodigoAtom, Codigo),
     atom_string(MatriculaAtom, Matricula),
     verifica_adm_remove(CodigoAtom, MatriculaAtom, Result).
 
-%Remove um grupo
+% Remove um grupo
 removeGrupo(Codigo, Adm) :-
     atom_string(CodigoAtom, Codigo),
     get_grupo_by_codigo(CodigoAtom, Grupo),
     Grupo \= -1,
     remove_grupo_by_codigo(CodigoAtom).
-    
+
+% Adiciona um aluno a um grupo   
 adicionaAlunoGrupo(CodGrupo, MatriculaAluno):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(MatriculaAtom, MatriculaAluno),
     adiciona_aluno_grupo(CodGrupoAtom, MatriculaAtom).
 
-
-%Cadastra uma disciplina no grupo
+% Cadastra uma disciplina no grupo
 cadastraDisciplinaGrupo(CodGrupo, IdDisciplina, Nome, Professor, Periodo, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -44,13 +44,13 @@ cadastraDisciplinaGrupo(CodGrupo, IdDisciplina, Nome, Professor, Periodo, Result
 
 cadastraDisciplinaGrupo(_, _, _, _, _, '\nDisciplina não cadastrada!\n').
 
-%não está sendo usado no momento, mas pode ser util
+% Valida se uma disciplina existe em um grupo
 validaDisciplina(CodGrupo, IdDisciplina):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
     \+verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom).
 
-%Remove uma disciplina do grupo
+% Remove uma disciplina do grupo
 removeDisciplinaGrupo(CodGrupo, IdDisciplina, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -59,17 +59,17 @@ removeDisciplinaGrupo(CodGrupo, IdDisciplina, Result):-
 
 removeDisciplinaGrupo(_, _, '\nDisciplina não encontrada!\n').
 
-%Lista as disciplinas de um grupo
+% Lista as disciplinas de um grupo
 listagemDisciplinaGrupo(CodGrupo, Resposta) :-
     atom_string(CodGrupoAtom, CodGrupo),
     listaDisciplinaGrupo(CodGrupoAtom, Resposta).
 
-%Lista os alunos de um grupo
+% Lista os alunos de um grupo
 listagemAlunosGrupo(CodGrupo, Resposta) :-
     atom_string(CodGrupoAtom, CodGrupo),
     listaAlunosGrupo(CodGrupoAtom, Resposta).
 
-%Lista os grupos
+% Lista os grupos
 listagemGrupos(Resposta) :-
     get_grupos(Data),
     (Data = [] -> 
@@ -78,23 +78,13 @@ listagemGrupos(Resposta) :-
         organizaListagemGrupo(Data, Resposta)
     ).
 
-adicionaAlunoGrupo(CodGrupo, MatriculaAluno):-
-    atom_string(CodGrupoAtom, CodGrupo),
-    atom_string(MatriculaAtom, MatriculaAluno),
-    adiciona_aluno_grupo(CodGrupoAtom, MatriculaAtom).
-
+% Remove um aluno de um grupo
 removeAlunoGrupo(CodGrupo, MatriculaAluno):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(MatriculaAtom, MatriculaAluno),
     remove_aluno_grupo(CodGrupoAtom, MatriculaAtom).
 
-removeAlunoGrupo(CodGrupo, MatriculaAluno):-
-    atom_string(CodGrupoAtom, CodGrupo),
-    atom_string(MatriculaAtom, MatriculaAluno),
-    remove_aluno_grupo(CodGrupoAtom, MatriculaAtom).
-
-
-%Regra para adicionar resumo em grupo
+% Adiciona um resumo em um grupo
 add_resumo_disciplina_grupo(CodGrupo, IdDisciplina, Nome, Resumo, Result) :-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -108,7 +98,7 @@ add_resumo_disciplina_grupo(CodGrupo, IdDisciplina, Nome, Resumo, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
-%Regra para adicionar link em grupo
+% Adiciona um link em um grupo
 add_link_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, Link, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -122,7 +112,7 @@ add_link_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, Link, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
-
+% Adiciona uma data em um grupo
 add_data_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, DataInicio, DataFim, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -137,7 +127,7 @@ add_data_disciplina_grupo(CodGrupo, IdDisciplina, Titulo, DataInicio, DataFim, R
         Result = '\nDisciplina não existe!\n'
     ).
 
-
+% Remove um resumo de um grupo
 remove_resumo_grupo(CodGrupo, IdDisciplina, IdResumo, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -153,7 +143,7 @@ remove_resumo_grupo(CodGrupo, IdDisciplina, IdResumo, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
-
+% Remove uma data de um grupo
 remove_data_grupo(CodGrupo, IdDisciplina, IdData, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -169,7 +159,7 @@ remove_data_grupo(CodGrupo, IdDisciplina, IdData, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
-
+% Remove um link de um grupo
 remove_link_grupo(CodGrupo, IdDisciplina, IdLink, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -185,6 +175,7 @@ remove_link_grupo(CodGrupo, IdDisciplina, IdLink, Result):-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Visualiza um resumo em um grupo
 visualiza_resumo_grupo(CodGrupo, IdDisciplina, IdResumo, Result) :-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -200,7 +191,7 @@ visualiza_resumo_grupo(CodGrupo, IdDisciplina, IdResumo, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
-
+% Visualiza um link em um grupo
 visualiza_link_grupo(CodGrupo, IdDisciplina, IdLink, Result) :-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -216,7 +207,7 @@ visualiza_link_grupo(CodGrupo, IdDisciplina, IdLink, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
-
+% Visualiza uma data em um grupo
 visualiza_data_grupo(CodGrupo, IdDisciplina, IdData, Result) :-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(IdDisciplinaAtom, IdDisciplina),
@@ -232,6 +223,7 @@ visualiza_data_grupo(CodGrupo, IdDisciplina, IdData, Result) :-
         Result = '\nDisciplina não existe!\n'
     ).
 
+% Adiciona um comentário a um resumo em um grupo
 add_comentario_resumo(Matricula, CodGrupo, IdDisciplina, IdResumo, Conteudo, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(CodGrupoAtom, CodGrupo),
@@ -258,7 +250,7 @@ add_comentario_resumo(Matricula, CodGrupo, IdDisciplina, IdResumo, Conteudo, Res
         Result = '\nGrupo não Encontrado!\n'
     ).
 
-
+% Adiciona um comentário a uma data em um grupo
 add_comentario_data(Matricula, CodGrupo, IdDisciplina, IdData, Conteudo, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(CodGrupoAtom, CodGrupo),
@@ -284,7 +276,8 @@ add_comentario_data(Matricula, CodGrupo, IdDisciplina, IdData, Conteudo, Result)
     ;
         Result = '\nGrupo não Encontrado!\n'
     ).
-    
+
+% Adiciona um comentário a um link em um grupo   
 add_comentario_link(Matricula, CodGrupo, IdDisciplina, IdLink, Conteudo, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(CodGrupoAtom, CodGrupo),
@@ -311,6 +304,7 @@ add_comentario_link(Matricula, CodGrupo, IdDisciplina, IdLink, Conteudo, Result)
         Result = '\nGrupo não Encontrado!\n'
     ).
 
+% Lista os comentários de uma data em um grupo
 comentarios_data(Matricula, CodGrupo,IdDisciplina, IdData, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(CodGrupoAtom, CodGrupo),
@@ -334,6 +328,7 @@ comentarios_data(Matricula, CodGrupo,IdDisciplina, IdData, Result):-
         Result = '\nGrupo não Encontrado!\n'
     ).
 
+% Lista os comentários de um resumo em um grupo
 comentarios_resumo(Matricula, CodGrupo,IdDisciplina, IdResumo, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(CodGrupoAtom, CodGrupo),
@@ -357,6 +352,7 @@ comentarios_resumo(Matricula, CodGrupo,IdDisciplina, IdResumo, Result):-
         Result = '\nGrupo não Encontrado!\n'
     ).
 
+% Lista os comentários de um link em um grupo
 comentarios_link(Matricula, CodGrupo,IdDisciplina, IdLink, Result):-
     atom_string(MatriculaAtom, Matricula),
     atom_string(CodGrupoAtom, CodGrupo),
@@ -380,14 +376,13 @@ comentarios_link(Matricula, CodGrupo,IdDisciplina, IdLink, Result):-
         Result = '\nGrupo não Encontrado!\n'
     ).
 
-
 % Regra que gera um ID aleatório
 random_id(ID) :-
     random_between(100000000, 999999999, RandomNumber),
     number_codes(RandomNumber, RandomNumberCodes),
     string_codes(ID, RandomNumberCodes).
 
-
+% Edita o corpo de um resumo em um grupo
 editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(CodDisciplinaAtom, CodDisciplina),
@@ -402,6 +397,7 @@ editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result):-
         ; Result = 'Disciplina não cadastrada')
     ; Result = 'Grupo não existe').
 
+% Edita as datas de uma data em um grupo
 editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(CodDisciplinaAtom, CodDisciplina),
@@ -417,6 +413,7 @@ editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result
         ; Result = 'Disciplina não cadastrada')
     ; Result = 'Grupo não existe').
 
+% Edita o URL de um link em um grupo
 editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result):-
     atom_string(CodGrupoAtom, CodGrupo),
     atom_string(CodDisciplinaAtom, CodDisciplina),
@@ -431,6 +428,7 @@ editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result):-
         ; Result = 'Disciplina não cadastrada')
     ; Result = 'Grupo não existe').
 
+% Lista os grupos de um aluno por matrícula
 listagemMeusGrupos(Matricula, Result) :-
     get_grupos(Data),
     get_grupo(Matricula, Data, Grupos),
