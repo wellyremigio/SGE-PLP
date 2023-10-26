@@ -215,7 +215,7 @@ visualiza_data_grupo(CodGrupo, IdDisciplina, IdData, Result) :-
     (verifica_disciplina(CodGrupoAtom, IdDisciplinaAtom) ->
         (getDataGrupo(IdDataAtom, CodGrupoAtom, IdDisciplinaAtom, R), R \= -1 ->
             extract_info_data(R, _, Titulo, DataInicio, DataFim, _),
-            concatena_strings(['\nID:', IdData, '\nTitulo: ', Titulo, '\nData Início: ', DataInicio, '\nData Início: ', DataFim, '\n'], Result)
+            concatena_strings(['\nID:', IdData, '\nTitulo: ', Titulo, '\nData Início: ', DataInicio, '\nData Fim: ', DataFim, '\n'], Result)
         ;
             Result = '\nData não existe!\n'
         )

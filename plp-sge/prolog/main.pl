@@ -1,9 +1,6 @@
 % Inicialização do programa ao rodar 'main.pl'
 :- initialization (main).
 
-% Comando para rodar o Prolog no modo console:
-% swipl -s main.pl
-
 % Inclusão da base de dados.
 :- consult('DataBase/gerenciadorGeral.pl').
 :- consult('DataBase/gerenciadorAluno.pl').
@@ -173,7 +170,8 @@ selecaoMenuInicial(4, Matricula):-
 selecaoMenuInicial(5, Matricula):-
     listagemGrupos(Result),
     (Result = 'Não existem grupos cadastrados' ->
-        write(Result)
+        write(Result),
+        menuInicial(Matricula)
     ;
         write(Result),
         menuInicial(Matricula)
