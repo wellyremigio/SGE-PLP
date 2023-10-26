@@ -22,3 +22,25 @@ sh
     
 sh
     cabal run
+
+## Implementação Lógica (Prolog)
+Para utilizar esse projeto é necessário instalar no seu computador o SWI-Prolog.[SWI](https://www.swi-prolog.org)
+
+
+### Instruções para execução
+
+
+1. Clone a `branch main`.
+2. Vá até o diretório Prolog:
+
+
+   ```sh
+   cd .\Prolog\
+    ```
+2. Use o comando `swipl` para executar o código:
+
+
+    ```sh
+    swipl -s main.pl
+    ```
+3. Os comando não necessitam do ponto final.

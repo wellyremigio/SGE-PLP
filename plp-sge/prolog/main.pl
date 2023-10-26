@@ -51,7 +51,7 @@ opSelecionada(2):-
     main.
     
 opSelecionada(3):-
-    write('Saindo...\n'),
+    write('Saindo...'),
     halt.
 
 opSelecionada(_):-
@@ -92,11 +92,11 @@ verificaEscolha(2):-
     menuCadastro.
 
 verificaEscolha(3):-
-    write('Saindo...\n'),
+    write('Saindo...'),
     halt.
 
 verificaEscolha(_):-
-    write('Opção inválida.'),
+    write('\nOpção inválida!\n'),
     menuEscolhaLogin.
 
 %Menu resonsável por fazer o cadastro 
@@ -181,12 +181,12 @@ selecaoMenuInicial(5, Matricula):-
 
 % Voltando para o menu
 selecaoMenuInicial(6, _):-
-    write('Saindo...\n'),
+    write('Saindo...'),
     halt.
 
 % Tratamento de opção inválida no menu inicial.
 selecaoMenuInicial(_, Matricula):-
-    write('Opção inválida.'),
+    write('\nOpção inválida!\n'),
     menuInicial(Matricula).
 
 
@@ -217,7 +217,7 @@ selecaoMenuMeusGrupos(1, Matricula):-
                     ( \+ verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
                         adicionaAlunoGrupo(CodGrupo, MatriculaAluno),
                         write('\nCadastrado com sucesso!\n')
-                    ;write('\nAluno já esta no grupo!\n') )
+                    ;write('\nAluno já esta no grupo!\n'))
                 ; write('\nAluno não cadastrado!\n'))
             ; write('\nAluno não é adm do grupo!\n'))
         ; write('\nGrupo não cadastrado!\n')),
@@ -310,7 +310,7 @@ selecaoMenuMeusGrupos(9, Matricula):-
 
 % Tratamento de entrada inválida
 selecaoMenuMeusGrupos(_, Matricula):-
-    write('Opção inválida!'),
+    write('\nOpção inválida!\n'),
     menuMeusGrupos(Matricula).
 
 % Menu específico para o cadastro e consulta de materiais em um grupo
@@ -402,7 +402,7 @@ selecionaMenuConsultaGrupo(2, Matricula):-
         write(Result),
         menuConsultaGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuConsultaGrupo(Matricula)
     ).
 
@@ -905,7 +905,7 @@ selecionaVerComentarioMaterial(5, _) :-
 
 % Lida com uma escolha inválida no menu para visualizar comentários em materiais
 selecionaVerComentarioMaterial(_, Matricula) :-
-    write('\nOpção inválida.\n'), 
+    write('\nOpção inválida!\n'), 
     menuVerComentarioMaterial(Matricula).
 
 % Menu para editar materiais
@@ -923,7 +923,7 @@ menuEditaMateriais(Matricula):-
 selecionaEditaMateriais(1, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     prompt('Código da disciplina: ', CodDisciplina),
-    prompt('Código do Resumo: ', CodResumo),
+    prompt('ID do Resumo: ', CodResumo),
     prompt('Novo Corpo: ', NewCorpo),
     editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result),
     writeln(Result),
@@ -933,7 +933,7 @@ selecionaEditaMateriais(1, Matricula):-
 selecionaEditaMateriais(2, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     prompt('Código da disciplina: ', CodDisciplina),
-    prompt('Código da Data: ', CodData),
+    prompt('ID da Data: ', CodData),
     prompt('Nova data incio: ', NewDataInit),
     prompt('Nova data fim: ', NewDataFim),
     editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result),
@@ -944,7 +944,7 @@ selecionaEditaMateriais(2, Matricula):-
 selecionaEditaMateriais(3, Matricula):-
     prompt('Código do grupo: ', CodGrupo),
     prompt('Código da disciplina: ', CodDisciplina),
-    prompt('Código do Link: ', CodLink),
+    prompt('ID do Link: ', CodLink),
     prompt('Nova url: ', NewUrl),
     editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result),
     writeln(Result),

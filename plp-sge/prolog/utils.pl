@@ -91,5 +91,5 @@ organizaListagemComentario([], '').
 organizaListagemComentario([H|T], Resposta) :- 
     organizaListagemComentario(T, Resposta1),
     extract_info_comentario(H, Id, IdAluno, Comentario),
-    concatena_strings(['\nID comentário:' ,Id, '\nId Aluno: ', IdAluno, '\nComentário: ',Comentario,'\n'], ComentariosConcatenados),
+    concatena_strings(['\nID comentário:' ,Id, '\nID Aluno: ', IdAluno, '\nComentário: ',Comentario,'\n'], ComentariosConcatenados),
     string_concat(ComentariosConcatenados, Resposta1, Resposta).
