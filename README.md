@@ -43,4 +43,4 @@ Para utilizar esse projeto é necessário instalar no seu computador o SWI-Prolo
     ```sh
     swipl -s main.pl
     ```
-3. Os comando não necessitam do ponto final.
+3. Os comandos não necessitam do ponto final.
