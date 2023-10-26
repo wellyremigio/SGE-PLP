@@ -1,6 +1,3 @@
-% Caminho do arquivo JSON contendo os dados dos alunos.
-alunos_path('DataBase/Aluno.json').
-
 % Obtém todos os dados dos alunos a partir do arquivo JSON.
 get_aluno(Data):- alunos_path(Path), load_json_file(Path, Data).
 

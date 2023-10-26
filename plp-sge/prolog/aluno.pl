@@ -1,6 +1,12 @@
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
 
+% Regra que gera um ID aleatório
+random_id(ID) :-
+    random_between(100000000, 999999999, RandomNumber),
+    number_codes(RandomNumber, RandomNumberCodes),
+    string_codes(ID, RandomNumberCodes).
+
 % Cadastra um aluno com Matricula, Nome e Senha.
 cadastraAluno(Matricula, Nome, Senha, Result) :-
     atom_string(MatriculaAtom, Matricula),
@@ -190,9 +196,3 @@ visualiza_link(Matricula, IdDisciplina, IdLink, Result) :-
     ;
         Result = '\nDisciplina não existe!\n'
     ).
-
-% Regra que gera um ID aleatório
-random_id(ID) :-
-    random_between(100000000, 999999999, RandomNumber),
-    number_codes(RandomNumber, RandomNumberCodes),
-    string_codes(ID, RandomNumberCodes).

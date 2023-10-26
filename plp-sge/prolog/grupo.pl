@@ -20,7 +20,7 @@ verificaAdm(Codigo, Matricula, Result):-
     verifica_adm_remove(CodigoAtom, MatriculaAtom, Result).
 
 % Remove um grupo
-removeGrupo(Codigo, Adm) :-
+removeGrupo(Codigo, _) :-
     atom_string(CodigoAtom, Codigo),
     get_grupo_by_codigo(CodigoAtom, Grupo),
     Grupo \= -1,
@@ -367,7 +367,7 @@ comentarios_link(Matricula, CodGrupo,IdDisciplina, IdLink, Result):-
                     Result = '\nVocê não está nesse grupo!\n'
                 )
             ;
-                Result = '\nLink não cadastrado\n'
+                Result = '\nLink não cadastrado!\n'
             )
         ;
             Result = '\nDisciplina não cadastrada!\n'
@@ -375,12 +375,6 @@ comentarios_link(Matricula, CodGrupo,IdDisciplina, IdLink, Result):-
     ;
         Result = '\nGrupo não Encontrado!\n'
     ).
-
-% Regra que gera um ID aleatório
-random_id(ID) :-
-    random_between(100000000, 999999999, RandomNumber),
-    number_codes(RandomNumber, RandomNumberCodes),
-    string_codes(ID, RandomNumberCodes).
 
 % Edita o corpo de um resumo em um grupo
 editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result):-
@@ -392,10 +386,10 @@ editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result):-
         (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
             (getResumoGrupo(CodResumoAtom, CodGrupoAtom, CodDisciplinaAtom, R), R \= -1 ->
                 edita_resumo_grupo(CodGrupoAtom, CodDisciplinaAtom, CodResumoAtom, NewCorpoAtom),
-                Result = 'Resumo editado com sucesso'
-            ; Result = 'Resumo não cadastrado')    
-        ; Result = 'Disciplina não cadastrada')
-    ; Result = 'Grupo não existe').
+                Result = 'Resumo editado com sucesso!'
+            ; Result = 'Resumo não cadastrado!')    
+        ; Result = 'Disciplina não cadastrada!')
+    ; Result = 'Grupo não existe!').
 
 % Edita as datas de uma data em um grupo
 editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result):-
@@ -408,10 +402,10 @@ editaDataGrupo(CodGrupo, CodDisciplina, CodData, NewDataInit, NewDataFim, Result
         (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
             (getDataGrupo(CodDataAtom, CodGrupoAtom, CodDisciplinaAtom,R), R \= -1 ->
                 edita_data_grupo(CodGrupoAtom, CodDisciplinaAtom, CodDataAtom, NewDataInitAtom, NewDataFimAtom),
-                Result = 'Data editada com sucesso'
-            ; Result = 'Data não cadastrada')    
-        ; Result = 'Disciplina não cadastrada')
-    ; Result = 'Grupo não existe').
+                Result = 'Data editada com sucesso!'
+            ; Result = 'Data não cadastrada!')    
+        ; Result = 'Disciplina não cadastrada!')
+    ; Result = 'Grupo não existe!').
 
 % Edita o URL de um link em um grupo
 editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result):-
@@ -423,17 +417,17 @@ editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result):-
         (verifica_disciplina(CodGrupoAtom, CodDisciplinaAtom)->
             (getLinkGrupo(CodLinkAtom, CodGrupoAtom, CodDisciplinaAtom, R), R \= -1 ->
                 edita_link_grupo(CodGrupoAtom, CodDisciplinaAtom, CodLinkAtom, NewUrlAtom),
-                Result = 'Link editado com sucesso'
-            ; Result = 'Link não cadastrado')    
-        ; Result = 'Disciplina não cadastrada')
-    ; Result = 'Grupo não existe').
+                Result = 'Link editado com sucesso!'
+            ; Result = 'Link não cadastrado!')    
+        ; Result = 'Disciplina não cadastrada!')
+    ; Result = 'Grupo não existe!').
 
 % Lista os grupos de um aluno por matrícula
 listagemMeusGrupos(Matricula, Result) :-
     get_grupos(Data),
     get_grupo(Matricula, Data, Grupos),
     (Grupos = [] ->
-        Result = 'Aluno não está cadastrado em nenhum grupo'
+        Result = 'Aluno não está cadastrado em nenhum grupo!'
     ;
         organizaListagemGrupo(Grupos, Result)
     ).

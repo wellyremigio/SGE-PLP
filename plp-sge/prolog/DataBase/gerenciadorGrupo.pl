@@ -1,5 +1,3 @@
-% Caminho do arquivo JSON onde os dados dos grupos são armazenados.
-grupos_path('DataBase/Grupo.json').
 % Obtém todos os grupos a partir do arquivo JSON.
 get_grupos(Data):- grupos_path(Path), load_json_file(Path, Data).
 
@@ -278,7 +276,7 @@ edita_resumo_grupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo):-
     seach_id(Disciplinas, CodDisciplina, Disciplina, 'disciplina'),
     extract_info_disciplina(Disciplina, _, NomeDisciplina, Professor, Periodo, Resumos, Links, Datas),
     seach_id(Resumos, CodResumo, Resumo, 'resumo'),
-    extract_info_resumo(Resumo, _, Titulo, Corpo, Comentarios),
+    extract_info_resumo(Resumo, _, Titulo, _, Comentarios),
     NResumo = json([id=CodResumo, titulo=Titulo, corpo=NewCorpo, comentarios=Comentarios]),
     remove_object(Resumos, Resumo, Resumo_Novo),
     NResumos = [ NResumo | Resumo_Novo],
@@ -344,5 +342,5 @@ get_grupos_concatenados(Matricula, [GrupoAtual | Rest], PartialResult, GruposCon
 
 % Retorna o ID do grupo no qual um aluno está.
 get_group_ids(Matricula, Grupo) :-
-    extract_info_grupo(Grupo, Id, _, Alunos, _, _),
+    extract_info_grupo(Grupo, Id, _, _, _, _),
     verifica_aluno_grupo(Id, Matricula).

@@ -96,7 +96,7 @@ verificaEscolha(3):-
     halt.
 
 verificaEscolha(_):-
-    write('Opção inválida'),
+    write('Opção inválida.'),
     menuEscolhaLogin.
 
 %Menu resonsável por fazer o cadastro 
@@ -106,10 +106,10 @@ menuCadastro :-
     prompt('Senha: ', Senha),
     cadastraAluno(Matricula, Nome, Senha, ResultParcial),
     (ResultParcial = 'ok' -> 
-        write('Aluno Cadastrado'),
+        write('Aluno Cadastrado!'),
         menuInicial(Matricula)
         ;
-        write('Não foi possível fazer o cadastro'),
+        write('Não foi possível fazer o cadastro!'),
         menuEscolhaLogin).
 
 % Menu para mostra as opções do SGE para o usuário.
@@ -134,7 +134,7 @@ selecaoMenuInicial(1, Matricula):-
     cadastraGrupo(CodGrupo, NomeGrupo, Matricula, Result),
     adicionaAlunoGrupo(CodGrupo, Matricula),
     (Result = 'ok' ->
-        write('Grupo Cadastrado'),
+        write('Grupo Cadastrado!'),
         menuMeusGrupos(Matricula)
     ;
         write('Já existe um grupo com esse ID. Cadastre um grupo novo!\n'),
@@ -148,14 +148,14 @@ selecaoMenuInicial(2, Matricula):-
     verificaAdm(CodGrupo, Matricula, Result1),
     (Result1 = 1 ->
         (removeGrupo(CodGrupo, Matricula) ->
-            write('Grupo removido'),
+            write('Grupo removido!'),
             menuInicial(Matricula)
         ;
-            write('Grupo não encontrado'),
+            write('Grupo não encontrado!'),
             menuInicial(Matricula)
         )
     ;
-        write('Não é administrador do grupo e não pode remover'),
+        write('Não é administrador do grupo e não pode remover!'),
         menuInicial(Matricula)
     ).
 
@@ -216,11 +216,11 @@ selecaoMenuMeusGrupos(1, Matricula):-
                 (valida_aluno(MatriculaAluno) -> 
                     ( \+ verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
                         adicionaAlunoGrupo(CodGrupo, MatriculaAluno),
-                        write('Cadastrado com sucesso')
-                    ;write('Aluno já esta no grupo') )
-                ; write('Aluno não cadastrado'))
-            ; write('Aluno não é adm do grupo'))
-        ; write('Grupo não cadastrado')),
+                        write('Cadastrado com sucesso!')
+                    ;write('Aluno já esta no grupo!') )
+                ; write('Aluno não cadastrado!'))
+            ; write('Aluno não é adm do grupo!'))
+        ; write('Grupo não cadastrado!')),
         menuMeusGrupos(Matricula).
 
 % Remover aluno de um grupo
@@ -232,11 +232,11 @@ selecaoMenuMeusGrupos(2, Matricula):-
                 (valida_aluno(MatriculaAluno) -> 
                     ( verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
                         removeAlunoGrupo(CodGrupo, MatriculaAluno),
-                        write('Aluno removido com sucesso')
-                    ;write('Aluno já esta no grupo') )
-                ; write('Aluno não cadastrado'))
-            ; write('Aluno não é adm do grupo'))
-        ; write('Grupo não cadastrado')),
+                        write('Aluno removido com sucesso!')
+                    ;write('Aluno já esta no grupo!') )
+                ; write('Aluno não cadastrado!'))
+            ; write('Aluno não é adm do grupo!'))
+        ; write('Grupo não cadastrado!')),
         menuMeusGrupos(Matricula).
         
 % Visualizar alunos do grupo
@@ -346,7 +346,7 @@ opselecionadaMateriaisGrupo(4, Matricula):-
 
 % Lida com a opção "Comentar no material" no menu de materiais do grupo   
 opselecionadaMateriaisGrupo(5, Matricula):-
-    selecionaMaterialComentario(3, Matricula).
+    menuComentarMaterial(Matricula).
 
 % Lida com a opção "Ver Comentários do material" no menu de materiais do grupo
 opselecionadaMateriaisGrupo(6, Matricula):-
@@ -357,7 +357,7 @@ opselecionadaMateriaisGrupo(7, Matricula):-
     menuMeusGrupos(Matricula).
 
 % Lida com a opção "Sair" no menu de materiais do grupo
-opselecionadaMateriaisGrupo(8, Matricula):-
+opselecionadaMateriaisGrupo(8, _):-
     write('Saindo...'), 
     halt.
 
@@ -388,7 +388,7 @@ selecionaMenuConsultaGrupo(1, Matricula) :-
         write(Result),
         menuConsultaGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuConsultaGrupo(Matricula)
     ).
 
@@ -402,7 +402,7 @@ selecionaMenuConsultaGrupo(2, Matricula):-
         write(Result),
         menuConsultaGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuConsultaGrupo(Matricula)
     ).
 
@@ -416,7 +416,7 @@ selecionaMenuConsultaGrupo(3, Matricula):-
         write(Result),
         menuConsultaGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuConsultaGrupo(Matricula)
     ).
 
@@ -425,7 +425,7 @@ selecionaMenuConsultaGrupo(4, Matricula):-
     menuMateriaisGrupo(Matricula).
 
 % Lida com a opção 5 de consulta de materiais selecionada pelo usuário
-selecionaMenuConsultaGrupo(5, Matricula):-
+selecionaMenuConsultaGrupo(5, _):-
     write('Saindo...'), 
     halt.
 
@@ -609,7 +609,7 @@ opselecionadaDisciplinaAluno(5, Matricula) :-
     menuInicial(Matricula).
 
 % Lida com a escolha da opção 6 no menu de disciplinas do aluno 
-opselecionadaDisciplinaAluno(6, Matricula) :-
+opselecionadaDisciplinaAluno(6, _) :-
     write('Saindo...'), 
     halt.
 
@@ -694,7 +694,7 @@ opselecionadaMateriaisAluno(4, Matricula):-
     menuMinhasDisciplinas(Matricula).
 
 % Lida com a escolha da opção 5 no menu de materiais do aluno
-opselecionadaMateriaisAluno(5, Matricula):-
+opselecionadaMateriaisAluno(5, _):-
     write('Saindo...'), 
     halt.
 
@@ -788,7 +788,7 @@ selecionaMenuConsultaAluno(4, Matricula):-
     menuMateriaisAluno(Matricula).
 
 % Lida com a escolha da opção 5 no menu para consultar materiais pelo aluno
-selecionaMenuConsultaAluno(5, Matricula):-
+selecionaMenuConsultaAluno(5, _):-
     write('Saindo...'), 
     halt.
 
@@ -844,7 +844,7 @@ selecionaMaterialComentario(4, Matricula):-
     menuMateriaisGrupo(Matricula).
 
 % Lida com a escolha da opção 5 no menu para adicionar comentários a materiais
-selecionaMaterialComentario(5, Matricula):-
+selecionaMaterialComentario(5, _):-
     write('Saindo...'), 
     halt.
 
@@ -897,7 +897,7 @@ selecionaVerComentarioMaterial(4, Matricula) :-
     menuMateriaisGrupo(Matricula).
 
 % Lida com a escolha da opção 5 no menu para visualizar comentários em materiais
-selecionaVerComentarioMaterial(5, Matricula) :-
+selecionaVerComentarioMaterial(5, _) :-
     write('Saindo...'), 
     halt.
 
@@ -914,13 +914,13 @@ menuEditaMateriais(Matricula):-
     writeln('3. Links'),
     writeln('4. Voltar'),
     prompt('----> ', Input),
-    prompt('Código do grupo: ', CodGrupo),
-    prompt('Código da disciplina: ', CodDisciplina),
     atom_number(Input, Opcao),
-    selecionaEditaMateriais(Opcao, Matricula, CodGrupo, CodDisciplina).
+    selecionaEditaMateriais(Opcao, Matricula).
 
 % Lida com a escolha da opção 1 no menu para editar materiais
-selecionaEditaMateriais(1, Matricula, CodGrupo, CodDisciplina):-
+selecionaEditaMateriais(1, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', CodDisciplina),
     prompt('Código do Resumo: ', CodResumo),
     prompt('Novo Corpo: ', NewCorpo),
     editaResumoGrupo(CodGrupo, CodDisciplina, CodResumo, NewCorpo, Result),
@@ -928,7 +928,9 @@ selecionaEditaMateriais(1, Matricula, CodGrupo, CodDisciplina):-
     menuEditaMateriais(Matricula).
 
 % Lida com a escolha da opção 2 no menu para editar materiais
-selecionaEditaMateriais(2, Matricula, CodGrupo, CodDisciplina):-
+selecionaEditaMateriais(2, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', CodDisciplina),
     prompt('Código da Data: ', CodData),
     prompt('Nova data incio: ', NewDataInit),
     prompt('Nova data fim: ', NewDataFim),
@@ -937,7 +939,9 @@ selecionaEditaMateriais(2, Matricula, CodGrupo, CodDisciplina):-
     menuEditaMateriais(Matricula).
 
 % Lida com a escolha da opção 3 no menu para editar materiais
-selecionaEditaMateriais(3, Matricula, CodGrupo, CodDisciplina):-
+selecionaEditaMateriais(3, Matricula):-
+    prompt('Código do grupo: ', CodGrupo),
+    prompt('Código da disciplina: ', CodDisciplina),
     prompt('Código do Link: ', CodLink),
     prompt('Nova url: ', NewUrl),
     editaLinkGrupo(CodGrupo, CodDisciplina, CodLink, NewUrl, Result),
@@ -945,10 +949,10 @@ selecionaEditaMateriais(3, Matricula, CodGrupo, CodDisciplina):-
     menuEditaMateriais(Matricula).
 
 % Lida com a escolha da opção 4 no menu para editar materiais
-selecionaEditaMateriais(4, Matricula, _, _):-
+selecionaEditaMateriais(4, Matricula):-
     menuMateriaisGrupo(Matricula).
 
 % Lida com a escolha de uma opção inválida no menu para editar materiais
-selecionaEditaMateriais(_, Matricula, CodGrupo, CodDisciplina):-
+selecionaEditaMateriais(_, Matricula):-
     writeln('\nOpcão inválida!\n'), 
     menuEditaMateriais(Matricula).
