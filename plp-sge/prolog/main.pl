@@ -69,7 +69,7 @@ menuLogin:-
             write('Senha incorreta, tente novamente. \n'),
             menuLogin)
     ;
-        write('Aluno não encontrado!'), 
+        write('\nAluno não encontrado!\n'), 
         menuEscolhaLogin
     ).
 
@@ -106,10 +106,10 @@ menuCadastro :-
     prompt('Senha: ', Senha),
     cadastraAluno(Matricula, Nome, Senha, ResultParcial),
     (ResultParcial = 'ok' -> 
-        write('Aluno Cadastrado!'),
+        write('\nAluno Cadastrado!\n'),
         menuInicial(Matricula)
         ;
-        write('Não foi possível fazer o cadastro!'),
+        write('\nNão foi possível fazer o cadastro!\n'),
         menuEscolhaLogin).
 
 % Menu para mostra as opções do SGE para o usuário.
@@ -134,10 +134,10 @@ selecaoMenuInicial(1, Matricula):-
     cadastraGrupo(CodGrupo, NomeGrupo, Matricula, Result),
     adicionaAlunoGrupo(CodGrupo, Matricula),
     (Result = 'ok' ->
-        write('Grupo Cadastrado!'),
+        write('\nGrupo Cadastrado!\n'),
         menuMeusGrupos(Matricula)
     ;
-        write('Já existe um grupo com esse ID. Cadastre um grupo novo!\n'),
+        write('\nJá existe um grupo com esse ID. Cadastre um grupo novo!\n'),
         menuInicial(Matricula)
     ). 
 
@@ -148,14 +148,14 @@ selecaoMenuInicial(2, Matricula):-
     verificaAdm(CodGrupo, Matricula, Result1),
     (Result1 = 1 ->
         (removeGrupo(CodGrupo, Matricula) ->
-            write('Grupo removido!'),
+            write('\nGrupo removido!\n'),
             menuInicial(Matricula)
         ;
-            write('Grupo não encontrado!'),
+            write('\nGrupo não encontrado!\n'),
             menuInicial(Matricula)
         )
     ;
-        write('Não é administrador do grupo e não pode remover!'),
+        write('\nNão é administrador do grupo e não pode remover!\n'),
         menuInicial(Matricula)
     ).
 
@@ -192,7 +192,7 @@ selecaoMenuInicial(_, Matricula):-
 
 % Menu específico para as funções dos grupos.
 menuMeusGrupos(Matricula):-
-    writeln('\nEscolha o que você quer fazer\n'),
+    writeln('\nEscolha o que você quer fazer:\n'),
     write('1. Adicionar Aluno\n'),
     write('2. Remover Aluno\n'),
     write('3. Visualizar Alunos\n'),
@@ -216,11 +216,11 @@ selecaoMenuMeusGrupos(1, Matricula):-
                 (valida_aluno(MatriculaAluno) -> 
                     ( \+ verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
                         adicionaAlunoGrupo(CodGrupo, MatriculaAluno),
-                        write('Cadastrado com sucesso!')
-                    ;write('Aluno já esta no grupo!') )
-                ; write('Aluno não cadastrado!'))
-            ; write('Aluno não é adm do grupo!'))
-        ; write('Grupo não cadastrado!')),
+                        write('\nCadastrado com sucesso!\n')
+                    ;write('\nAluno já esta no grupo!\n') )
+                ; write('\nAluno não cadastrado!\n'))
+            ; write('\nAluno não é adm do grupo!\n'))
+        ; write('\nGrupo não cadastrado!\n')),
         menuMeusGrupos(Matricula).
 
 % Remover aluno de um grupo
@@ -232,11 +232,11 @@ selecaoMenuMeusGrupos(2, Matricula):-
                 (valida_aluno(MatriculaAluno) -> 
                     ( verifica_aluno_grupo(CodGrupo, MatriculaAluno) ->
                         removeAlunoGrupo(CodGrupo, MatriculaAluno),
-                        write('Aluno removido com sucesso!')
-                    ;write('Aluno já esta no grupo!') )
-                ; write('Aluno não cadastrado!'))
-            ; write('Aluno não é adm do grupo!'))
-        ; write('Grupo não cadastrado!')),
+                        write('\nAluno removido com sucesso!\n')
+                    ;write('\nAluno já esta no grupo!\n') )
+                ; write('\nAluno não cadastrado!\n'))
+            ; write('\nAluno não é adm do grupo!\n'))
+        ; write('\nGrupo não cadastrado!\n')),
         menuMeusGrupos(Matricula).
         
 % Visualizar alunos do grupo
@@ -247,7 +247,7 @@ selecaoMenuMeusGrupos(3, Matricula):-
         write(Result),
         menuMeusGrupos(Matricula)
     ;
-        write('Grupo não encontrado!'),
+        write('\nGrupo não encontrado!\n'),
         menuMeusGrupos(Matricula)
     ).
 
@@ -269,13 +269,13 @@ selecaoMenuMeusGrupos(5, Matricula):-
         listagemDisciplinaGrupo(CodGrupo, Result),
         (
             Result = '' ->
-                write('Nenhuma disciplina cadastrada!');
+                write('\nNenhuma disciplina cadastrada!\n');
             true ->
                 write(Result)
         ),
         menuMeusGrupos(Matricula)
     ;
-        write('Grupo não encontrado!'),
+        write('\nGrupo não encontrado!\n'),
         menuMeusGrupos(Matricula)
     ).
 
@@ -289,7 +289,7 @@ selecaoMenuMeusGrupos(6, Matricula):-
         write(Result),
         menuMeusGrupos(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuMeusGrupos(Matricula)
     ).
 
@@ -310,7 +310,7 @@ selecaoMenuMeusGrupos(9, Matricula):-
 
 % Tratamento de entrada inválida
 selecaoMenuMeusGrupos(_, Matricula):-
-    write('Opção inválida.'),
+    write('Opção inválida!'),
     menuMeusGrupos(Matricula).
 
 % Menu específico para o cadastro e consulta de materiais em um grupo
@@ -388,7 +388,7 @@ selecionaMenuConsultaGrupo(1, Matricula) :-
         write(Result),
         menuConsultaGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuConsultaGrupo(Matricula)
     ).
 
@@ -416,7 +416,7 @@ selecionaMenuConsultaGrupo(3, Matricula):-
         write(Result),
         menuConsultaGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuConsultaGrupo(Matricula)
     ).
 
@@ -458,7 +458,7 @@ opselecionadaCadastraMateriaisGrupo(1, Matricula) :-
         write(Result),
         menuCadastraMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuCadastraMateriaisGrupo(Matricula)
     ).
 
@@ -473,7 +473,7 @@ opselecionadaCadastraMateriaisGrupo(2, Matricula) :-
         write(Result),
         menuCadastraMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuCadastraMateriaisGrupo(Matricula)
     ).
 
@@ -489,7 +489,7 @@ opselecionadaCadastraMateriaisGrupo(3, Matricula) :-
         write(Result),
         menuCadastraMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuCadastraMateriaisGrupo(Matricula)
     ).
 
@@ -523,7 +523,7 @@ selecionaMenuRemoveMateriaisGrupo(1, Matricula):-
         write(Result),
         menuRemoverMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuRemoverMateriaisGrupo(Matricula)
     ).
 
@@ -537,7 +537,7 @@ selecionaMenuRemoveMateriaisGrupo(2, Matricula):-
         write(Result),
         menuRemoverMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuRemoverMateriaisGrupo(Matricula)
     ).
 
@@ -551,7 +551,7 @@ selecionaMenuRemoveMateriaisGrupo(3, Matricula):-
         write(Result),
         menuRemoverMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado!'),
+        write('\nGrupo não cadastrado!\n'),
         menuRemoverMateriaisGrupo(Matricula)
     ).
     
@@ -615,7 +615,7 @@ opselecionadaDisciplinaAluno(6, _) :-
 
 % Lida com uma escolha inválida no menu de disciplinas do aluno
 opselecionadaDisciplinaAluno(_,Matricula) :-
-    write('Opcão inválida!'),
+    write('\nOpcão inválida!\n'),
     menuMinhasDisciplinas(Matricula).
 
 % Menu para cadastrar materiais pelo aluno
