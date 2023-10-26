@@ -186,7 +186,7 @@ selecaoMenuInicial(6, _):-
 
 % Tratamento de opção inválida no menu inicial.
 selecaoMenuInicial(_, Matricula):-
-    write('Opção inválida'),
+    write('Opção inválida.'),
     menuInicial(Matricula).
 
 
@@ -247,7 +247,7 @@ selecaoMenuMeusGrupos(3, Matricula):-
         write(Result),
         menuMeusGrupos(Matricula)
     ;
-        write('Grupo não encontrado'),
+        write('Grupo não encontrado!'),
         menuMeusGrupos(Matricula)
     ).
 
@@ -269,13 +269,13 @@ selecaoMenuMeusGrupos(5, Matricula):-
         listagemDisciplinaGrupo(CodGrupo, Result),
         (
             Result = '' ->
-                write('Nenhuma disciplina cadastrada');
+                write('Nenhuma disciplina cadastrada!');
             true ->
                 write(Result)
         ),
         menuMeusGrupos(Matricula)
     ;
-        write('Grupo não encontrado'),
+        write('Grupo não encontrado!'),
         menuMeusGrupos(Matricula)
     ).
 
@@ -289,7 +289,7 @@ selecaoMenuMeusGrupos(6, Matricula):-
         write(Result),
         menuMeusGrupos(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuMeusGrupos(Matricula)
     ).
 
@@ -310,7 +310,7 @@ selecaoMenuMeusGrupos(9, Matricula):-
 
 % Tratamento de entrada inválida
 selecaoMenuMeusGrupos(_, Matricula):-
-    write('Opção inválida'),
+    write('Opção inválida.'),
     menuMeusGrupos(Matricula).
 
 % Menu específico para o cadastro e consulta de materiais em um grupo
@@ -458,7 +458,7 @@ opselecionadaCadastraMateriaisGrupo(1, Matricula) :-
         write(Result),
         menuCadastraMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuCadastraMateriaisGrupo(Matricula)
     ).
 
@@ -473,7 +473,7 @@ opselecionadaCadastraMateriaisGrupo(2, Matricula) :-
         write(Result),
         menuCadastraMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuCadastraMateriaisGrupo(Matricula)
     ).
 
@@ -489,7 +489,7 @@ opselecionadaCadastraMateriaisGrupo(3, Matricula) :-
         write(Result),
         menuCadastraMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuCadastraMateriaisGrupo(Matricula)
     ).
 
@@ -523,7 +523,7 @@ selecionaMenuRemoveMateriaisGrupo(1, Matricula):-
         write(Result),
         menuRemoverMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuRemoverMateriaisGrupo(Matricula)
     ).
 
@@ -537,7 +537,7 @@ selecionaMenuRemoveMateriaisGrupo(2, Matricula):-
         write(Result),
         menuRemoverMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuRemoverMateriaisGrupo(Matricula)
     ).
 
@@ -551,7 +551,7 @@ selecionaMenuRemoveMateriaisGrupo(3, Matricula):-
         write(Result),
         menuRemoverMateriaisGrupo(Matricula)
     ;
-        write('Grupo não cadastrado'),
+        write('Grupo não cadastrado!'),
         menuRemoverMateriaisGrupo(Matricula)
     ).
     
@@ -614,7 +614,9 @@ opselecionadaDisciplinaAluno(6, _) :-
     halt.
 
 % Lida com uma escolha inválida no menu de disciplinas do aluno
-opselecionadaDisciplinaAluno(_,Matricula) :- write('Opcão inválida!'), menuMinhasDisciplinas(Matricula).
+opselecionadaDisciplinaAluno(_,Matricula) :-
+    write('Opcão inválida!'),
+    menuMinhasDisciplinas(Matricula).
 
 % Menu para cadastrar materiais pelo aluno
 menuCadastraMateriaisAluno(Matricula) :-
